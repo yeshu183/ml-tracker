@@ -714,36 +714,36 @@ export default function App() {
 
       {/* Header */}
       <div style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"16px 20px",position:"sticky",top:0,zIndex:100}}>
-        <div style={{maxWidth:860,margin:"0 auto"}}>
+        <div style={{maxWidth:1200,margin:"0 auto"}}>
           <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
             <div>
-              <div style={{fontSize:17,fontWeight:700,color:C.text,letterSpacing:-0.3}}>ML/AI Mastery</div>
-              <div style={{fontSize:11,color:C.dim,marginTop:1}}>Basics → Cracked → Marvell Ready</div>
+              <div style={{fontSize:22,fontWeight:700,color:C.text,letterSpacing:-0.3}}>ML/AI Mastery</div>
+              <div style={{fontSize:13,color:C.dim,marginTop:1}}>Basics → Cracked → Marvell Ready</div>
             </div>
             <div style={{display:"flex",gap:6}}>
               {[["roadmap","Roadmap"],["stats","Stats"]].map(([v,l])=>(
-                <button key={v} onClick={()=>setView(v)} style={{padding:"5px 14px",borderRadius:6,border:`1px solid ${view===v?C.accent:C.border}`,cursor:"pointer",fontSize:12,fontWeight:600,background:view===v?"#0d1f42":C.elevated,color:view===v?C.accent:C.muted}}>{l}</button>
+                <button key={v} onClick={()=>setView(v)} style={{padding:"6px 16px",borderRadius:6,border:`1px solid ${view===v?C.accent:C.border}`,cursor:"pointer",fontSize:14,fontWeight:600,background:view===v?"#0d1f42":C.elevated,color:view===v?C.accent:C.muted}}>{l}</button>
               ))}
             </div>
           </div>
           <div style={{marginTop:12}}>
             <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-              <span style={{fontSize:10,color:C.dim,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>Progress</span>
-              <span style={{fontSize:11,fontWeight:700,color:C.text}}>{done}/{total} · {pct}%</span>
+              <span style={{fontSize:12,color:C.dim,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>Progress</span>
+              <span style={{fontSize:13,fontWeight:700,color:C.text}}>{done}/{total} · {pct}%</span>
             </div>
             <div style={{background:C.elevated,borderRadius:99,height:5}}>
               <div style={{background:`linear-gradient(90deg,${C.accent},#39d353)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.4s"}}/>
             </div>
             <div style={{display:"flex",gap:14,marginTop:6}}>
-              <span style={{fontSize:10,color:C.yellow}}>◑ {inProg}</span>
-              <span style={{fontSize:10,color:C.green}}>● {done}</span>
-              <span style={{fontSize:10,color:C.dim}}>○ {total-done-inProg} remaining</span>
+              <span style={{fontSize:12,color:C.yellow}}>◑ {inProg}</span>
+              <span style={{fontSize:12,color:C.green}}>● {done}</span>
+              <span style={{fontSize:12,color:C.dim}}>○ {total-done-inProg} remaining</span>
             </div>
           </div>
         </div>
       </div>
 
-      <div style={{maxWidth:860,margin:"0 auto",padding:"16px 10px"}}>
+      <div style={{maxWidth:1200,margin:"0 auto",padding:"16px 24px"}}>
 
         {view==="roadmap" && ROADMAP.map(phase=>{
           const phDone = phase.items.filter(i=>progress[i.id]==="done").length;
@@ -753,8 +753,8 @@ export default function App() {
               <div onClick={()=>togglePhase(phase.phase)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 16px",background:C.surface,cursor:"pointer",borderBottom:phOpen?`1px solid ${C.border}`:"none"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <div style={{width:8,height:8,borderRadius:"50%",background:phase.color}}/>
-                  <span style={{fontWeight:700,fontSize:13,color:C.text}}>{phase.phase}</span>
-                  <span style={{fontSize:10,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99}}>{phDone}/{phase.items.length}</span>
+                  <span style={{fontWeight:700,fontSize:15,color:C.text}}>{phase.phase}</span>
+                  <span style={{fontSize:12,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99}}>{phDone}/{phase.items.length}</span>
                 </div>
                 <span style={{color:C.dim,fontSize:11}}>{phOpen?"▲":"▼"}</span>
               </div>
@@ -786,13 +786,13 @@ export default function App() {
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
                           <div style={{flex:1}}>
                             <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
-                              <span style={{fontSize:10,fontWeight:700,color:phase.color}}>{item.week}</span>
-                              <span style={{fontSize:10,color:C.dim}}>·</span>
-                              <span style={{fontSize:10,color:C.dim}}>{item.duration}</span>
+                              <span style={{fontSize:12,fontWeight:700,color:phase.color}}>{item.week}</span>
+                              <span style={{fontSize:12,color:C.dim}}>·</span>
+                              <span style={{fontSize:12,color:C.dim}}>{item.duration}</span>
                             </div>
-                            <div style={{fontSize:14,fontWeight:600,color:status==="done"?C.dim:C.text,marginTop:1,textDecoration:status==="done"?"line-through":"none"}}>{item.title}</div>
+                            <div style={{fontSize:16,fontWeight:600,color:status==="done"?C.dim:C.text,marginTop:1,textDecoration:status==="done"?"line-through":"none"}}>{item.title}</div>
                             <div style={{display:"flex",gap:4,marginTop:5,flexWrap:"wrap"}}>
-                              {item.tags.map(t=><span key={t} style={{fontSize:10,color:C.muted,background:C.elevated,padding:"2px 6px",borderRadius:99,border:`1px solid ${C.border2}`}}>{t}</span>)}
+                              {item.tags.map(t=><span key={t} style={{fontSize:11,color:C.muted,background:C.elevated,padding:"2px 7px",borderRadius:99,border:`1px solid ${C.border2}`}}>{t}</span>)}
                             </div>
                           </div>
                           <div style={{display:"flex",gap:4,flexShrink:0}} onClick={e=>e.stopPropagation()}>
