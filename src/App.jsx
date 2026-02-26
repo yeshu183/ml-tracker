@@ -710,40 +710,81 @@ export default function App() {
   if (!loaded) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:C.bg,color:C.muted,fontFamily:"monospace"}}>Loading...</div>;
 
   return (
-    <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",background:C.bg,minHeight:"100vh",color:C.text}}>
+    <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",background:C.bg,height:"100vh",color:C.text,display:"flex",overflow:"hidden"}}>
 
-      {/* Header */}
-      <div style={{background:C.surface,borderBottom:`1px solid ${C.border}`,padding:"16px 20px",position:"sticky",top:0,zIndex:100}}>
-        <div style={{maxWidth:1200,margin:"0 auto"}}>
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",flexWrap:"wrap",gap:10}}>
-            <div>
-              <div style={{fontSize:22,fontWeight:700,color:C.text,letterSpacing:-0.3}}>ML/AI Mastery</div>
-              <div style={{fontSize:13,color:C.dim,marginTop:1}}>Basics → Cracked → Marvell Ready</div>
-            </div>
-            <div style={{display:"flex",gap:6}}>
-              {[["roadmap","Roadmap"],["stats","Stats"]].map(([v,l])=>(
-                <button key={v} onClick={()=>setView(v)} style={{padding:"6px 16px",borderRadius:6,border:`1px solid ${view===v?C.accent:C.border}`,cursor:"pointer",fontSize:14,fontWeight:600,background:view===v?"#0d1f42":C.elevated,color:view===v?C.accent:C.muted}}>{l}</button>
-              ))}
-            </div>
+      {/* ── Sidebar ── */}
+      <div style={{width:270,flexShrink:0,borderRight:`1px solid ${C.border}`,background:C.surface,height:"100vh",overflowY:"auto",display:"flex",flexDirection:"column",padding:"24px 18px"}}>
+
+        <div style={{marginBottom:26}}>
+          <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:-0.4}}>ML/AI Mastery</div>
+          <div style={{fontSize:11,color:C.dim,marginTop:3,lineHeight:1.4}}>Basics → Cracked → Marvell Ready</div>
+        </div>
+
+        <div style={{marginBottom:24,padding:"14px",background:C.elevated,borderRadius:10,border:`1px solid ${C.border}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
+            <span style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.6}}>Progress</span>
+            <span style={{fontSize:14,fontWeight:800,color:C.text}}>{pct}%</span>
           </div>
-          <div style={{marginTop:12}}>
-            <div style={{display:"flex",justifyContent:"space-between",marginBottom:4}}>
-              <span style={{fontSize:12,color:C.dim,fontWeight:600,textTransform:"uppercase",letterSpacing:0.5}}>Progress</span>
-              <span style={{fontSize:13,fontWeight:700,color:C.text}}>{done}/{total} · {pct}%</span>
+          <div style={{background:C.bg,borderRadius:99,height:5,marginBottom:9}}>
+            <div style={{background:`linear-gradient(90deg,${C.accent},#39d353)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.5s"}}/>
+          </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2}}>
+            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
+              <div style={{fontSize:16,fontWeight:800,color:C.green}}>{done}</div>
+              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Done</div>
             </div>
-            <div style={{background:C.elevated,borderRadius:99,height:5}}>
-              <div style={{background:`linear-gradient(90deg,${C.accent},#39d353)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.4s"}}/>
+            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
+              <div style={{fontSize:16,fontWeight:800,color:C.yellow}}>{inProg}</div>
+              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Active</div>
             </div>
-            <div style={{display:"flex",gap:14,marginTop:6}}>
-              <span style={{fontSize:12,color:C.yellow}}>◑ {inProg}</span>
-              <span style={{fontSize:12,color:C.green}}>● {done}</span>
-              <span style={{fontSize:12,color:C.dim}}>○ {total-done-inProg} remaining</span>
+            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
+              <div style={{fontSize:16,fontWeight:800,color:C.muted}}>{total-done-inProg}</div>
+              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Left</div>
             </div>
           </div>
         </div>
+
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:6,paddingLeft:2}}>Views</div>
+          {[["roadmap","📋  Roadmap"],["stats","📊  Stats"]].map(([v,l])=>(
+            <button key={v} onClick={()=>setView(v)} style={{width:"100%",display:"flex",alignItems:"center",padding:"8px 10px",borderRadius:7,border:"none",cursor:"pointer",fontSize:13,fontWeight:600,background:view===v?"#0d1f42":"transparent",color:view===v?C.accent:C.muted,textAlign:"left",marginBottom:2,transition:"all 0.15s"}}>{l}</button>
+          ))}
+        </div>
+
+        <div style={{flex:1}}>
+          <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:10,paddingLeft:2}}>Phases</div>
+          {ROADMAP.map(phase=>{
+            const phDone=phase.items.filter(i=>progress[i.id]==="done").length;
+            const phPct=Math.round((phDone/phase.items.length)*100);
+            return (
+              <div key={phase.phase} style={{marginBottom:16,paddingLeft:2}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
+                  <div style={{display:"flex",alignItems:"center",gap:7,minWidth:0}}>
+                    <div style={{width:7,height:7,borderRadius:"50%",background:phase.color,flexShrink:0}}/>
+                    <span style={{fontSize:11,fontWeight:600,color:C.muted,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{phase.phase}</span>
+                  </div>
+                  <span style={{fontSize:10,color:C.dim,flexShrink:0,marginLeft:4}}>{phDone}/{phase.items.length}</span>
+                </div>
+                <div style={{background:C.elevated,borderRadius:99,height:3,marginLeft:14}}>
+                  <div style={{background:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s",opacity:0.75}}/>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        <div style={{paddingTop:16,borderTop:`1px solid ${C.border}`}}>
+          <button onClick={async()=>{
+            if(!confirm("Reset all progress, checks, and notes?")) return;
+            setProgress({}); setChecks({}); setNotes({});
+            try{await store.set("p","{}"); await store.set("c","{}"); await store.set("n","{}");} catch{}
+          }} style={{fontSize:11,color:C.dim,background:"transparent",border:`1px solid ${C.border}`,borderRadius:6,padding:"6px 10px",cursor:"pointer",width:"100%"}}>Reset Everything</button>
+        </div>
       </div>
 
-      <div style={{maxWidth:1200,margin:"0 auto",padding:"16px 24px"}}>
+      {/* ── Main scrollable area ── */}
+      <div style={{flex:1,overflowY:"auto",height:"100vh"}}>
+      <div style={{maxWidth:860,margin:"0 auto",padding:"24px 32px"}}>
 
         {view==="roadmap" && ROADMAP.map(phase=>{
           const phDone = phase.items.filter(i=>progress[i.id]==="done").length;
@@ -914,6 +955,7 @@ export default function App() {
             </div>
           </div>
         )}
+      </div>
       </div>
 
       {/* Note modal */}
