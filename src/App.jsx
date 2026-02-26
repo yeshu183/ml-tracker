@@ -794,8 +794,8 @@ export default function App() {
               <div onClick={()=>togglePhase(phase.phase)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 16px",background:C.surface,cursor:"pointer",borderBottom:phOpen?`1px solid ${C.border}`:"none"}}>
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <div style={{width:8,height:8,borderRadius:"50%",background:phase.color}}/>
-                  <span style={{fontWeight:700,fontSize:15,color:C.text}}>{phase.phase}</span>
-                  <span style={{fontSize:12,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99}}>{phDone}/{phase.items.length}</span>
+                  <span style={{fontWeight:700,fontSize:17,color:C.text}}>{phase.phase}</span>
+                  <span style={{fontSize:13,color:C.dim,background:C.elevated,padding:"2px 8px",borderRadius:99}}>{phDone}/{phase.items.length}</span>
                 </div>
                 <span style={{color:C.dim,fontSize:11}}>{phOpen?"▲":"▼"}</span>
               </div>
@@ -827,13 +827,13 @@ export default function App() {
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
                           <div style={{flex:1}}>
                             <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
-                              <span style={{fontSize:12,fontWeight:700,color:phase.color}}>{item.week}</span>
-                              <span style={{fontSize:12,color:C.dim}}>·</span>
-                              <span style={{fontSize:12,color:C.dim}}>{item.duration}</span>
+                              <span style={{fontSize:13,fontWeight:700,color:phase.color}}>{item.week}</span>
+                              <span style={{fontSize:13,color:C.dim}}>·</span>
+                              <span style={{fontSize:13,color:C.dim}}>{item.duration}</span>
                             </div>
-                            <div style={{fontSize:16,fontWeight:600,color:status==="done"?C.dim:C.text,marginTop:1,textDecoration:status==="done"?"line-through":"none"}}>{item.title}</div>
+                            <div style={{fontSize:18,fontWeight:600,color:status==="done"?C.dim:C.text,marginTop:1,textDecoration:status==="done"?"line-through":"none"}}>{item.title}</div>
                             <div style={{display:"flex",gap:4,marginTop:5,flexWrap:"wrap"}}>
-                              {item.tags.map(t=><span key={t} style={{fontSize:11,color:C.muted,background:C.elevated,padding:"2px 7px",borderRadius:99,border:`1px solid ${C.border2}`}}>{t}</span>)}
+                              {item.tags.map(t=><span key={t} style={{fontSize:12,color:C.muted,background:C.elevated,padding:"3px 9px",borderRadius:99,border:`1px solid ${C.border2}`}}>{t}</span>)}
                             </div>
                           </div>
                           <div style={{display:"flex",gap:4,flexShrink:0}} onClick={e=>e.stopPropagation()}>
@@ -846,7 +846,7 @@ export default function App() {
                             {SECS.map(sec=>{
                               const active = curSec===sec.key;
                               return (
-                                <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"3px 10px",borderRadius:99,border:`1px solid ${active?sec.color:C.border}`,background:active?sec.color+"20":"transparent",color:active?sec.color:C.muted,fontSize:11,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
+                                <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"3px 10px",borderRadius:99,border:`1px solid ${active?sec.color:C.border}`,background:active?sec.color+"20":"transparent",color:active?sec.color:C.muted,fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
                                   {sec.emoji} {sec.label}
                                   {sec.stats && sec.stats.total>0 && <span style={{background:active?"rgba(255,255,255,0.15)":C.elevated,borderRadius:99,padding:"0 5px",fontSize:10}}>{sec.stats.checked}/{sec.stats.total}</span>}
                                 </button>
@@ -871,7 +871,7 @@ export default function App() {
                         ))}
                         {curSec==="extraReading" && (
                           <>
-                            <div style={{fontSize:10,fontWeight:700,color:"#a371f7",letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>✨ Optional Extra Reading</div>
+                            <div style={{fontSize:11,fontWeight:700,color:"#a371f7",letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>✨ Optional Extra Reading</div>
                             {(item.extraReading||[]).map(e=>(
                               <ExtraItem key={e.id} item={e} checked={!!checks[`${item.id}__extra__${e.id}`]} onChange={()=>toggleCheck(item.id,"extra",e.id)}/>
                             ))}
@@ -881,7 +881,7 @@ export default function App() {
                     )}
 
                     {hasNote && !isOpen && (
-                      <div style={{margin:"0 16px 9px 52px",fontSize:11,color:C.muted,background:C.bg,padding:"5px 9px",borderRadius:5,borderLeft:`2px solid ${phase.color}`}}>
+                      <div style={{margin:"0 16px 9px 52px",fontSize:12,color:C.muted,background:C.bg,padding:"6px 10px",borderRadius:5,borderLeft:`2px solid ${phase.color}`}}>
                         {notes[item.id].length>110?notes[item.id].slice(0,110)+"...":notes[item.id]}
                       </div>
                     )}
