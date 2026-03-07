@@ -1688,13 +1688,14 @@ export default function App() {
                         </div>
 
                         {isOpen && (
-                          <div style={{display:"flex",gap:5,marginTop:9,flexWrap:"wrap"}} onClick={e=>e.stopPropagation()}>
+                          <div style={{display:"flex",gap:8,marginTop:12,flexWrap:"wrap",justifyContent:"center",padding:"10px 0 2px",borderTop:`1px solid ${C.border}`}} onClick={e=>e.stopPropagation()}>
                             {SECS.map(sec=>{
                               const active = curSec===sec.key;
                               return (
-                                <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"3px 10px",borderRadius:99,border:`1px solid ${active?sec.color:C.border}`,background:active?sec.color+"20":"transparent",color:active?sec.color:C.muted,fontSize:13,fontWeight:600,cursor:"pointer",display:"flex",alignItems:"center",gap:4}}>
-                                  {sec.emoji} {sec.label}
-                                  {sec.stats && sec.stats.total>0 && <span style={{background:active?"rgba(255,255,255,0.15)":C.elevated,borderRadius:99,padding:"0 5px",fontSize:10}}>{sec.stats.checked}/{sec.stats.total}</span>}
+                                <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"7px 18px",borderRadius:8,border:`1.5px solid ${active?sec.color:C.border}`,background:active?sec.color+"22":"transparent",color:active?sec.color:C.muted,fontSize:14,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:6,transition:"all 0.15s",letterSpacing:0.1}}>
+                                  <span style={{fontSize:15}}>{sec.emoji}</span>
+                                  <span>{sec.label}</span>
+                                  {sec.stats && sec.stats.total>0 && <span style={{background:active?sec.color+"33":C.elevated,borderRadius:99,padding:"1px 8px",fontSize:12,fontWeight:600,minWidth:28,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>}
                                 </button>
                               );
                             })}
