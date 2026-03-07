@@ -1590,15 +1590,15 @@ export default function App() {
             <div>
               {/* Header */}
               <div style={{marginBottom:16}}>
-                <div style={{fontSize:20,fontWeight:700,color:C.text,marginBottom:4}}>Resources</div>
-                <div style={{fontSize:12,color:C.dim}}>{totalChecked}/{pool.length} completed in current view</div>
+                <div style={{fontSize:22,fontWeight:700,color:C.text,marginBottom:4}}>Resources</div>
+                <div style={{fontSize:14,color:C.dim}}>{totalChecked}/{pool.length} completed in current view</div>
               </div>
 
               {/* Main tab switcher */}
               <div style={{display:"flex",gap:3,marginBottom:14,background:C.elevated,padding:3,borderRadius:9,width:"fit-content"}}>
                 {[["main","📚  Resources"],["extra","✨  Extra Reading"]].map(([tab,label])=>(
                   <button key={tab} onClick={()=>setRFilter(tab==="main"?"all":"x:all")}
-                    style={{padding:"5px 14px",borderRadius:7,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,
+                    style={{padding:"5px 14px",borderRadius:7,border:"none",cursor:"pointer",fontSize:14,fontWeight:600,
                       background: resTab===tab ? C.surface : "transparent",
                       color: resTab===tab ? C.text : C.dim,
                       boxShadow: resTab===tab ? "0 1px 3px rgba(0,0,0,0.3)" : "none",
@@ -1619,9 +1619,9 @@ export default function App() {
                       <button key={t} onClick={()=>setRFilter(t)}
                         style={{padding:"3px 11px",borderRadius:99,border:`1px solid ${active?(badge.color||C.accent):C.border}`,
                           background:active?(badge.bg||C.elevated):"transparent",
-                          color:active?(badge.color||C.accent):C.dim,fontSize:12,fontWeight:600,cursor:"pointer"}}>
+                          color:active?(badge.color||C.accent):C.dim,fontSize:14,fontWeight:600,cursor:"pointer"}}>
                         {t==="all"?"All ✦":badge.label}
-                        <span style={{opacity:0.55,fontSize:10,marginLeft:4}}>{count}</span>
+                        <span style={{opacity:0.55,fontSize:14,marginLeft:4}}>{count}</span>
                       </button>
                     );
                   })}
@@ -1630,15 +1630,15 @@ export default function App() {
 
               {/* Grouped by phase */}
               {grouped.length===0 && (
-                <div style={{color:C.dim,fontSize:13,textAlign:"center",padding:"32px 0"}}>No resources match this filter.</div>
+                <div style={{color:C.dim,fontSize:15,textAlign:"center",padding:"32px 0"}}>No resources match this filter.</div>
               )}
               {grouped.map(group=>(
                 <div key={group.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
                   {/* Phase header */}
                   <div style={{padding:"9px 14px",background:C.surface,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:8}}>
                     <div style={{width:8,height:8,borderRadius:"50%",background:group.color,flexShrink:0}}/>
-                    <span style={{fontWeight:700,fontSize:13,color:C.text}}>{group.phase}</span>
-                    <span style={{fontSize:11,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99,marginLeft:"auto"}}>
+                    <span style={{fontWeight:700,fontSize:15,color:C.text}}>{group.phase}</span>
+                    <span style={{fontSize:15,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99,marginLeft:"auto"}}>
                       {group.items.filter(r=>resTab==="extra"?checks[`${r.itemId}__extra__${r.id}`]:checks[`${r.itemId}__resources__${r.id}`]).length}/{group.items.length}
                     </span>
                   </div>
@@ -1654,23 +1654,23 @@ export default function App() {
                           border:`1.5px solid ${checked?(resTab==="extra"?"#9333ea":"#238636"):C.border}`,
                           background:checked?(resTab==="extra"?"#9333ea":"#238636"):"transparent",
                           cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                          {checked && <span style={{color:"#fff",fontSize:9,fontWeight:800,lineHeight:1}}>✓</span>}
+                          {checked && <span style={{color:"#fff",fontSize:15,fontWeight:800,lineHeight:1}}>✓</span>}
                         </div>
                         <div style={{flex:1,minWidth:0}}>
                           <div style={{display:"flex",alignItems:"flex-start",gap:6,flexWrap:"wrap",marginBottom:2}}>
                             {r.url ? (
                               <a href={r.url} target="_blank" rel="noreferrer"
-                                style={{fontSize:13,color:checked?C.dim:C.accent,textDecoration:checked?"line-through":"underline",lineHeight:1.5,wordBreak:"break-word"}}>
+                                style={{fontSize:15,color:checked?C.dim:C.accent,textDecoration:checked?"line-through":"underline",lineHeight:1.5,wordBreak:"break-word"}}>
                                 {r.text}
                               </a>
                             ) : (
-                              <span style={{fontSize:13,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
+                              <span style={{fontSize:15,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
                             )}
-                            <span style={{fontSize:10,padding:"1px 6px",borderRadius:99,background:badge.bg,color:badge.color,flexShrink:0,marginTop:2}}>{badge.label}</span>
+                            <span style={{fontSize:14,padding:"1px 6px",borderRadius:99,background:badge.bg,color:badge.color,flexShrink:0,marginTop:2}}>{badge.label}</span>
                           </div>
-                          <div style={{fontSize:10,color:C.dim}}>{r.itemTitle}</div>
+                          <div style={{fontSize:14,color:C.dim}}>{r.itemTitle}</div>
                           {resTab==="extra" && r.desc && (
-                            <div style={{fontSize:11,color:C.muted,marginTop:3,lineHeight:1.5}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
+                            <div style={{fontSize:15,color:C.muted,marginTop:3,lineHeight:1.5}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
                           )}
                         </div>
                       </div>
@@ -1696,8 +1696,8 @@ export default function App() {
           return (
             <div>
               <div style={{marginBottom:16}}>
-                <div style={{fontSize:20,fontWeight:700,color:C.text,marginBottom:4}}>All Build Tasks</div>
-                <div style={{fontSize:12,color:C.dim,marginBottom:8}}>{done_b}/{total_b} completed across the roadmap</div>
+                <div style={{fontSize:22,fontWeight:700,color:C.text,marginBottom:4}}>All Build Tasks</div>
+                <div style={{fontSize:14,color:C.dim,marginBottom:8}}>{done_b}/{total_b} completed across the roadmap</div>
                 <div style={{background:C.elevated,borderRadius:99,height:4}}>
                   <div style={{background:`linear-gradient(90deg,${C.yellow},#f59e0b)`,width:`${Math.round((done_b/total_b)*100)}%`,height:"100%",borderRadius:99,transition:"width 0.4s"}}/>
                 </div>
@@ -1705,7 +1705,7 @@ export default function App() {
 
               {/* ── Mega Project Cards ── */}
               <div style={{marginBottom:20}}>
-                <div style={{fontSize:11,fontWeight:700,color:C.dim,textTransform:"uppercase",letterSpacing:0.7,marginBottom:8}}>Mega Projects</div>
+                <div style={{fontSize:15,fontWeight:700,color:C.dim,textTransform:"uppercase",letterSpacing:0.7,marginBottom:8}}>Mega Projects</div>
                 <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
                   {Object.values(MEGA_PROJECTS).map(mp=>{
                     const steps = megaByProj[mp.id]||[];
@@ -1714,7 +1714,7 @@ export default function App() {
                       <div key={mp.id} style={{background:mp.bg,border:`1px solid ${mp.border}`,borderRadius:10,padding:"12px 14px"}}>
                         <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
                           <span style={{fontSize:15}}>{mp.emoji}</span>
-                          <span style={{fontSize:12,fontWeight:700,color:mp.color,lineHeight:1.3}}>{mp.name}</span>
+                          <span style={{fontSize:14,fontWeight:700,color:mp.color,lineHeight:1.3}}>{mp.name}</span>
                         </div>
                         {/* Step progress bar */}
                         <div style={{display:"flex",gap:3,marginBottom:7}}>
@@ -1724,7 +1724,7 @@ export default function App() {
                             return <div key={i} title={mp.steps[i]} style={{flex:1,height:5,borderRadius:3,background:isDone?mp.color:`${mp.color}22`,transition:"background 0.3s"}}/>;
                           })}
                         </div>
-                        <div style={{fontSize:10,color:mp.color,opacity:0.75,marginBottom:7}}>{doneSteps}/{mp.totalSteps} steps complete</div>
+                        <div style={{fontSize:14,color:mp.color,opacity:0.75,marginBottom:7}}>{doneSteps}/{mp.totalSteps} steps complete</div>
                         {/* Step checklist */}
                         {mp.steps.map((stepLabel,i)=>{
                           const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
@@ -1736,10 +1736,10 @@ export default function App() {
                                 background:isDone?mp.color:"transparent",
                                 display:"flex",alignItems:"center",justifyContent:"center"}}>
                                 {isDone
-                                  ? <span style={{color:"#fff",fontSize:8,fontWeight:800,lineHeight:1}}>✓</span>
-                                  : <span style={{fontSize:8,color:mp.color,opacity:0.5,fontWeight:700}}>{i+1}</span>}
+                                  ? <span style={{color:"#fff",fontSize:14,fontWeight:800,lineHeight:1}}>✓</span>
+                                  : <span style={{fontSize:14,color:mp.color,opacity:0.5,fontWeight:700}}>{i+1}</span>}
                               </div>
-                              <span style={{fontSize:10,color:isDone?mp.color:C.dim,textDecoration:isDone?"line-through":"none",lineHeight:1.35}}>{stepLabel}</span>
+                              <span style={{fontSize:14,color:isDone?mp.color:C.dim,textDecoration:isDone?"line-through":"none",lineHeight:1.35}}>{stepLabel}</span>
                             </div>
                           );
                         })}
@@ -1758,8 +1758,8 @@ export default function App() {
                   <div key={phase.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
                     <div style={{padding:"9px 14px",background:C.surface,display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${C.border}`}}>
                       <div style={{width:7,height:7,borderRadius:"50%",background:phase.color}}/>
-                      <span style={{fontWeight:700,fontSize:13,color:C.text}}>{phase.phase}</span>
-                      <span style={{fontSize:11,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99,marginLeft:"auto"}}>{phDone_b}/{phBuilds.length}</span>
+                      <span style={{fontWeight:700,fontSize:15,color:C.text}}>{phase.phase}</span>
+                      <span style={{fontSize:15,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99,marginLeft:"auto"}}>{phDone_b}/{phBuilds.length}</span>
                     </div>
                     <div style={{padding:"4px 0"}}>
                       {phBuilds.map((b,i)=>{
@@ -1772,26 +1772,26 @@ export default function App() {
                               <div onClick={e=>{e.stopPropagation();toggleCheck(b.itemId,"implementation",b.id);}} style={{flexShrink:0,width:15,height:15,borderRadius:3,marginTop:3,
                                 border:`1.5px solid ${checked?"#9e6a03":C.border}`,background:checked?"#2d2208":"transparent",
                                 cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                                {checked && <span style={{color:C.yellow,fontSize:9,fontWeight:800,lineHeight:1}}>✓</span>}
+                                {checked && <span style={{color:C.yellow,fontSize:15,fontWeight:800,lineHeight:1}}>✓</span>}
                               </div>
                               <div style={{flex:1,minWidth:0}}>
                                 <div style={{display:"flex",alignItems:"flex-start",gap:6,flexWrap:"wrap",marginBottom:2}}>
-                                  <span style={{fontSize:13,color:checked?C.dim:C.text,textDecoration:checked?"line-through":"none",lineHeight:1.45,flex:1}}>{b.text}</span>
+                                  <span style={{fontSize:15,color:checked?C.dim:C.text,textDecoration:checked?"line-through":"none",lineHeight:1.45,flex:1}}>{b.text}</span>
                                   {mp && (
                                     <span title={`Step ${b.megaProject.step}: ${mp.steps[b.megaProject.step-1]}`}
-                                      style={{fontSize:10,padding:"1px 8px",borderRadius:99,background:mp.bg,color:mp.color,
+                                      style={{fontSize:14,padding:"1px 8px",borderRadius:99,background:mp.bg,color:mp.color,
                                         border:`1px solid ${mp.border}`,flexShrink:0,whiteSpace:"nowrap",cursor:"default"}}>
                                       {mp.emoji} {b.megaProject.step}/{mp.totalSteps}
                                     </span>
                                   )}
-                                  {b.desc && <span style={{fontSize:10,color:C.dim,flexShrink:0,marginTop:2}}>{isOpen_b?"▲":"▼"}</span>}
+                                  {b.desc && <span style={{fontSize:14,color:C.dim,flexShrink:0,marginTop:2}}>{isOpen_b?"▲":"▼"}</span>}
                                 </div>
-                                {mp && <div style={{fontSize:10,color:mp.color,opacity:0.65,marginBottom:2}}>{mp.name} · Step {b.megaProject.step}: {mp.steps[b.megaProject.step-1]}</div>}
-                                <div style={{fontSize:10,color:C.dim}}>{b.itemTitle}</div>
+                                {mp && <div style={{fontSize:14,color:mp.color,opacity:0.65,marginBottom:2}}>{mp.name} · Step {b.megaProject.step}: {mp.steps[b.megaProject.step-1]}</div>}
+                                <div style={{fontSize:14,color:C.dim}}>{b.itemTitle}</div>
                               </div>
                             </div>
                             {isOpen_b && b.desc && (
-                              <div style={{marginLeft:24,marginTop:5,fontSize:12,color:C.muted,lineHeight:1.6,
+                              <div style={{marginLeft:24,marginTop:5,fontSize:14,color:C.muted,lineHeight:1.6,
                                 background:C.bg,borderLeft:`2px solid ${mp?mp.color:C.yellow}40`,
                                 paddingLeft:10,paddingTop:4,paddingBottom:4,borderRadius:"0 4px 4px 0"}}>{b.desc}</div>
                             )}
@@ -1817,13 +1817,13 @@ export default function App() {
               ].map(c=>(
                 <div key={c.label} style={{background:c.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px",textAlign:"center"}}>
                   <div style={{fontSize:28,fontWeight:800,color:c.color}}>{c.value}</div>
-                  <div style={{fontSize:10,fontWeight:700,color:c.color,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{c.label}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:c.color,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{c.label}</div>
                 </div>
               ))}
             </div>
 
             <div style={{background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px"}}>
-              <div style={{fontWeight:700,fontSize:13,marginBottom:14,color:C.text}}>Progress by Phase</div>
+              <div style={{fontWeight:700,fontSize:15,marginBottom:14,color:C.text}}>Progress by Phase</div>
               {ROADMAP.map(phase=>{
                 const phDone=phase.items.filter(i=>progress[i.id]==="done").length;
                 const phPct=Math.round((phDone/phase.items.length)*100);
@@ -1834,11 +1834,11 @@ export default function App() {
                     <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
                       <div style={{display:"flex",alignItems:"center",gap:7}}>
                         <div style={{width:7,height:7,borderRadius:"50%",background:phase.color}}/>
-                        <span style={{fontSize:12,fontWeight:600,color:C.muted}}>{phase.phase}</span>
+                        <span style={{fontSize:14,fontWeight:600,color:C.muted}}>{phase.phase}</span>
                       </div>
                       <div style={{display:"flex",gap:12}}>
-                        <span style={{fontSize:10,color:C.dim}}>{totalChecks}/{totalPossible} tasks</span>
-                        <span style={{fontSize:10,color:C.dim}}>{phDone}/{phase.items.length} concepts</span>
+                        <span style={{fontSize:14,color:C.dim}}>{totalChecks}/{totalPossible} tasks</span>
+                        <span style={{fontSize:14,color:C.dim}}>{phDone}/{phase.items.length} concepts</span>
                       </div>
                     </div>
                     <div style={{background:C.elevated,borderRadius:99,height:4}}>
@@ -1850,13 +1850,13 @@ export default function App() {
             </div>
 
             <div style={{background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px"}}>
-              <div style={{fontWeight:700,fontSize:13,marginBottom:12,color:C.text}}>Your Notes</div>
+              <div style={{fontWeight:700,fontSize:15,marginBottom:12,color:C.text}}>Your Notes</div>
               {ALL_ITEMS.filter(i=>notes[i.id]).length===0 ? (
-                <div style={{color:C.dim,fontSize:12,textAlign:"center",padding:"14px 0"}}>No notes yet. Use 📝 on any concept.</div>
+                <div style={{color:C.dim,fontSize:14,textAlign:"center",padding:"14px 0"}}>No notes yet. Use 📝 on any concept.</div>
               ) : ALL_ITEMS.filter(i=>notes[i.id]).map(item=>(
                 <div key={item.id} style={{marginBottom:9,padding:"9px 11px",background:C.bg,borderRadius:7,borderLeft:`2px solid ${C.accent}`}}>
-                  <div style={{fontSize:12,fontWeight:700,color:C.text,marginBottom:2}}>{item.title}</div>
-                  <div style={{fontSize:12,color:C.muted,lineHeight:1.6}}>{notes[item.id]}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:2}}>{item.title}</div>
+                  <div style={{fontSize:14,color:C.muted,lineHeight:1.6}}>{notes[item.id]}</div>
                 </div>
               ))}
             </div>
@@ -1866,7 +1866,7 @@ export default function App() {
                 if(!confirm("Reset all progress, checks, and notes?")) return;
                 setProgress({}); setChecks({}); setNotes({});
                 try{await store.set("p","{}"); await store.set("c","{}"); await store.set("n","{}");} catch{}
-              }} style={{fontSize:11,color:C.red,background:"transparent",border:`1px solid #5a1e1e`,borderRadius:6,padding:"6px 13px",cursor:"pointer"}}>Reset Everything</button>
+              }} style={{fontSize:15,color:C.red,background:"transparent",border:`1px solid #5a1e1e`,borderRadius:6,padding:"6px 13px",cursor:"pointer"}}>Reset Everything</button>
             </div>
           </div>
         )}
