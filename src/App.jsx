@@ -1706,7 +1706,7 @@ export default function App() {
 
                     {/* Section content */}
                     {isOpen && curSec && (
-                      <div style={{margin:"0 16px 12px 52px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`,padding:"12px 14px"}}>
+                      <div style={{margin:"0 16px 12px 16px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`,padding:"14px 16px"}}>
                         {curSec==="theory" && (item.theory||[]).map(c=>(
                           <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
                         ))}
