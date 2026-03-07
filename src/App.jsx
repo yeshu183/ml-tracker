@@ -1663,50 +1663,51 @@ export default function App() {
                 ];
 
                 return (
-                  <div key={item.id} style={{borderBottom:idx<phase.items.length-1?`1px solid ${C.border2}`:"none"}}>
+                  <div key={item.id} style={{borderBottom:idx<phase.items.length-1?`1px solid ${C.border2}`:"none",borderRadius:isOpen?8:0,background:isOpen?C.elevated:"transparent",transition:"background 0.15s",marginBottom:isOpen?4:0}}>
                     {/* Clickable item row */}
-                    <div onClick={()=>toggleItem(item.id)} style={{padding:"11px 16px",display:"flex",alignItems:"flex-start",gap:10,cursor:"pointer",background:isOpen?C.elevated:"transparent",transition:"background 0.15s"}}>
-                      <button onClick={e=>cycleStatus(item.id,e)} title="Cycle status" style={{flexShrink:0,width:26,height:26,borderRadius:6,border:`1.5px solid ${st.border}`,background:st.bg,color:st.color,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginTop:2}}>
+                    <div onClick={()=>toggleItem(item.id)} style={{padding:"12px 16px",display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer"}}>
+                      <button onClick={e=>cycleStatus(item.id,e)} title="Cycle status" style={{flexShrink:0,width:28,height:28,borderRadius:7,border:`1.5px solid ${st.border}`,background:st.bg,color:st.color,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
                         {st.icon}
                       </button>
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
                           <div style={{flex:1}}>
-                            <div style={{display:"flex",alignItems:"center",gap:5,flexWrap:"wrap"}}>
-                              <span style={{fontSize:13,fontWeight:700,color:phase.color}}>{item.week}</span>
-                              <span style={{fontSize:13,color:C.dim}}>·</span>
-                              <span style={{fontSize:13,color:C.dim}}>{item.duration}</span>
+                            <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
+                              <span style={{fontSize:12,fontWeight:700,color:phase.color,letterSpacing:0.3,textTransform:"uppercase"}}>{item.week}</span>
+                              <span style={{fontSize:11,color:C.border}}>|</span>
+                              <span style={{fontSize:12,color:C.dim}}>{item.duration}</span>
                             </div>
-                            <div style={{fontSize:18,fontWeight:600,color:status==="done"?C.dim:C.text,marginTop:1,textDecoration:status==="done"?"line-through":"none"}}>{item.title}</div>
-                            <div style={{display:"flex",gap:4,marginTop:5,flexWrap:"wrap"}}>
-                              {item.tags.map(t=><span key={t} style={{fontSize:12,color:C.muted,background:C.elevated,padding:"3px 9px",borderRadius:99,border:`1px solid ${C.border2}`}}>{t}</span>)}
+                            <div style={{fontSize:17,fontWeight:600,color:status==="done"?C.muted:C.text,marginTop:3,textDecoration:status==="done"?"line-through":"none",lineHeight:1.3}}>{item.title}</div>
+                            <div style={{display:"flex",gap:5,marginTop:6,flexWrap:"wrap"}}>
+                              {item.tags.map(t=><span key={t} style={{fontSize:11,color:C.muted,background:C.bg,padding:"2px 8px",borderRadius:4,border:`1px solid ${C.border2}`,letterSpacing:0.2}}>{t}</span>)}
                             </div>
                           </div>
-                          <div style={{display:"flex",gap:4,flexShrink:0}} onClick={e=>e.stopPropagation()}>
-                            <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} style={{width:26,height:26,borderRadius:5,border:`1px solid ${hasNote?"#1f3d5a":C.border}`,background:hasNote?"#0d1f42":"transparent",color:hasNote?C.accent:C.dim,fontSize:12,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
+                          <div style={{display:"flex",gap:4,flexShrink:0,marginTop:2}} onClick={e=>e.stopPropagation()}>
+                            <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} title="Add note" style={{width:28,height:28,borderRadius:6,border:`1px solid ${hasNote?"#1f6feb":C.border}`,background:hasNote?"#0d1f42":"transparent",color:hasNote?C.accent:C.dim,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
                           </div>
                         </div>
-
-                        {isOpen && (
-                          <div style={{display:"flex",gap:8,marginTop:12,flexWrap:"wrap",justifyContent:"center",padding:"10px 0 2px",borderTop:`1px solid ${C.border}`}} onClick={e=>e.stopPropagation()}>
-                            {SECS.map(sec=>{
-                              const active = curSec===sec.key;
-                              return (
-                                <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"7px 18px",borderRadius:8,border:`1.5px solid ${active?sec.color:C.border}`,background:active?sec.color+"22":"transparent",color:active?sec.color:C.muted,fontSize:14,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:6,transition:"all 0.15s",letterSpacing:0.1}}>
-                                  <span style={{fontSize:15}}>{sec.emoji}</span>
-                                  <span>{sec.label}</span>
-                                  {sec.stats && sec.stats.total>0 && <span style={{background:active?sec.color+"33":C.elevated,borderRadius:99,padding:"1px 8px",fontSize:12,fontWeight:600,minWidth:28,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>}
-                                </button>
-                              );
-                            })}
-                          </div>
-                        )}
                       </div>
                     </div>
 
+                    {/* Section tabs — full-width, outside the flex row so border spans edge-to-edge */}
+                    {isOpen && (
+                      <div style={{borderTop:`1px solid ${C.border}`,borderBottom:`1px solid ${C.border}`,background:C.bg,padding:"10px 16px",display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center"}} onClick={e=>e.stopPropagation()}>
+                        {SECS.map(sec=>{
+                          const active = curSec===sec.key;
+                          return (
+                            <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"7px 20px",borderRadius:7,border:`1.5px solid ${active?sec.color:C.border}`,background:active?sec.color+"1a":"transparent",color:active?sec.color:C.muted,fontSize:14,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:7,transition:"all 0.15s",letterSpacing:0.2,boxShadow:active?`0 0 0 1px ${sec.color}22`:"none"}}>
+                              <span style={{fontSize:15}}>{sec.emoji}</span>
+                              <span>{sec.label}</span>
+                              {sec.stats && sec.stats.total>0 && <span style={{background:active?sec.color+"28":C.elevated,color:active?sec.color:C.dim,borderRadius:5,padding:"1px 7px",fontSize:11,fontWeight:700,minWidth:30,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+
                     {/* Section content */}
                     {isOpen && curSec && (
-                      <div style={{margin:"0 16px 12px 16px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`,padding:"14px 16px"}}>
+                      <div style={{margin:"12px 16px 14px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`,padding:"14px 16px"}}>
                         {curSec==="theory" && (item.theory||[]).map(c=>(
                           <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
                         ))}
@@ -1728,7 +1729,7 @@ export default function App() {
                     )}
 
                     {hasNote && !isOpen && (
-                      <div style={{margin:"0 16px 9px 52px",fontSize:12,color:C.muted,background:C.bg,padding:"6px 10px",borderRadius:5,borderLeft:`2px solid ${phase.color}`}}>
+                      <div style={{margin:"0 16px 10px 56px",fontSize:12,color:C.muted,background:C.bg,padding:"6px 10px",borderRadius:5,borderLeft:`2px solid ${phase.color}`}}>
                         {notes[item.id].length>110?notes[item.id].slice(0,110)+"...":notes[item.id]}
                       </div>
                     )}
