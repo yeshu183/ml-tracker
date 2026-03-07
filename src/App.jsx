@@ -33,6 +33,69 @@ const C = {
 
 const ROADMAP = [
   {
+    phase: "Math Foundations",
+    color: "#f59e0b",
+    items: [
+      {
+        id:"mf1", week:"Pre-Foundation", title:"Linear Algebra for ML", duration:"2–3 weeks",
+        tags:["linear-algebra","matrices","eigenvalues","SVD"],
+        theory:[
+          { id:"t1", text:"Vectors, dot products, and geometric intuition", desc:"A neural network layer is a linear transformation. Understanding what dot products measure (projection, similarity) and what matrix multiplication does geometrically is the foundation for attention, embeddings, and everything else.", resource:"3Blue1Brown — Essence of Linear Algebra" },
+          { id:"t2", text:"Matrix multiplication as composition of linear transformations", desc:"Every fully-connected layer, every attention projection, every convolution is a matrix multiply. Understanding multiplication as function composition lets you reason about what stacking layers actually does.", resource:"Gilbert Strang — MIT 18.06" },
+          { id:"t3", text:"Eigenvalues and eigenvectors — what they reveal about a matrix", desc:"Eigenvectors are directions a transformation only scales, not rotates. They are the foundation for PCA, gradient dynamics, spectral graph theory, and NTK analysis — all of which appear in ML research papers.", resource:"Gilbert Strang — MIT 18.06" },
+          { id:"t4", text:"SVD — the fundamental matrix factorisation", desc:"SVD decomposes any matrix into rotation, scale, rotation. It underlies PCA, low-rank approximations (LoRA!), matrix compression, and recommendation systems. SVD is the single most important factorisation for ML.", resource:"Gilbert Strang — MIT 18.06" },
+          { id:"t5", text:"Norms, inner products, and distances — L1, L2, cosine similarity", desc:"Loss functions, regularisation, embedding similarity, and optimisation convergence theory all depend on norms. Understanding when to use each (L2 for smooth optimisation, L1 for sparsity, cosine for direction-agnostic similarity) is essential for practical ML.", resource:"Mathematics for ML Book" },
+          { id:"t6", text:"Tensors as generalisations of matrices — N-dimensional arrays in ML", desc:"Neural networks process batches of sequences of vectors — that is 3D tensors (batch × sequence × features). Attention outputs are 4D. Understanding how tensor indices map to dimensions eliminates shape bugs permanently.", resource:"PyTorch Tensor Tutorial" },
+        ],
+        resources:[
+          { id:"r1", text:"3Blue1Brown — Essence of Linear Algebra (YouTube)", url:"https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab", type:"youtube" },
+          { id:"r2", text:"Gilbert Strang — MIT 18.06 Linear Algebra (YouTube)", url:"https://www.youtube.com/playlist?list=PL49CF3715CB9EF31D", type:"youtube" },
+          { id:"r3", text:"Mathematics for ML Book — Chapters 2-4, free PDF (paper)", url:"https://mml-book.github.io/", type:"paper" },
+          { id:"r4", text:"Deep-ML — Linear Algebra coding problems, LeetCode-style (docs)", url:"https://www.deep-ml.com/problems", type:"docs" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement matrix multiplication and SVD from scratch in NumPy", desc:"No np.matmul — implement the algorithm yourself. Forces you to understand the indices and dimensions, eliminating most shape bugs permanently." , megaProject:{proj:"A",step:1}},
+          { id:"i2", text:"Implement PCA from scratch using SVD — visualise MNIST dimensionality reduction", desc:"Compute the covariance matrix, apply np.linalg.svd, project data onto top-k components, and plot. Seeing MNIST digits cluster in 2D gives immediate geometric intuition for what SVD finds." },
+          { id:"i3", text:"Solve 10 linear algebra problems on Deep-ML — Easy/Medium tier", desc:"Deep-ML has LeetCode-style ML coding problems. 10 linear algebra problems builds mechanical fluency before starting PyTorch." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"The Matrix Cookbook — dense reference for matrix calculus identities", desc:"A concise reference for every matrix derivative, decomposition, and identity in ML papers. Bookmark it — you will return every time you read a paper with matrix calculus.", url:"https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf" },
+          { id:"e2", topic:"TensorTonic — implement ML algorithms from scratch, LeetCode style", desc:"TensorTonic has 200+ ML algorithm implementation problems including transformers, BERT, ResNet, and GANs. Free tier covers all fundamentals; premium adds company-specific interview prep — worth it when 6+ months in and preparing for senior ML roles.", url:"https://www.tensortonic.com/" },
+        ]
+      },
+      {
+        id:"mf2", week:"Pre-Foundation", title:"Probability, Statistics & Calculus for ML", duration:"2–3 weeks",
+        tags:["probability","statistics","calculus","gradient","bayes"],
+        theory:[
+          { id:"t1", text:"Probability fundamentals — distributions, expectation, variance", desc:"Loss functions are expected values of error. Regularisation is a prior. Batch normalisation uses running statistics. Every part of ML is probability — you need the language to read papers and reason about uncertainty.", resource:"Probability for ML — Goodfellow Appendix" },
+          { id:"t2", text:"Key distributions — Gaussian, Bernoulli, Categorical, KL divergence", desc:"Gaussian noise is added in diffusion. Bernoulli cross-entropy is the binary classification loss. KL divergence appears in VAEs, information bottleneck, and RLHF reward optimisation. Know these cold.", resource:"Pattern Recognition — Bishop Ch.1-2" },
+          { id:"t3", text:"Bayes theorem — posterior, prior, likelihood", desc:"Bayesian thinking underlies regularisation (prior over weights), probabilistic models (VAE, diffusion), and uncertainty estimation. Understanding Bayes intuitively is the door to all probabilistic ML.", resource:"Pattern Recognition — Bishop Ch.1-2" },
+          { id:"t4", text:"Partial derivatives, chain rule, and the gradient — what dL/dw actually means", desc:"The gradient is the direction of steepest ascent of the loss. The chain rule computes how a weight change propagates through the network to the loss — this is backpropagation.", resource:"3Blue1Brown — What is Backpropagation?" },
+          { id:"t5", text:"Jacobians and Hessians — first and second order curvature", desc:"The Jacobian is the matrix of partial derivatives. The Hessian is the matrix of second derivatives (curvature). They appear in advanced optimisation, NTK theory, and understanding loss landscape geometry.", resource:"Mathematics for ML Book Ch.5" },
+          { id:"t6", text:"Central Limit Theorem — why mini-batches work", desc:"Mini-batch gradients are noisy estimates of the true gradient. CLT tells you the noise decreases as 1/sqrt(n) with batch size. This justifies why mini-batch SGD converges despite noisy gradients.", resource:"Probability for ML — Goodfellow Appendix" },
+        ],
+        resources:[
+          { id:"r1", text:"3Blue1Brown — Calculus series (YouTube)", url:"https://www.youtube.com/playlist?list=PLZHQObOWTQDMsr9K-rj53DwVRMYO3t5Yr", type:"youtube" },
+          { id:"r2", text:"Mathematics for ML Book — Chapters 5-6, free PDF (paper)", url:"https://mml-book.github.io/", type:"paper" },
+          { id:"r3", text:"Pattern Recognition and ML — Bishop, free PDF (paper)", url:"https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf", type:"paper" },
+          { id:"r4", text:"StatQuest with Josh Starmer — Stats and Probability for ML (YouTube)", url:"https://www.youtube.com/c/joshstarmer", type:"youtube" },
+          { id:"r5", text:"Deep-ML — Statistics and probability coding problems (docs)", url:"https://www.deep-ml.com/problems", type:"docs" },
+        ],
+        implementation:[
+          { id:"i1", text:"Derive backpropagation by hand for a 2-layer network — on paper, no code", desc:"Derive dL/dW2 and dL/dW1 using chain rule for a network with one hidden layer and MSE loss." },
+          { id:"i2", text:"Implement KL divergence and cross-entropy from scratch — verify against PyTorch", desc:"Implement KL(P||Q) and cross-entropy in NumPy. Verify they match torch.nn.KLDivLoss and F.cross_entropy on small examples." },
+          { id:"i3", text:"Solve 10 probability problems on Deep-ML", desc:"Deep-ML probability section covers MLE, MAP estimation, Bayesian inference, and distribution fitting — builds statistical intuition that makes reading ML papers natural." },
+        ],
+        extraReading:[
+          { id:"e0", topic:"Lilian Weng — Blog (lilianweng.github.io) — the best ML blog on the internet", desc:"Lilian Weng (OpenAI) writes exceptionally clear, research-grade blog posts on every major ML topic: attention mechanisms, diffusion models, LLM alignment, agents, and more. Every post is worth reading multiple times. Bookmark it and return whenever you encounter a concept you want to understand deeply.", url:"https://lilianweng.github.io/" },
+          { id:"e0", topic:"Lilian Weng blog — the best ML research blog (lilianweng.github.io)", desc:"Lilian Weng (OpenAI) writes exceptionally clear research-grade blog posts on every major ML topic: attention, diffusion, LLM alignment, agents, and more. Every post is worth reading multiple times. Bookmark it now and return whenever you encounter a concept you want to understand deeply.", url:"https://lilianweng.github.io/" },
+          { id:"e1", topic:"The Matrix Cookbook — calculus section for matrix derivatives", desc:"Matrix derivatives appear constantly in ML derivations. Having these identities at hand removes the algebra barrier from reading papers.", url:"https://www.math.uwaterloo.ca/~hwolkowi/matrixcookbook.pdf" },
+          { id:"e2", topic:"Visual Information Theory — entropy, KL divergence explained visually", desc:"Entropy H(X) measures uncertainty. KL divergence measures distribution distance. These appear in VAEs, contrastive learning, and diffusion training objectives. This visual guide makes the concepts intuitive.", url:"https://colah.github.io/posts/2015-09-Visual-Information/" },
+        ]
+      },
+    ]
+  },
+  {
     phase: "Foundation",
     color: "#7c3aed",
     items: [{
@@ -51,7 +114,8 @@ const ROADMAP = [
         { id:"r1", text:"CS231n NumPy Tutorial (Stanford)", url:"https://cs231n.github.io/python-numpy-tutorial/", type:"blog" },
         { id:"r2", text:"PyTorch Official 60 Minute Blitz", url:"https://pytorch.org/tutorials/beginner/deep_learning_60min_blitz.html", type:"docs" },
         { id:"r3", text:"Andrej Karpathy — micrograd (YouTube)", url:"https://www.youtube.com/watch?v=VMj-3S1tku0", type:"youtube" },
-        { id:"r4", text:"Daniel Bourke — PyTorch for Deep Learning (GitHub)", url:"https://github.com/mrdbourke/pytorch-deep-learning", type:"docs" },
+        { id:"r4", text:"fast.ai — Practical Deep Learning for Coders (YouTube/docs)", url:"https://course.fast.ai/", type:"course" },
+          { id:"r5", text:"Daniel Bourke — PyTorch for Deep Learning (GitHub)", url:"https://github.com/mrdbourke/pytorch-deep-learning", type:"docs" },
       ],
       implementation: [
         { id:"i1", text:"Implement linear regression forward pass + loss in pure NumPy", desc:"Forces you to understand the math before hiding it behind abstractions — if you can't do it in NumPy, you don't understand it yet." },
@@ -66,7 +130,48 @@ const ROADMAP = [
         { id:"e4", topic:"Broadcasting rules in depth — when and why it fails", desc:"The full ruleset of broadcasting has edge cases that trip up even experienced practitioners when dealing with batched operations.", url:"https://numpy.org/doc/stable/user/basics.broadcasting.html" },
         { id:"e5", topic:"Contiguous vs non-contiguous tensors — why .contiguous() exists", desc:"Non-contiguous memory layout causes certain PyTorch ops to fail; knowing when to call .contiguous() saves confusing debugging sessions.", url:"https://pytorch.org/docs/stable/tensor_attributes.html#torch.memory_format" },
       ]
-    }]
+    },
+      {
+        id:"eng1", week:"Ongoing", title:"Engineering Fundamentals for ML", duration:"Sprinkled throughout",
+        tags:["python","git","docker","sql","unix","code-review"],
+        theory:[
+          { id:"t1", text:"Python beyond basics — generators, decorators, context managers, async/await", desc:"Production agent code at Marvell uses all of these. Generators for streaming token outputs without loading into memory. Decorators for retry logic, logging, and rate-limiting wrappers on LLM calls. Context managers for database connections and HTTP sessions. Async/await for running multiple LLM API calls concurrently without blocking — one of the highest-leverage performance wins in agent systems.", resource:"Real Python — Advanced Python" },
+          { id:"t2", text:"Type hints, dataclasses, and Pydantic — self-documenting, validated code", desc:"Type hints make code readable and enable IDE autocompletion — critical in large agent codebases. Pydantic enforces schema validation at runtime (the same library LangChain and FastAPI use internally). Dataclasses reduce boilerplate for data containers. These are the three pillars of clean Python in production ML systems.", resource:"Pydantic Docs" },
+          { id:"t3", text:"Git workflows in a team — branching, PRs, rebasing, good commit messages", desc:"This was your admitted pain point from the Marvell internship. The essentials: feature branches, PR descriptions that explain why not just what, rebasing vs merging (rebase for clean linear history, merge for preserving branch context), squashing noisy commits before review. A well-written PR is how senior engineers evaluate your thinking, not just your code.", resource:"Atlassian Git Tutorials" },
+          { id:"t4", text:"Docker for ML — containerise your model serving code so it runs identically everywhere", desc:"Docker encapsulates code, Python version, system libraries, and dependencies into a single image. For ML: training happens outside Docker, serving happens inside (guarantees reproducibility). The core workflow: write a Dockerfile, build an image, run a container, expose a port. This closes the gap between a working notebook and a deployable service.", resource:"TechWorld with Nana — Docker for Beginners" },
+          { id:"t5", text:"SQL — joins, window functions, CTEs, aggregations", desc:"ML pipelines are full of data that lives in databases. You do not need to be a data engineer, but being able to write a non-trivial query yourself is a professional force multiplier. Specifically: JOIN types (inner, left, anti-join), window functions (ROW_NUMBER, LAG, LEAD for time series), CTEs for readable multi-step queries, and GROUP BY aggregations for dataset statistics.", resource:"Mode SQL Tutorial" },
+          { id:"t6", text:"Unix/shell — navigation, tmux, grep/awk, basic scripting on remote servers", desc:"Remote GPU machines are Linux servers with no GUI. You will ssh in, navigate with cd/ls/find, inspect processes with htop/nvidia-smi, tail logs with tail -f, search with grep, and run long training jobs inside tmux sessions so they survive disconnection. This is the daily environment for anyone training or serving models.", resource:"The Missing Semester — MIT" },
+          { id:"t8", text:"Object-oriented programming — classes, inheritance, dunder methods, design patterns", desc:"Python OOP is the backbone of every ML framework. PyTorch modules are classes (nn.Module). Datasets are classes. Trainers are classes. Understanding OOP means you can extend any framework, not just call its APIs. Key concepts: classes and objects, encapsulation (__init__, self), inheritance (class MyModel(nn.Module)), polymorphism (overriding forward()), dunder/magic methods (__len__, __getitem__, __repr__ — the ones PyTorch Dataset requires), abstract base classes (abc.ABC for interfaces), and the four design patterns you will encounter constantly in ML code: Factory (creating objects without specifying class), Strategy (swappable algorithms like loss functions), Observer (callbacks and hooks), and Decorator (Python @decorator syntax — which you already use).", resource:"Real Python — OOP in Python" },
+          { id:"t7", text:"Code review culture — giving and receiving feedback professionally", desc:"Code review at Marvell is how the team maintains quality and shares knowledge. As a reviewee: respond to every comment, explain your reasoning when you disagree. As a reviewer: focus on logic not style, ask questions rather than make demands, acknowledge good code. Mastering this makes you a valued team member immediately.", resource:"Google Engineering Practices — Code Review" },
+        ],
+        resources:[
+          { id:"r1", text:"Real Python — Advanced Python concepts (blog)", url:"https://realpython.com/tutorials/advanced/", type:"blog" },
+          { id:"r2", text:"TechWorld with Nana — Docker for Beginners (YouTube)", url:"https://www.youtube.com/watch?v=3c-iBn73dDE", type:"youtube" },
+          { id:"r3", text:"Atlassian Git Tutorials — Workflows and Branching (docs)", url:"https://www.atlassian.com/git/tutorials/comparing-workflows", type:"docs" },
+          { id:"r4", text:"Mode SQL Tutorial — Intermediate and Advanced SQL (docs)", url:"https://mode.com/sql-tutorial/", type:"docs" },
+          { id:"r5", text:"The Missing Semester of Your CS Education — MIT (YouTube)", url:"https://missing.csail.mit.edu/", type:"course" },
+          { id:"r6", text:"Google Engineering Practices — Code Review Guide (docs)", url:"https://google.github.io/eng-practices/review/", type:"docs" },
+          { id:"r7", text:"DataLemur — SQL practice problems, interview style (docs)", url:"https://datalemur.com/sql-tutorial", type:"docs" },
+          { id:"r8", text:"SQLZoo — Interactive SQL practice in browser (docs)", url:"https://sqlzoo.net/", type:"docs" },
+          { id:"r9", text:"Real Python — OOP in Python 3 (blog)", url:"https://realpython.com/python3-object-oriented-programming/", type:"blog" },
+          { id:"r10", text:"ArjanCodes — OOP and Design Patterns in Python (YouTube)", url:"https://www.youtube.com/c/ArjanCodes", type:"youtube" },
+        ],
+        implementation:[
+          { id:"i1", text:"Rewrite a sequential LLM pipeline using async — measure latency improvement", desc:"Take an existing sequential LLM pipeline (call API, wait, call API, wait). Rewrite using asyncio.gather to parallelise calls. Measure wall-clock time before and after. A 3-5x speedup on 10 concurrent calls is typical." , megaProject:{proj:"B",step:1}},
+          { id:"i2", text:"Containerise a FastAPI model-serving endpoint with Docker — one-command startup", desc:"Write a Dockerfile for a FastAPI app that loads a model and serves predictions. Build the image, run the container, and hit the /predict endpoint. Then write a docker-compose.yml that spins up the API plus a Redis cache together. This is the complete local deployment stack." },
+          { id:"i3", text:"Open a real PR with a proper description and respond to every review comment", desc:"Make a non-trivial change to your ML project repo, write a PR description with background, what changed, and how you tested it. Ask a peer to review. Address every comment in writing. This single exercise makes the Marvell PR process feel natural." },
+          { id:"i4", text:"Solve 20 SQL problems on DataLemur — focus on window functions and JOINs", desc:"Window functions (ROW_NUMBER, RANK, LAG, SUM OVER) and multi-table JOINs are the two things that make SQL feel powerful. Complete 20 problems specifically targeting these." },
+          { id:"i5", text:"Set up tmux on a remote machine and run a training job that survives SSH disconnect", desc:"SSH into a remote server, start a tmux session, launch a training script, detach (Ctrl+B then D), close the terminal, reconnect via SSH, reattach to find training still running. Most practically useful Unix skill." },
+          { id:"i6", text:"Rewrite a plain-function ML pipeline as proper OOP — Dataset class, Model class, Trainer class", desc:"Take a script you have written with loose functions. Refactor into three classes: a Dataset class with __len__ and __getitem__ (what PyTorch expects), a Model class inheriting nn.Module with forward(), and a Trainer class owning the training loop. This teaches how ML frameworks are designed from the inside." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Fluent Python — the definitive intermediate Python book by Luciano Ramalho", desc:"The best single resource for understanding Python deeply: data model, iterators, generators, coroutines, metaprogramming. Use it as a reference when you encounter something you do not fully understand.", url:"https://www.oreilly.com/library/view/fluent-python-2nd/9781492056348/" },
+          { id:"e2", topic:"Oh My Zsh + fzf + zoxide — making the terminal enjoyable", desc:"Most ML engineers spend hours per day in the terminal. Oh My Zsh adds git branch display and smart tab completion. fzf adds fuzzy file search. zoxide replaces cd with a smart jump to frequently used directories. Combined they make remote server work significantly faster.", url:"https://ohmyz.sh/" },
+          { id:"e4", topic:"SOLID principles for ML code — single responsibility, open/closed, dependency inversion", desc:"SOLID principles applied to ML: Single Responsibility (your Dataset class should not also run training). Open/Closed (your Trainer should be extensible via callbacks without modifying its core). Dependency Inversion (depend on abstract interfaces, not concrete implementations — makes swapping optimisers or loss functions trivial). These principles explain why production ML codebases are structured the way they are.", url:"https://realpython.com/solid-principles-python/" },
+          { id:"e3", topic:"Pre-commit hooks — automated code quality checks before every commit", desc:"Pre-commit runs black (formatting), ruff (linting), and mypy (type checking) automatically before every git commit. Catches style issues before they reach PR review. Standard setup in most production ML codebases.", url:"https://pre-commit.com/" },
+        ]
+      },
+    ]
   },
   {
     phase: "Core Concepts (13 Weeks)",
@@ -85,7 +190,7 @@ const ROADMAP = [
         ],
         resources: [
           { id:"r1", text:"3Blue1Brown — Neural Networks Chapter 1 (YouTube)", url:"https://www.youtube.com/watch?v=aircAruvnKk", type:"youtube" },
-          { id:"r2", text:"Andrew Ng — Linear Regression, Week 1 (Coursera)", url:"https://www.coursera.org/learn/machine-learning", type:"docs" },
+          { id:"r2", text:"Andrew Ng — Supervised ML Course Week 1 (free audit)", url:"https://www.coursera.org/learn/machine-learning", type:"course" },
           { id:"r3", text:"Mathematics for ML Book — Chapter 5, free PDF", url:"https://mml-book.github.io/", type:"paper" },
         ],
         implementation: [
@@ -144,13 +249,13 @@ const ROADMAP = [
         ],
         resources: [
           { id:"r1", text:"3Blue1Brown — Backpropagation Series (YouTube)", url:"https://www.youtube.com/watch?v=Ilg3gGewQ5U", type:"youtube" },
-          { id:"r2", text:"Andrej Karpathy — Neural Networks: Zero to Hero (series)", url:"https://karpathy.ai/zero-to-hero.html", type:"youtube" },
+          { id:"r2", text:"Andrej Karpathy — Neural Networks: Zero to Hero (series)", url:"https://www.youtube.com/playlist?list=PLAqhIrjkxbuWI23v9cThsA9GvCAUhRvKZ", type:"youtube" },
           { id:"r3", text:"CS231n — Backpropagation Notes (blog)", url:"https://cs231n.github.io/optimization-2/", type:"blog" },
           { id:"r4", text:"Karpathy — micrograd (YouTube)", url:"https://www.youtube.com/watch?v=VMj-3S1tku0", type:"youtube" },
         ],
         implementation: [
-          { id:"i1", text:"Implement micrograd — type every line yourself", desc:"Karpathy's micrograd is 100 lines that contain all of deep learning's math; typing it yourself is the single best thing you can do this month." },
-          { id:"i2", text:"2-layer neural network in NumPy with manual forward + backward", desc:"Implementing backprop from scratch in NumPy is the proving ground — if you can do this, you understand neural networks." },
+          { id:"i1", text:"Implement micrograd — type every line yourself", desc:"Karpathy's micrograd is 100 lines that contain all of deep learning's math; typing it yourself is the single best thing you can do this month." , megaProject:{proj:"A",step:2}},
+          { id:"i2", text:"2-layer neural network in NumPy with manual forward + backward", desc:"Implementing backprop from scratch in NumPy is the proving ground — if you can do this, you understand neural networks." , megaProject:{proj:"A",step:3}},
           { id:"i3", text:"Verify your gradients match PyTorch autograd (gradient checking)", desc:"Gradient checking — comparing your manual gradients to PyTorch's numerical estimates — is the definitive correctness test." },
           { id:"i4", text:"Experiment with different activation functions", desc:"Training the same architecture with ReLU, tanh, and sigmoid and observing the differences gives you tactile intuition about activation choice." },
           { id:"i5", text:"Observe bad initialisation — all zeros, all ones, too large", desc:"Watching training fail due to bad initialisation makes the problem concrete; after this you'll never forget why initialisation matters." },
@@ -250,6 +355,9 @@ const ROADMAP = [
           { id:"e2", topic:"Depthwise separable convolutions — MobileNet's efficiency trick", desc:"Splitting a standard convolution into depthwise then pointwise steps reduces computation by ~8x, enabling powerful models on mobile hardware.", url:"https://towardsdatascience.com/a-basic-introduction-to-separable-convolutions-b99ec3102728" },
           { id:"e3", topic:"Feature Pyramid Networks (FPN) — multi-scale detection", desc:"FPNs build a feature hierarchy at multiple scales and merge them, enabling detection of objects at very different sizes in the same image.", url:"https://arxiv.org/abs/1612.03144" },
           { id:"e4", topic:"Deformable convolutions — learning where to look", desc:"Instead of a fixed grid, deformable convolutions learn offsets for each filter location, allowing the network to focus on geometrically irregular regions.", url:"https://arxiv.org/abs/1703.06211" },
+          { id:"e5", topic:"DenseNet — concatenating instead of adding, feature reuse", desc:"DenseNet connects every layer to all subsequent layers via concatenation (not addition like ResNet). This encourages feature reuse at every depth and gives the network implicit deep supervision.", url:"https://arxiv.org/abs/1608.06993" },
+          { id:"e6", topic:"EfficientNet — jointly scaling width, depth, resolution", desc:"EfficientNet's compound scaling coefficient shows that scaling all three dimensions together under a fixed compute budget outperforms scaling any one alone — foundational reading for efficient model design.", url:"https://arxiv.org/abs/1905.11946" },
+          { id:"e7", topic:"ConvNeXt — a ResNet upgraded with ViT training recipes", desc:"Systematic modernisation of ResNet using ViT insights: 7×7 depthwise conv, inverted bottleneck, fewer activations, GELU, LayerNorm. Matched ViT accuracy — showing training recipes mattered as much as architecture.", url:"https://arxiv.org/abs/2201.03545" },
         ]
       },
       {
@@ -328,7 +436,7 @@ const ROADMAP = [
         ],
         implementation: [
           { id:"i1", text:"Implement scaled dot-product attention — every matmul by hand", desc:"No nn.MultiheadAttention — computing Q@K.T / sqrt(d_k), softmax, then @V yourself makes the mechanism fully transparent." },
-          { id:"i2", text:"Implement multi-head attention from scratch", desc:"Splitting into heads, running parallel attention, and concatenating projections is the critical implementation detail that most tutorials skip." },
+          { id:"i2", text:"Implement multi-head attention from scratch", desc:"Splitting into heads, running parallel attention, and concatenating projections is the critical implementation detail that most tutorials skip." , megaProject:{proj:"A",step:4}},
           { id:"i3", text:"Visualise attention weights on a simple sequence", desc:"Plotting attention weights as a heatmap often shows interpretable patterns — function words attending to content words, pronouns attending to their antecedents." },
           { id:"i4", text:"Add attention to your Week 10 RNN and compare", desc:"The performance improvement on long sequences is usually dramatic and immediate; this is the most compelling demonstration of why attention was invented." },
         ],
@@ -358,7 +466,7 @@ const ROADMAP = [
           { id:"r4", text:"Harvard NLP — The Annotated Transformer (blog)", url:"https://nlp.seas.harvard.edu/annotated-transformer/", type:"blog" },
         ],
         implementation: [
-          { id:"i1", text:"Build a decoder-only Transformer (GPT-style) from scratch", desc:"Every component — embedding, positional encoding, causal attention, FFN, LayerNorm, output projection — implemented yourself in pure PyTorch." },
+          { id:"i1", text:"Build a decoder-only Transformer (GPT-style) from scratch", desc:"Every component — embedding, positional encoding, causal attention, FFN, LayerNorm, output projection — implemented yourself in pure PyTorch." , megaProject:{proj:"A",step:5}},
           { id:"i2", text:"Implement positional encoding — sinusoidal and learned versions", desc:"Implementing both versions and comparing their behaviour gives you intuition for why positional encodings were designed the way they were." },
           { id:"i3", text:"Train on small text dataset — verify coherent generation", desc:"If your implementation is correct, the model should generate increasingly coherent text as training progresses; loss divergence usually means a bug in causal masking." },
           { id:"i4", text:"Implement causal masking from scratch", desc:"The upper-triangular mask is simple to code but critical to get right; implementing it manually ensures you understand why autoregressive generation works." },
@@ -370,6 +478,8 @@ const ROADMAP = [
           { id:"e3", topic:"Speculative decoding — small draft model + large verifier", desc:"A small fast model generates candidate tokens, and the large model verifies them in parallel — often achieving 2-3x throughput improvement.", url:"https://arxiv.org/abs/2211.17192" },
           { id:"e4", topic:"Chinchilla scaling laws — optimal compute allocation", desc:"The Chinchilla paper showed that most LLMs are undertrained relative to model size; the optimal ratio is roughly 20 training tokens per parameter.", url:"https://arxiv.org/abs/2203.15556" },
           { id:"e5", topic:"Pre-norm vs post-norm — training stability difference", desc:"Modern Transformers use pre-norm (LayerNorm before attention) rather than the original post-norm; this makes training more stable and allows higher learning rates.", url:"https://arxiv.org/abs/2002.04745" },
+          { id:"e6", topic:"Linformer — O(n) attention via low-rank key/value projection", desc:"Standard attention is O(n²) in sequence length. Linformer projects keys and values down to a fixed-size matrix, reducing complexity to O(n) — the clearest illustration of the quadratic bottleneck and how to attack it.", url:"https://arxiv.org/abs/2006.04768" },
+          { id:"e7", topic:"State Space Models (S4, Mamba) — sequences at linear cost", desc:"SSMs model sequences as discretised linear dynamical systems. During training they run as convolutions (parallel); at inference as recurrences (constant memory). Mamba adds input-dependent selectivity, matching Transformer quality at O(n) cost.", url:"https://arxiv.org/abs/2312.00752" },
         ]
       },
     ]
@@ -424,7 +534,7 @@ const ROADMAP = [
           { id:"r5", text:"Lilian Weng — LLM-Powered Autonomous Agents (blog)", url:"https://lilianweng.github.io/posts/2023-06-23-agent/", type:"blog" },
         ],
         implementation: [
-          { id:"i1", text:"Build a ReAct agent from scratch with 2-3 custom tools", desc:"Writing the agent loop yourself — parse reasoning, execute tool, feed result back — demystifies what LangChain is actually doing under the hood." },
+          { id:"i1", text:"Build a ReAct agent from scratch with 2-3 custom tools", desc:"Writing the agent loop yourself — parse reasoning, execute tool, feed result back — demystifies what LangChain is actually doing under the hood." , megaProject:{proj:"B",step:2}},
           { id:"i2", text:"Implement the same agent in LangChain — compare abstraction", desc:"After building it manually, LangChain's abstractions will make complete sense rather than feeling like magic." },
           { id:"i3", text:"Build a stateful multi-step agent with LangGraph", desc:"LangGraph's graph-based state machine handles complex agent workflows that linear chains can't express; building one teaches you production-grade agent architecture." },
           { id:"i4", text:"Intentionally cause and debug each failure mode", desc:"Deliberately triggering hallucination, infinite loops, and context overflow makes you prepared to recognise and fix these in production." },
@@ -454,7 +564,7 @@ const ROADMAP = [
           { id:"r4", text:"Pinecone — What is a Vector Database (blog)", url:"https://www.pinecone.io/learn/vector-database/", type:"blog" },
         ],
         implementation: [
-          { id:"i1", text:"Build a full RAG pipeline with LlamaIndex + a vector DB", desc:"End-to-end: ingest documents, chunk them, embed them, store in a vector DB, retrieve for queries, and generate answers — the complete production RAG loop." },
+          { id:"i1", text:"Build a full RAG pipeline with LlamaIndex + a vector DB", desc:"End-to-end: ingest documents, chunk them, embed them, store in a vector DB, retrieve for queries, and generate answers — the complete production RAG loop." , megaProject:{proj:"B",step:3}},
           { id:"i2", text:"Evaluate with Ragas — measure faithfulness and answer relevance", desc:"Running Ragas on your RAG pipeline gives you quantified metrics rather than vibes; this is the foundation of principled RAG improvement." },
           { id:"i3", text:"Set up LangSmith tracing — trace an agent run and debug a failure", desc:"Seeing the full trace of an agent run (every LLM call, every tool call, every intermediate state) is the most powerful debugging tool you'll have in production." },
           { id:"i4", text:"Implement hybrid search — compare to pure semantic", desc:"Adding BM25 keyword search alongside vector search typically improves retrieval for queries with specific entities, product names, or technical terms." },
@@ -480,7 +590,7 @@ const ROADMAP = [
         ],
         resources: [
           { id:"r1", text:"vLLM Documentation (docs)", url:"https://docs.vllm.ai/en/latest/", type:"docs" },
-          { id:"r2", text:"Full Stack LLM Bootcamp, free (blog/video series)", url:"https://fullstackdeeplearning.com/llm-bootcamp/", type:"youtube" },
+          { id:"r2", text:"Full Stack LLM Bootcamp, free (blog/video series)", url:"https://fullstackdeeplearning.com/llm-bootcamp/", type:"docs" },
           { id:"r3", text:"NeMo Guardrails — NVIDIA (docs)", url:"https://github.com/NVIDIA/NeMo-Guardrails", type:"docs" },
           { id:"r4", text:"Chip Huyen — Designing ML Systems (book, O'Reilly)", url:"https://www.oreilly.com/library/view/designing-machine-learning/9781098107963/", type:"docs" },
         ],
@@ -496,6 +606,160 @@ const ROADMAP = [
           { id:"e2", topic:"Continuous batching vs static batching for LLM throughput", desc:"Static batching wastes GPU compute waiting for the longest sequence; continuous batching adds new requests as slots free up, dramatically improving throughput.", url:"https://www.anyscale.com/blog/continuous-batching-llm-inference" },
           { id:"e3", topic:"llama.cpp and GGUF — quantised models on CPU", desc:"llama.cpp enables running quantised LLMs on CPU without a GPU; understanding GGUF format and quantisation levels helps you choose the right model for constrained environments.", url:"https://github.com/ggerganov/llama.cpp" },
           { id:"e4", topic:"SLAs for LLM APIs — latency targets in production", desc:"Production LLM services need to define time-to-first-token and tokens-per-second SLAs; understanding what's achievable at different scales informs infrastructure decisions.", url:"https://www.anyscale.com/blog/llm-performance-benchmarks" },
+        ]
+      },
+      {
+        id:"g5", week:"Prep Week 5", title:"GenAI Frameworks Deep Dive", duration:"1–2 weeks",
+        tags:["llamaindex","crewai","autogen","dspy","haystack","frameworks"],
+        theory:[
+          { id:"t1", text:"LlamaIndex — RAG-first framework with data connectors and query engines", desc:"LlamaIndex is built around data ingestion, indexing, and querying. Its abstractions (Document, Node, Index, QueryEngine, ReActAgent) map directly onto production RAG architecture. For retrieval-heavy applications over enterprise documents, LlamaIndex has richer primitives than LangChain.", resource:"LlamaIndex Docs" },
+          { id:"t2", text:"LangGraph vs LangChain — when to use each", desc:"LangChain is a collection of integrations with a chain abstraction — good for simple sequential pipelines. LangGraph adds stateful graph execution for complex branching, loops, and human-in-the-loop. Use LangChain for simple pipelines; switch to LangGraph the moment your agent has conditional logic or cycles.", resource:"LangGraph Docs" },
+          { id:"t3", text:"CrewAI — role-based multi-agent collaboration", desc:"CrewAI abstracts agents as crew members with roles, goals, and backstories. Agents collaborate on tasks with defined processes (sequential or hierarchical). Best for document-centric multi-agent tasks where role specialisation improves output consistency.", resource:"CrewAI Docs" },
+          { id:"t4", text:"AutoGen — conversational multi-agent framework from Microsoft", desc:"AutoGen models agents as participants in a conversation. The UserProxyAgent/AssistantAgent pattern is the starting point. More flexible than CrewAI for dynamic conversation flows and human-in-the-loop interrupts.", resource:"AutoGen Docs" },
+          { id:"t5", text:"DSPy — declarative, optimisable prompting as code", desc:"DSPy replaces hand-written prompts with declared input/output signatures (Modules) and optimises them automatically. Instead of manually tuning prompts, you define what you want and DSPy compiles the best prompt configuration. Fundamentally changes how you approach prompt engineering.", resource:"Stanford DSPy Paper" },
+          { id:"t6", text:"OpenAI Agents SDK — managed runtime with built-in tools and handoffs", desc:"OpenAI Agents SDK provides a lightweight framework for building agents: tool definitions, parallel function calling, agent handoffs, and a built-in tracing runtime. The fastest path to a working agent if you are already on the OpenAI stack.", resource:"OpenAI Agents Docs" },
+          { id:"t7", text:"Framework selection criteria — when to use which tool", desc:"LlamaIndex: retrieval-heavy, document-centric. LangGraph: complex state, branching, production. CrewAI: role-based multi-agent. AutoGen: dynamic conversational agents. DSPy: when prompt quality is a bottleneck and you want systematic optimisation. OpenAI SDK: fastest path on OpenAI stack.", resource:"Agent Frameworks Comparison 2025" },
+        ],
+        resources:[
+          { id:"r1", text:"DeepLearning.AI — Building Agentic RAG with LlamaIndex (free course)", url:"https://learn.deeplearning.ai/courses/building-agentic-rag-with-llamaindex", type:"course" },
+          { id:"r2", text:"DeepLearning.AI — AI Agents in LangGraph (free course)", url:"https://learn.deeplearning.ai/courses/ai-agents-in-langgraph", type:"course" },
+          { id:"r3", text:"DeepLearning.AI — Multi AI Agent Systems with CrewAI (free course)", url:"https://learn.deeplearning.ai/courses/multi-ai-agent-systems-with-crewai", type:"course" },
+          { id:"r4", text:"DSPy Documentation (docs)", url:"https://dspy.ai/", type:"docs" },
+          { id:"r5", text:"Stanford CS146S — The Modern Software Developer (blog)", url:"https://themodernsoftware.dev/", type:"blog" },
+          { id:"r6", text:"DeepLearning.AI Short Courses — full catalogue", url:"https://www.deeplearning.ai/short-courses/", type:"course" },
+        
+          { id:"r_sw", text:"Simon Willison — LLM blog, always current (blog)", url:"https://simonwillison.net/", type:"blog" },],
+        implementation:[
+          { id:"i1", text:"Build the same RAG pipeline in LlamaIndex and LangGraph — compare ergonomics", desc:"Build identical functionality (ingest PDF, chunk, embed, retrieve, generate) in both frameworks. The comparison reveals which abstractions you prefer and where each framework excels." },
+          { id:"i2", text:"Build a two-agent CrewAI system — researcher + writer — for a technical topic", desc:"Researcher agent retrieves and synthesises; writer agent structures into a document. Run it on a technical topic you know and evaluate the output. Fastest way to understand role-based multi-agent systems." },
+          { id:"i3", text:"Rewrite an existing prompt using DSPy — measure quality before/after optimisation", desc:"Take a prompt you currently tune manually, define it as a DSPy Module with typed signatures, and run the DSPy optimiser on a small labelled dataset. Comparing human-tuned vs DSPy-optimised prompts reveals how much you were leaving on the table." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Haystack — production-grade NLP pipelines by deepset", desc:"Haystack is built for production NLP with first-class support for document stores, custom components, and pipeline serialisation. Strong for enterprise deployments needing deterministic, auditable pipelines.", url:"https://docs.haystack.deepset.ai/" },
+          { id:"e2", topic:"A2A Protocol — Agent-to-Agent communication standard from Google", desc:"Google A2A is an emerging standard for inter-agent communication, complementing MCP for tool exposure. Enables agents built on different frameworks to collaborate. Still early but worth tracking.", url:"https://developers.googleblog.com/en/a2a-a-new-era-of-agent-interoperability/" },
+          { id:"e3", topic:"Instructor — structured outputs with Pydantic for any LLM", desc:"Instructor wraps any LLM (OpenAI, Anthropic, local) with Pydantic-validated structured output. Simpler than Outlines for cases where you just need reliable JSON from an API call.", url:"https://python.useinstructor.com/" },
+        ]
+      },
+    ]
+  },
+  {
+    phase: "Marvell Engineering Track",
+    color: "#0ea5e9",
+    items: [
+      {
+        id:"mv3", week:"Priority 1", title:"GenAI Agent Systems & Production Engineering", duration:"4–6 weeks",
+        tags:["agents","langgraph","observability","async","llmops","context-engineering"],
+        theory:[
+          { id:"t1", text:"Context engineering — architecting what the model sees, not just the prompt", desc:"The 2024/25 shift: prompt engineering is about wording; context engineering is about structuring the full context window — which documents, memories, tool results, and conversation history to include, in what order, and at what detail level. This is the highest-leverage skill for improving agent quality in production.", resource:"LangChain — Context Engineering 2025" },
+          { id:"t2", text:"Agentic patterns — ReAct, Plan-and-Execute, reflection, and multi-agent handoffs", desc:"ReAct interleaves reasoning and tool calls in a loop. Plan-and-Execute separates planning from execution for complex multi-step tasks. Reflection agents critique their own outputs before responding. Multi-agent systems delegate subtasks via handoffs. Knowing which pattern fits which problem is the core architecture skill.", resource:"Zhou et al. — Agentic AI Engineering" },
+          { id:"t3", text:"LangGraph — stateful agent workflows as graphs, not linear chains", desc:"LangGraph models agent workflows as directed graphs with explicit state. Nodes are functions; edges are transitions (including conditional). Cycles enable iterative loops, retries, and human-in-the-loop checkpoints. This is the production-grade alternative to simple LangChain chains.", resource:"LangGraph Docs" },
+          { id:"t4", text:"Tool/function calling design — naming, schema, and error handling", desc:"LLMs select tools probabilistically based on name and description. A poorly named tool will be ignored even if it's exactly what's needed — production teams have validated this empirically. Tool schemas should be unambiguous, descriptions should be verbose, and every tool call should handle errors gracefully with informative feedback to the model.", resource:"ZenML — 1200 Production Deployments 2025" },
+          { id:"t5", text:"Agent observability — tracing every LLM call, tool call, and decision", desc:"89% of production agent teams have observability in place. Without traces, debugging non-deterministic agent failures is nearly impossible. LangSmith, Langfuse, and AgentOps all provide session replay, token tracking, latency percentiles, and LLM-as-judge scoring. OpenTelemetry is the open standard underpinning most.", resource:"LangChain — State of Agent Engineering 2025" },
+          { id:"t6", text:"LLM-as-judge evaluation — scaling quality assessment beyond human review", desc:"Agents are non-deterministic — you can't evaluate them with accuracy metrics. LLM-as-judge uses a separate LLM to score responses on dimensions like correctness, relevance, and hallucination rate. Combine with human review for high-stakes cases. This is how you close the loop from production monitoring to system improvement.", resource:"LangChain — State of Agent Engineering 2025" },
+          { id:"t7", text:"Async Python for agents — concurrent LLM and tool calls", desc:"Agents make many simultaneous I/O calls — multiple LLM requests, tool calls to external APIs, vector DB lookups. Synchronous code serialises all of this and is orders of magnitude slower. Async Python (asyncio, aiohttp) and concurrent execution in LangGraph are essential for production-grade agent latency.", resource:"Python asyncio docs" },
+          { id:"t8", text:"Memory architecture — short-term, long-term, episodic, and semantic", desc:"Short-term memory is the context window. Long-term memory is a vector DB or database persisted across sessions. Episodic memory recalls past interactions. Semantic memory stores factual knowledge. Choosing the right memory tier for a given agent determines whether it can maintain coherent state over extended tasks.", resource:"Lilian Weng — Agent Memory Survey" },
+          { id:"t9", text:"Prompt injection and agent security — tool sandboxing and guardrails architecture", desc:"Agents that browse the web, execute code, or call external APIs are vulnerable to prompt injection — malicious content in retrieved context hijacking the agent's actions. Guardrails need to validate both inputs and outputs; tool execution should be sandboxed; sensitive operations need confirmation steps.", resource:"OWASP LLM Top 10" },
+          { id:"t10", text:"MCP (Model Context Protocol) — standard interface for exposing tools and data to agents", desc:"MCP is Anthropic's open protocol for connecting agents to external services. It standardises how tools, prompts, and data sources are declared and called — equivalent to what REST did for web APIs. Major SaaS tools are now shipping MCP servers, making it the fastest-growing integration pattern for agent systems.", resource:"Anthropic MCP Docs" },
+          { id:"t11", text:"REST API design and async serving — FastAPI, SSE, and WebSocket for streaming", desc:"Most agent backends expose REST APIs. Streaming agent output requires server-sent events (SSE) or WebSocket — returning tokens as they arrive rather than waiting for the full response. FastAPI is the standard for Python agent backends: async-native, pydantic validation, and auto-generates OpenAPI docs.", resource:"FastAPI Docs" },
+          { id:"t12", text:"Production failure modes for agents — when and why they break", desc:"The common agent failure modes: tool calling hallucinations (invoking tools with wrong parameters), context window overflow (losing important early context), reasoning loops (agent stuck cycling without progress), cascading failures in multi-agent systems, and silent quality degradation as models are updated upstream.", resource:"ZenML — 1200 Production Deployments 2025" },
+        ],
+        resources:[
+          { id:"r1", text:"LangGraph Documentation — Agent Workflows (docs)", url:"https://langchain-ai.github.io/langgraph/", type:"docs" },
+          { id:"r2", text:"State of Agent Engineering 2025 — LangChain Survey (blog)", url:"https://www.langchain.com/state-of-agent-engineering", type:"blog" },
+          { id:"r3", text:"What 1200 Production Deployments Reveal — ZenML 2025 (blog)", url:"https://www.zenml.io/blog/what-1200-production-deployments-reveal-about-llmops-in-2025", type:"blog" },
+          { id:"r4", text:"Langfuse — Open-source LLM observability (docs)", url:"https://langfuse.com/docs", type:"docs" },
+          { id:"r5", text:"OWASP LLM Top 10 — Security risks for LLM applications (docs)", url:"https://owasp.org/www-project-top-10-for-large-language-model-applications/", type:"docs" },
+          { id:"r6", text:"Anthropic MCP Documentation (docs)", url:"https://modelcontextprotocol.io/introduction", type:"docs" },
+          { id:"r7", text:"Chip Huyen — Designing ML Systems (book)", url:"https://www.oreilly.com/library/view/designing-machine-learning/9781098107963/", type:"docs" },
+        
+          { id:"r_ey", text:"Eugene Yan — Applied ML blog (eugeneyan.com) (blog)", url:"https://eugeneyan.com/", type:"blog" },
+          { id:"r_hh", text:"Hamel Husain — LLM evaluation in practice (blog)", url:"https://hamel.dev/blog/posts/evals/", type:"blog" },],
+        implementation:[
+          { id:"i1", text:"Build a stateful multi-step agent in LangGraph — with memory and tool use", desc:"Build an agent that uses at least two tools, maintains state across steps, and handles tool call errors gracefully. Use LangGraph's conditional edges to implement a retry loop when a tool call fails. This is the minimum viable production agent pattern." , megaProject:{proj:"B",step:4}},
+          { id:"i2", text:"Set up Langfuse or LangSmith — trace a multi-tool agent run end-to-end", desc:"Instrument your LangGraph agent with Langfuse. Run 10 queries, examine the traces, identify the slowest step and the step with the most token usage. This is what production agent debugging looks like." },
+          { id:"i3", text:"Build an LLM-as-judge eval pipeline for your agent — score 50 outputs automatically", desc:"Write a judge prompt that evaluates your agent's outputs on correctness and relevance. Run it over 50 sampled agent responses. Calculate pass rates. This closes the feedback loop from production to improvement." , megaProject:{proj:"B",step:5}},
+          { id:"i4", text:"Implement context engineering on a RAG agent — compare naive vs engineered context", desc:"Take a RAG agent, then deliberately engineer the context: rerank retrieved chunks, add a summary of conversation history, inject relevant metadata. Measure answer quality before and after. The gap is your context engineering gain." },
+          { id:"i5", text:"Expose a FastAPI endpoint for your agent with SSE streaming", desc:"Wrap a LangGraph agent in a FastAPI app that streams tokens via server-sent events. Test with curl and a simple HTML frontend. This is the complete production serving pattern for agent backends." , megaProject:{proj:"B",step:6}},
+          { id:"i6", text:"Design a multi-agent system on paper — identify failure modes before building", desc:"Design a two-agent system (orchestrator + specialist) for a problem you know. Write out: state schema, tool schemas, handoff conditions, error recovery, observability hooks. The design exercise reveals gaps before you hit them in code." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Context engineering deep dive — LangChain 2025 state of the field", desc:"LangChain's analysis of how the best production teams architect context: dynamic retrieval, summarisation of old turns, structured memory injection, and tool result truncation. The single most useful read for improving agent quality.", url:"https://blog.langchain.dev/context-engineering-for-agents/" },
+          { id:"e2", topic:"Responsible agent architecture — Swiss cheese model for AI safety", desc:"Multi-layered guardrails design: input validation, context sanitisation, output filtering, and tool execution sandboxing. No single layer is sufficient — the goal is redundancy. Directly applicable to any production agent system.", url:"https://arxiv.org/abs/2408.02205" },
+          { id:"e3", topic:"CodeAct — using Python code as the action space instead of JSON tool calls", desc:"CodeAct replaces JSON function calls with Python code executed by an interpreter. This eliminates parameter hallucination (a major source of tool call failures) and gives the agent a vastly richer action space. Understanding this pattern is increasingly relevant as agents become more autonomous.", url:"https://arxiv.org/abs/2402.01030" },
+          { id:"e4", topic:"ML system design interview — end-to-end framework for any ML system question", desc:"Covers the pattern: clarify requirements → data pipeline → model selection + justification → serving architecture → monitoring + failure modes. Knowing this structure lets you approach any ML system design question systematically and credibly.", url:"https://www.educative.io/blog/ml-system-design-interview" },
+        ]
+      },
+      {
+        id:"mv2", week:"Priority 2", title:"Advanced LLM Engineering — Better-to-Knows", duration:"3–4 weeks",
+        tags:["long-context","structured-output","multimodal","routing","fine-tuning","embedding"],
+        theory:[
+          { id:"t1", text:"Long-context strategies — RAG vs extended context window, tradeoffs", desc:"LLMs now support 128K-1M token context windows, which seems to make RAG obsolete. In practice, very long contexts suffer from lost-in-the-middle failures (models ignore information in the middle) and high cost. The Marvell use case — querying large Verilog codebases and EDA documentation — is exactly where this tradeoff is live.", resource:"Lost in the Middle — Liu et al. 2023" },
+          { id:"t2", text:"Structured outputs and constrained decoding — reliable JSON from LLMs", desc:"Asking an LLM to output JSON is unreliable. Constrained decoding (Outlines, llguidance) mathematically enforces a JSON schema by masking invalid tokens at every generation step — the output is guaranteed to parse. This is the production-grade approach for any pipeline that downstream-processes LLM output.", resource:"Outlines Library Docs" },
+          { id:"t3", text:"Embedding models — selection, domain adaptation, fine-tuning", desc:"General embeddings (OpenAI ada, BGE, E5) work well broadly. Domain-specific vocabularies — chip design terms, EDA jargon, Verilog syntax — are often poorly represented. Sentence-transformer fine-tuning on domain pairs consistently improves retrieval quality by 5-15% for specialised domains. The MTEB benchmark is the standard for model selection.", resource:"MTEB Benchmark — HuggingFace" },
+          { id:"t4", text:"Model routing and cascading — route to the right model per query", desc:"Not every query needs GPT-4o. A fast small model (Phi-3, Gemma-2B) can classify the query and route simple ones to a cheap model, complex ones to a capable one. Cascading escalates to larger models only when smaller ones signal low confidence. Production teams report 40-70% cost reduction with no quality regression.", resource:"FrugalGPT — Chen et al. 2023" },
+          { id:"t5", text:"Prompt compression — LLMLingua and token-efficient context packing", desc:"Long retrieved contexts cost tokens and can overwhelm smaller models. LLMLingua uses a small language model to score and prune tokens from the context, preserving the highest-information content. Achieves 3-20x compression with minimal answer quality loss — critical for long Verilog files or large EDA documentation.", resource:"LLMLingua — Jiang et al. 2023" },
+          { id:"t6", text:"Multimodal LLMs — vision-language models and document understanding", desc:"Many internal documents, chip diagrams, and data sheets exist as PDFs with embedded images, tables, and figures. Vision-language models (GPT-4V, Claude 3, LLaVA) can directly process these. Document understanding pipelines (OCR + layout detection + LLM) are increasingly how enterprises extract information from unstructured technical documents.", resource:"LLaVA Paper — Liu et al. 2023" },
+          { id:"t7", text:"Fine-tuning decision tree — when RAG isn't enough", desc:"The practical decision: use RAG when the problem is knowledge (what the model knows), use fine-tuning when the problem is behaviour (how the model responds). Fine-tuning is warranted when you need consistent output format, domain-specific tone, or the model consistently fails on a class of inputs despite good retrieval. LoRA makes the barrier low enough to try quickly.", resource:"Chip Huyen — When to Fine-tune" },
+          { id:"t8", text:"Mixed precision and AMP — what happens inside fine-tuning", desc:"When you fine-tune with LoRA, training runs in BF16/FP16 with FP32 master weights. BF16 has the same exponent range as FP32 (no overflow) with less mantissa precision — preferred for training stability over FP16. AMP (automatic mixed precision) handles the precision casting automatically. Knowing this helps you debug NaN losses and choose precision settings for your hardware.", resource:"NVIDIA AMP Docs" },
+          { id:"t9", text:"FlashAttention — IO-aware attention for long-context fine-tuning and inference", desc:"Standard attention writes the full n×n attention matrix to HBM (slow). FlashAttention tiles the computation to stay in SRAM, reducing memory reads/writes significantly. This enables fine-tuning and inference at much longer context lengths than would otherwise fit. You'll encounter it in every serious fine-tuning codebase.", resource:"Dao et al. 2022 — FlashAttention" },
+          { id:"t10", text:"Evaluation-driven iteration — golden test sets, regression testing, A/B model comparison", desc:"When you swap the base model, change chunking strategy, or update the retrieval pipeline, you need to know immediately if quality regressed. A golden test set of 50-200 representative queries with reference answers, scored by LLM-as-judge, is the engineering tool that closes this loop. Without it, every change is a leap of faith.", resource:"Hamel Husain — Evals blog" },
+        ],
+        resources:[
+          { id:"r1", text:"Lost in the Middle — Liu et al. 2023 (paper)", url:"https://arxiv.org/abs/2307.03172", type:"paper" },
+          { id:"r2", text:"Outlines — Structured Text Generation (docs)", url:"https://outlines-dev.github.io/outlines/", type:"docs" },
+          { id:"r3", text:"LLMLingua — Prompt Compression (paper)", url:"https://arxiv.org/abs/2310.05736", type:"paper" },
+          { id:"r4", text:"FrugalGPT — Chen et al. 2023 (paper)", url:"https://arxiv.org/abs/2305.05176", type:"paper" },
+          { id:"r5", text:"MTEB Leaderboard — Embedding Model Benchmarks (docs)", url:"https://huggingface.co/spaces/mteb/leaderboard", type:"docs" },
+          { id:"r6", text:"FlashAttention Paper — Dao et al. 2022 (paper)", url:"https://arxiv.org/abs/2205.14135", type:"paper" },
+        ],
+        implementation:[
+          { id:"i1", text:"Test lost-in-the-middle on a long Verilog or documentation file", desc:"Take a 20K token technical document, ask questions where the answer is at the beginning, middle, and end. Test with GPT-4o and a smaller model. Quantify the accuracy drop as answer position moves to the middle — this tells you whether you need RAG even with long context." },
+          { id:"i2", text:"Add constrained decoding to an agent tool call — enforce a strict output schema", desc:"Take a tool in your LangGraph agent that currently receives free-form LLM output. Replace it with Outlines-constrained generation to a Pydantic schema. Measure the reduction in JSON parse errors before vs after — usually drops from 3-8% to 0%." },
+          { id:"i3", text:"Fine-tune a sentence-transformer embedding model on domain-specific pairs", desc:"Create 200 (query, relevant_passage) pairs from your domain. Fine-tune a sentence-transformer model on them. Measure retrieval recall@5 before and after on a held-out set. A 5-15% improvement is typical for domain-specific vocabularies." },
+          { id:"i4", text:"Implement a two-tier model router — small classifier routes to cheap vs expensive model", desc:"Train a simple classifier (or use an LLM with a scoring prompt) to classify query complexity. Route simple queries to a small local model, complex ones to GPT-4o. Measure cost per 100 queries vs quality. This is model routing in its simplest form." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"RAPTOR — recursive abstractive processing for tree-organised retrieval", desc:"RAPTOR builds a tree of summaries over a document corpus at multiple levels of abstraction. Retrieval can happen at any level — answering both specific detail questions (leaf nodes) and broad synthesis questions (root nodes). Outperforms flat RAG significantly on multi-hop questions.", url:"https://arxiv.org/abs/2401.18059" },
+          { id:"e2", topic:"Agentic document parsing — ColPali and visual RAG for PDFs with figures", desc:"ColPali embeds entire PDF page images (not just extracted text) using a vision-language model. This handles figures, tables, and diagrams that text extraction destroys. Directly relevant for Marvell's technical documentation — datasheets, block diagrams, timing charts.", url:"https://arxiv.org/abs/2407.01449" },
+          { id:"e3", topic:"GraphRAG — knowledge graph construction for multi-hop reasoning", desc:"GraphRAG builds a knowledge graph from documents rather than a flat vector index. Multi-hop questions (what is the relationship between X and Y in this system?) are answered by traversing the graph rather than dense retrieval. Microsoft's implementation is open-source.", url:"https://arxiv.org/abs/2404.16130" },
+          { id:"e4", topic:"Embedding quantisation — binary and scalar quantised embeddings for cost reduction", desc:"Embedding vectors can themselves be quantised (to INT8 or binary) for cheaper storage and faster search. Binary quantisation with rescoring gives 32x memory reduction with only ~5% recall loss — relevant when you have millions of technical document chunks.", url:"https://huggingface.co/blog/embedding-quantization" },
+        ]
+      },
+      {
+        id:"mv1", week:"Priority 3", title:"LLM Inference & Serving — Absolute Must-Knows", duration:"3–4 weeks",
+        tags:["vllm","kv-cache","quantization","onnx","serving","latency"],
+        theory:[
+          { id:"t1", text:"Autoregressive generation — prefill vs decode, why LLM inference is different", desc:"LLM inference has two distinct phases: prefill (processing the full prompt in parallel, compute-bound) and decode (generating one token at a time, memory-bandwidth-bound). Every serving optimisation targets one or both of these phases. Understanding this split is the foundation of everything else here.", resource:"vLLM Docs" },
+          { id:"t2", text:"KV cache — what it is, why it exists, and when it fills up", desc:"During decode, the key and value tensors for all previous tokens must be recomputed or cached. KV caching stores them — trading memory for compute. KV cache grows linearly with sequence length and batch size, and is almost always the binding memory constraint in LLM serving. When it fills up, throughput collapses.", resource:"vLLM — PagedAttention Blog" },
+          { id:"t3", text:"vLLM and PagedAttention — continuous batching and memory management", desc:"Standard serving frameworks pre-allocate a fixed KV cache block per request, wasting most of it. PagedAttention manages KV cache like OS virtual memory — allocating in pages, enabling sharing across requests. Combined with continuous batching (adding new requests as slots free up), vLLM achieves 10-24x throughput over naive serving.", resource:"vLLM — PagedAttention Blog" },
+          { id:"t4", text:"Quantization for LLM serving — INT4/INT8/FP8, PTQ vs QAT", desc:"Quantization reduces weight precision from FP16 to INT4/INT8/FP8. For small batch inference (batch ≤ 4), the bottleneck is memory bandwidth — weight-only quantization (GPTQ, AWQ) helps most. For large batch serving (batch ≥ 16), both weights and activations should be quantized. FP8 is now the production standard on H100.", resource:"TensorRT-LLM Quantization Guide" },
+          { id:"t5", text:"GPTQ and AWQ — practical post-training quantization for LLMs", desc:"GPTQ quantizes to 4-bit using second-order Hessian information per layer. AWQ identifies the ~1% of weights that matter most (based on activation magnitudes) and protects them during quantization. Both achieve near-FP16 quality at 4-bit — the standard recipe for deploying local LLMs on limited GPU memory.", resource:"GPTQ/AWQ papers" },
+          { id:"t6", text:"ONNX and the model export pipeline — framework → runtime → hardware", desc:"ONNX is the standard interchange format between training frameworks (PyTorch) and inference runtimes (ONNX Runtime, TensorRT). The pipeline: train → export to ONNX → optimise → run on target hardware. For Marvell, ONNX Runtime's execution providers let the same model target different hardware backends.", resource:"ONNX Runtime Docs" },
+          { id:"t7", text:"TensorRT-LLM — NVIDIA's production LLM inference stack", desc:"TensorRT-LLM combines the ONNX→TRT compilation pipeline with LLM-specific optimisations: in-flight batching, paged KV cache, quantization, and tensor parallelism. This is the production stack for deploying LLMs on NVIDIA hardware at Marvell and most data centres. Understand the compilation workflow and the precision tradeoffs.", resource:"TensorRT-LLM Docs" },
+          { id:"t8", text:"Semantic caching — cache LLM responses by query similarity, not exact match", desc:"Exact-match caching misses nearly everything for LLMs. Semantic caching stores (embedding, response) pairs and returns cached responses for semantically similar queries. Redis with vector similarity is the standard stack. Production teams report 150-400x speedup on repeat patterns — the highest-leverage cost optimisation in many systems.", resource:"Redis Semantic Cache Docs" },
+          { id:"t9", text:"Model selection framework — API vs local, big vs small, cost vs quality", desc:"The practical decision tree every GenAI engineer needs: use API models (GPT-4o, Claude) for high-quality complex tasks; local quantised models (Llama, Mistral via vLLM) for high-volume, cost-sensitive, or privacy-constrained tasks; small models (Phi-3, Gemma 2B) for classification/routing. The wrong model choice is the most common production cost mistake.", resource:"a16z — LLM cost analysis" },
+          { id:"t10", text:"FLOP and memory footprint estimation — back-of-envelope for any model", desc:"Being able to estimate FLOPs and memory for any model in 60 seconds is a core engineering skill — it tells you whether a model fits on a given GPU before you write a line of code. Rule of thumb: a B-parameter model in FP16 needs ~2B GB of GPU memory for weights alone; add ~1-2x for KV cache and activations.", resource:"Horace He — Making DL Go Brrr" },
+          { id:"t11", text:"Knowledge distillation — training a small model to mimic a large one", desc:"Distillation trains a small student to match a large teacher's output logits (not just hard labels). The soft targets carry much more information. Used to compress large fine-tuned models to deployable sizes. Relevant when you've fine-tuned a large model and need to productionise it on constrained hardware.", resource:"Hinton et al. 2015" },
+        ],
+        resources:[
+          { id:"r1", text:"vLLM PagedAttention Blog — Kwon et al. 2023 (blog)", url:"https://vllm.ai/blog/2023/06/20/vllm.html", type:"blog" },
+          { id:"r2", text:"TensorRT-LLM Quantization Guide — NVIDIA (docs)", url:"https://nvidia.github.io/TensorRT-LLM/blogs/quantization-in-TRT-LLM.html", type:"docs" },
+          { id:"r3", text:"AWQ Paper — Lin et al. 2023 (paper)", url:"https://arxiv.org/abs/2306.00978", type:"paper" },
+          { id:"r4", text:"ONNX Runtime Documentation (docs)", url:"https://onnxruntime.ai/docs/", type:"docs" },
+          { id:"r5", text:"LLM Inference Handbook — BentoML (blog)", url:"https://bentoml.com/llm/getting-started/llm-quantization", type:"blog" },
+          { id:"r6", text:"Making Deep Learning Go Brrrr — Horace He (blog)", url:"https://horace.io/brrr_intro.html", type:"blog" },
+        ],
+        implementation:[
+          { id:"i1", text:"Serve a local Llama or Mistral model with vLLM — benchmark throughput vs naive serving", desc:"Get vLLM running, send concurrent requests, and compare tokens/sec against a naive huggingface pipeline. The throughput difference from continuous batching alone is usually 5-10x — seeing it on your own machine makes it concrete." },
+          { id:"i2", text:"Quantize a 7B model with AWQ and compare quality vs FP16 on 20 test prompts", desc:"Use the AutoAWQ library to quantize a Mistral-7B to INT4. Run the same 20 prompts on FP16 and INT4 and compare outputs. Measure GPU memory usage — you should see ~4x reduction with minimal quality loss." },
+          { id:"i3", text:"Export a small transformer to ONNX and run with ONNX Runtime — measure latency vs PyTorch", desc:"Export a BERT or DistilBERT model via torch.onnx.export, run with ONNX Runtime, and measure inference latency. This teaches the full ONNX pipeline and gives you intuition for when the export overhead is worth it." },
+          { id:"i4", text:"Implement semantic caching on a RAG pipeline — measure cache hit rate on 100 queries", desc:"Add a Redis + vector similarity semantic cache layer to your RAG agent. Run 100 queries with natural variation (e.g., 'What is X' vs 'Explain X' vs 'Tell me about X') and measure the cache hit rate. Build intuition for when caching is and isn't effective." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Speculative decoding — draft model + verifier for faster generation", desc:"A small fast draft model generates candidate tokens; the large model verifies them in parallel in a single forward pass. 2-3x generation speedup with identical output distribution. Now integrated into vLLM and TensorRT-LLM — increasingly the default for latency-sensitive serving.", url:"https://arxiv.org/abs/2211.17192" },
+          { id:"e2", topic:"Continuous batching deep dive — why static batching wastes GPU compute", desc:"Static batching waits for the longest sequence before returning any result. Continuous batching inserts new requests as decode slots free up. The throughput improvement is proportional to sequence length variance — which is high in production agent workloads.", url:"https://www.anyscale.com/blog/continuous-batching-llm-inference" },
+          { id:"e3", topic:"KV cache quantization — INT8/FP8 KV cache for higher concurrency", desc:"Quantizing the KV cache from FP16 to FP8 or INT8 halves its memory footprint, allowing 2-3x more concurrent requests on the same hardware with minimal accuracy impact. Supported natively in TensorRT-LLM for Hopper GPUs.", url:"https://nvidia.github.io/TensorRT-LLM/blogs/quantization-in-TRT-LLM.html" },
+          { id:"e4", topic:"Mixture of Experts serving — loading only activated experts", desc:"MoE models (Mixtral, DeepSeek) have 60%+ of frontier releases using sparse expert routing as of 2025. Serving them efficiently requires only loading activated expert weights to GPU — the rest can stay in CPU RAM. Understanding this is increasingly essential as MoE becomes the default architecture.", url:"https://arxiv.org/abs/2401.04088" },
         ]
       },
     ]
@@ -555,6 +819,137 @@ const ROADMAP = [
         ]
       },
       {
+        id:"gen1", week:"After Month 6", title:"Generative Models Deep Dive", duration:"2–3 months",
+        tags:["vae","gan","diffusion","flows","generative"],
+        theory:[
+          { id:"t1", text:"Autoencoders — bottleneck representations, irregular latent space", desc:"Encoder compresses data to a latent code z; decoder reconstructs. The bottleneck forces compact representations, but standard autoencoders have irregular latent spaces — you can't sample meaningfully from them.", resource:"VAE paper — Kingma & Welling 2014" },
+          { id:"t2", text:"VAE — encoding to a distribution and the reparameterisation trick", desc:"Instead of encoding to a point, encode to N(μ, σ²). The ELBO loss has two terms: reconstruction quality and KL regularisation toward N(0,I). The reparameterisation trick z = μ + σ⊙ε makes sampling differentiable.", resource:"VAE paper — Kingma & Welling 2014" },
+          { id:"t3", text:"GAN minimax objective — generator vs discriminator equilibrium", desc:"Generator G(z) learns to produce realistic samples; discriminator D(x) learns to distinguish real from fake. At Nash equilibrium, G captures the data distribution and D is stuck at 0.5. JS divergence is minimised.", resource:"GAN paper — Goodfellow et al. 2014" },
+          { id:"t4", text:"GAN training instability — mode collapse and why it happens", desc:"Mode collapse: generator finds a few modes that fool the discriminator and ignores the rest of the data distribution. Training oscillates rather than converges. Understanding this is the motivation for every GAN improvement.", resource:"WGAN paper — Arjovsky et al. 2017" },
+          { id:"t5", text:"Wasserstein GAN — Earth Mover's distance replaces JS divergence", desc:"WGAN replaces JS divergence (which saturates, giving zero gradient when distributions don't overlap) with Wasserstein distance, which provides useful gradient signal everywhere. Requires enforcing a Lipschitz constraint on the critic.", resource:"WGAN paper — Arjovsky et al. 2017" },
+          { id:"t6", text:"Normalizing flows — invertible transforms and exact likelihood", desc:"Apply a sequence of invertible transformations to a simple distribution. The change of variables formula gives exact log-likelihood: log p(x) = log p(z) + log|det(∂z/∂x)|. Unlike VAE/GAN, training is stable and likelihood is exact.", resource:"RealNVP — Dinh et al. 2017" },
+          { id:"t7", text:"DDPM — forward noising process and learning to reverse it", desc:"Define T steps of Gaussian noise addition until data becomes pure noise. Train a UNet to predict the noise ε at each step. Sampling is iterative denoising from N(0,I). Training simplifies to: predict ε, minimise MSE against actual noise added.", resource:"DDPM — Ho et al. 2020" },
+          { id:"t8", text:"Score-based / SDE perspective — diffusion as a reverse-time SDE", desc:"Song et al. unify diffusion models under SDEs. The forward process adds noise via a drift+diffusion SDE; the reverse is also an SDE driven by the score function ∇_x log p(x). This view clarifies all connections between DDPM, SMLD, and flows.", resource:"Score SDEs — Song et al. 2021" },
+          { id:"t9", text:"Latent diffusion — run diffusion in VAE latent space for efficiency", desc:"Pixel-space diffusion is expensive. Encode image to a compressed latent with a VAE, run diffusion there, decode back. Cross-attention with text embeddings enables language conditioning. This is how Stable Diffusion works.", resource:"LDM — Rombach et al. 2022" },
+        ],
+        resources:[
+          { id:"r1", text:"VAE Paper — Kingma & Welling 2014 (paper)", url:"https://arxiv.org/abs/1312.6114", type:"paper" },
+          { id:"r2", text:"GAN Paper — Goodfellow et al. 2014 (paper)", url:"https://arxiv.org/abs/1406.2661", type:"paper" },
+          { id:"r3", text:"WGAN Paper — Arjovsky et al. 2017 (paper)", url:"https://arxiv.org/abs/1701.07875", type:"paper" },
+          { id:"r4", text:"DDPM Paper — Ho et al. 2020 (paper)", url:"https://arxiv.org/abs/2006.11239", type:"paper" },
+          { id:"r5", text:"Lilian Weng — From GAN to WGAN (blog)", url:"https://lilianweng.github.io/posts/2017-08-20-gan/", type:"blog" },
+          { id:"r6", text:"Lilian Weng — What are Diffusion Models? (blog)", url:"https://lilianweng.github.io/posts/2021-07-11-diffusion-models/", type:"blog" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement a VAE from scratch in PyTorch — MNIST latent space", desc:"Implement the encoder (outputs μ and log σ²), the reparameterisation trick, the decoder, and the ELBO loss. Visualise the 2D latent space and sample from it." },
+          { id:"i2", text:"Implement a basic GAN — observe mode collapse deliberately", desc:"Train a GAN until it collapses to a single mode, then diagnose why. This makes mode collapse a concrete experience rather than an abstract concept." },
+          { id:"i3", text:"Run Stable Diffusion locally — trace the denoising loop in code", desc:"Follow the diffusion sampling step through the actual code: UNet call, noise prediction, scheduler step, VAE decode. Demystifies what inference is actually doing." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Progressive GAN / StyleGAN — growing resolution and style mixing", desc:"Progressive GAN stabilises high-resolution training by growing the network incrementally from 4×4 to 1024×1024. StyleGAN adds a style-based generator with AdaIN normalisation, enabling disentangled control over coarse and fine features.", url:"https://arxiv.org/abs/1812.04948" },
+          { id:"e2", topic:"WGAN-GP — gradient penalty as Lipschitz enforcement", desc:"WGAN requires the critic to be 1-Lipschitz. Weight clipping (original WGAN) causes gradient flow issues; WGAN-GP instead penalises the gradient norm directly — cleaner and more stable.", url:"https://arxiv.org/abs/1704.00028" },
+          { id:"e3", topic:"Score matching — training score functions without normalising constants", desc:"Score matching trains ∇_x log p(x) directly by minimising Fisher divergence, bypassing the intractable partition function. This is the theoretical foundation of diffusion model training.", url:"https://jmlr.org/papers/v6/hyvarinen05a.html" },
+          { id:"e4", topic:"DDIM — deterministic sampling for faster diffusion inference", desc:"DDIM reformulates DDPM as a non-Markovian process, enabling deterministic sampling in 10–50 steps instead of 1000 with minimal quality loss — the practical technique used in most deployed diffusion systems.", url:"https://arxiv.org/abs/2010.02502" },
+        ]
+      },
+      {
+        id:"ssl1", week:"After Month 7", title:"Self-Supervised & Representation Learning", duration:"2–3 months",
+        tags:["contrastive","ssl","embeddings","dino","mae"],
+        theory:[
+          { id:"t1", text:"Why representations matter — linear probing and transfer quality", desc:"A good representation makes downstream tasks linearly separable. Linear probe accuracy on frozen features is the standard metric. The goal: invariance to semantically irrelevant transforms, sensitivity to relevant ones.", resource:"SimCLR — Chen et al. 2020" },
+          { id:"t2", text:"Contrastive learning — NT-Xent loss and the role of negatives", desc:"Create two augmented views of the same image. Push their representations together (positive pair) and push all other images apart (negative pairs). NT-Xent loss implements this over a batch with temperature τ controlling distribution sharpness.", resource:"SimCLR — Chen et al. 2020" },
+          { id:"t3", text:"MoCo — momentum encoder and a queue of negatives", desc:"Contrastive learning needs many negatives. MoCo maintains a queue of past encodings and uses a slowly momentum-updated encoder for stability — decoupling the number of negatives from batch size.", resource:"MoCo — He et al. 2020" },
+          { id:"t4", text:"Representation collapse — the fundamental failure mode of SSL", desc:"Naive self-supervised models collapse — the network learns to output the same constant vector for everything, which minimises any contrastive loss trivially. Every SSL technique is fundamentally a solution to this problem.", resource:"BYOL — Grill et al. 2020" },
+          { id:"t5", text:"BYOL — no negatives, stop-gradient and a predictor head", desc:"BYOL uses only positive pairs (no negatives) and avoids collapse via an asymmetric design: an online network with a predictor head trained against a momentum target. Why this works without collapse remained mysterious for months.", resource:"BYOL — Grill et al. 2020" },
+          { id:"t6", text:"Barlow Twins — redundancy reduction as an anti-collapse objective", desc:"Instead of contrastive pairs, Barlow Twins computes the cross-correlation matrix of two views and pushes it toward the identity matrix — maximising feature informativeness while minimising redundancy between dimensions.", resource:"Barlow Twins — Zbontar et al. 2021" },
+          { id:"t7", text:"DINO — self-distillation with emergent segmentation properties", desc:"Student processes local crops; teacher (momentum-updated) processes global views. Student trained to match teacher softmax. Remarkably, attention heads spontaneously learn to segment objects — never explicitly trained to do so.", resource:"DINO — Caron et al. 2021" },
+          { id:"t8", text:"MAE — mask 75% of image patches, reconstruct in pixel space", desc:"Mask the majority of ViT patches randomly and train to reconstruct them. High masking ratio forces the model to learn global structure rather than local texture. Encoder only sees visible patches — computationally very efficient.", resource:"MAE — He et al. 2022" },
+        ],
+        resources:[
+          { id:"r1", text:"SimCLR Paper — Chen et al. 2020 (paper)", url:"https://arxiv.org/abs/2002.05709", type:"paper" },
+          { id:"r2", text:"BYOL Paper — Grill et al. 2020 (paper)", url:"https://arxiv.org/abs/2006.07733", type:"paper" },
+          { id:"r3", text:"DINO Paper — Caron et al. 2021 (paper)", url:"https://arxiv.org/abs/2104.14294", type:"paper" },
+          { id:"r4", text:"MAE Paper — He et al. 2022 (paper)", url:"https://arxiv.org/abs/2111.06377", type:"paper" },
+          { id:"r5", text:"Lilian Weng — Self-Supervised Representation Learning (blog)", url:"https://lilianweng.github.io/posts/2021-05-31-contrastive/", type:"blog" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement NT-Xent contrastive loss from scratch", desc:"Writing the loss yourself — pairwise similarities, temperature scaling, softmax over negatives — makes it concrete. Test on CIFAR-10 with two augmented views." },
+          { id:"i2", text:"Train a minimal SimCLR — linear probe to evaluate representations", desc:"After training with NT-Xent, freeze the encoder and train a single linear layer on labels. Compare linear probe accuracy to fully supervised — the gap is your representation quality metric." },
+          { id:"i3", text:"Visualise DINO attention maps on your own images", desc:"DINO's pretrained ViT attention heads produce remarkably clean segmentation-like visualisations. Running this on your own images is one of the most striking demonstrations of emergent behaviour in DL." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Information bottleneck — maximise I(Z;Y), minimise I(Z;X)", desc:"The information bottleneck principle formalises what a good representation does: compress away task-irrelevant information (minimise I(Z;X)) while retaining task-relevant information (maximise I(Z;Y)).", url:"https://arxiv.org/abs/1703.00810" },
+          { id:"e2", topic:"Alignment and uniformity — geometric decomposition of contrastive loss", desc:"Wang & Isola decompose contrastive loss into alignment (positive pairs should be close) and uniformity (representations should be spread uniformly on the hypersphere). This geometric view explains why contrastive learning works.", url:"https://arxiv.org/abs/2005.10242" },
+          { id:"e3", topic:"DINOv2 — curated data and distillation for stronger visual features", desc:"DINOv2 scales DINO with careful data curation and self-distillation, producing features that match or beat supervised models on many benchmarks — demonstrating that data quality matters as much as architecture.", url:"https://arxiv.org/abs/2304.07193" },
+          { id:"e4", topic:"VICReg — variance, invariance, covariance regularisation", desc:"VICReg provides a clean decomposition: invariance term pulls positive pairs together, variance term prevents collapse by enforcing non-degenerate activations, covariance term decorrelates dimensions.", url:"https://arxiv.org/abs/2105.04906" },
+        ]
+      },
+      {
+        id:"opt1", week:"After Month 8", title:"Optimisation & Training Dynamics", duration:"2 months",
+        tags:["sgd","adam","loss landscape","generalization","theory"],
+        theory:[
+          { id:"t1", text:"Adam — momentum + adaptive per-parameter learning rates", desc:"Adam maintains a momentum estimate m_t and a second-moment estimate v_t per parameter. The adaptive learning rate η/√v̂_t automatically scales updates — larger for sparse parameters, smaller for frequent ones. Bias correction prevents the initial steps from being too small.", resource:"Adam paper — Kingma & Ba 2015" },
+          { id:"t2", text:"Saddle points vs local minima — why local minima are rare in high dimensions", desc:"In high dimensions, a critical point requires all eigenvalues of the Hessian to be positive simultaneously. The probability of this is exponentially small — most critical points are saddle points. SGD noise naturally escapes them.", resource:"Dauphin et al. 2014" },
+          { id:"t3", text:"Loss landscape geometry — why ResNets are smoother than plain nets", desc:"Li et al. visualised loss surfaces in 2D filter directions. ResNets have smooth, convex-looking landscapes; plain networks without skip connections have chaotic surfaces with many barriers. This geometrically explains why residual connections help optimization, not just gradient flow.", resource:"Li et al. 2018" },
+          { id:"t4", text:"Batch normalisation — loss landscape smoothing, not covariate shift", desc:"The original BatchNorm paper claimed it fixes internal covariate shift — Santurkar et al. showed this is false. The real benefit is loss landscape smoothing: BN makes the loss more Lipschitz and gradients more predictable, enabling higher learning rates.", resource:"Santurkar et al. 2018" },
+          { id:"t5", text:"Implicit bias of SGD — minimum norm solutions and flat minima", desc:"SGD doesn't just find any minimum — it has a preference for flat minima (low Hessian trace), which generalise better. For linear models, gradient descent finds the minimum-norm solution. For deep networks, SAM explicitly seeks flat minima.", resource:"Foret et al. 2021 — SAM" },
+          { id:"t6", text:"Double descent — why overparameterised models still generalise", desc:"Classical bias-variance says test error rises after overfitting. Double descent shows a second descent: once the model is large enough to perfectly interpolate training data, adding more parameters reduces test error again. This fundamentally contradicts classical learning theory.", resource:"Nakkiran et al. 2021" },
+          { id:"t7", text:"Neural Tangent Kernel — infinite-width networks as kernel machines", desc:"In the infinite-width limit, a neural network at initialisation is equivalent to a kernel machine with the NTK kernel. Under gradient descent the kernel stays approximately constant — giving exact training dynamics analytically. A rare rigorous theoretical handle on deep networks.", resource:"Jacot et al. 2018" },
+          { id:"t8", text:"Linear mode connectivity — independently trained models share basins", desc:"Two independently trained networks can often be connected by a linear path in weight space with low loss throughout — their minima lie in the same loss basin. This has practical implications for model merging and federated learning.", resource:"Frankle et al. 2020" },
+        ],
+        resources:[
+          { id:"r1", text:"Adam Paper — Kingma & Ba 2015 (paper)", url:"https://arxiv.org/abs/1412.6980", type:"paper" },
+          { id:"r2", text:"Visualizing Loss Landscapes — Li et al. 2018 (paper)", url:"https://arxiv.org/abs/1712.09913", type:"paper" },
+          { id:"r3", text:"Deep Double Descent — Nakkiran et al. 2021 (paper)", url:"https://arxiv.org/abs/1912.02292", type:"paper" },
+          { id:"r4", text:"NTK Paper — Jacot et al. 2018 (paper)", url:"https://arxiv.org/abs/1806.07572", type:"paper" },
+          { id:"r5", text:"Sebastian Ruder — Overview of Gradient Descent Algorithms (blog)", url:"https://ruder.io/optimizing-gradient-descent/", type:"blog" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement Adam from scratch — verify against PyTorch's Adam", desc:"Code the momentum and second-moment accumulators, bias correction, and parameter update. Run on Week 1 linear regression and confirm identical results to torch.optim.Adam." },
+          { id:"i2", text:"Visualise the loss landscape of a small network in 2D filter directions", desc:"Use the filter normalisation technique from Li et al. — plot the loss surface along two random directions from a trained checkpoint. Compare ResNet vs plain network visually." },
+          { id:"i3", text:"Demonstrate double descent on a small model", desc:"Train a polynomial regression model of increasing degree on a small dataset, plot train and test error — you should see the classical U-shape, then a dip back down after interpolation threshold." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"SAM — sharpness-aware minimisation for better generalisation", desc:"SAM explicitly seeks parameters in flat loss regions by computing gradients at a worst-case perturbation of the weights. Consistently improves generalisation across architectures, at roughly 2x training cost.", url:"https://arxiv.org/abs/2010.01412" },
+          { id:"e2", topic:"Edge of stability — learning rate drives curvature to 2/η", desc:"Empirically, gradient descent training converges to a regime where the maximum curvature of the loss ≈ 2/learning_rate, independent of architecture. This 'edge of stability' phenomenon challenges classical optimisation theory.", url:"https://arxiv.org/abs/2103.00065" },
+          { id:"e3", topic:"Lottery ticket hypothesis — sparse subnetworks that train from scratch", desc:"Frankle & Carlin found that dense networks contain sparse subnetworks (winning tickets) that, when rewound to their original initialisation and retrained alone, match full network performance — suggesting initialisation matters enormously.", url:"https://arxiv.org/abs/1803.03635" },
+          { id:"e4", topic:"Grokking — delayed generalisation after perfect training accuracy", desc:"Power et al. observed that small transformers trained on modular arithmetic achieve perfect training accuracy quickly, then generalise only much later after continued training — a mysterious phenomenon that reveals something deep about the optimisation geometry.", url:"https://arxiv.org/abs/2201.02177" },
+        ]
+      },
+      {
+        id:"ra_frontier", week:"Month 6–8", title:"How Frontier Models Are Built and Differ", duration:"3–4 weeks",
+        tags:["gpt","claude","gemini","deepseek","pretraining","alignment","tokenization"],
+        theory:[
+          { id:"t1", text:"The standard LLM training pipeline — pretraining, SFT, RLHF/DPO", desc:"All frontier models follow the same broad pipeline: unsupervised pretraining on massive text, supervised fine-tuning on curated instructions, and alignment via RLHF or DPO. Understanding each phase is the prerequisite for reasoning about any specific model's behaviour.", resource:"InstructGPT — Ouyang et al. 2022" },
+          { id:"t2", text:"Pretraining data — scale, curation, deduplication, contamination", desc:"GPT-4 was trained on ~13T tokens; Llama 3 on 15T. Data quality beats quantity beyond a point. Deduplication (MinHash), quality filtering (classifier-based), and contamination detection (n-gram overlap with benchmarks) are the key engineering problems.", resource:"Stanford CS336 — Lectures 13-14" },
+          { id:"t3", text:"GPT — decoder-only, next-token prediction, emergent abilities", desc:"GPT models use a decoder-only transformer with causal masking, trained purely on next-token prediction. GPT-3 demonstrated emergent few-shot learning; GPT-4 added multimodality. One simple objective scales to produce remarkably general models.", resource:"GPT-4 Technical Report 2023" },
+          { id:"t4", text:"Claude — Constitutional AI, harmlessness-helpfulness balance, long context", desc:"Anthropic uses Constitutional AI: the model critiques and revises its own outputs to follow a set of principles. Claude 3 extended context to 200K tokens. A fundamentally different alignment approach from RLHF — preference learning through self-critique rather than human labellers.", resource:"Anthropic Constitutional AI Paper" },
+          { id:"t5", text:"Gemini — native multimodality and mixture-of-experts at scale", desc:"Gemini was designed multimodal from scratch, processing interleaved image, audio, video, and text natively. Gemini Ultra uses sparse MoE, activating only a subset of the model per token — dramatically increasing model capacity without proportional compute cost.", resource:"Gemini Technical Report 2023" },
+          { id:"t6", text:"DeepSeek — MoE efficiency, RL for reasoning, open weights", desc:"DeepSeek-V3 uses Multi-head Latent Attention (MLA) to compress the KV cache and fine-grained MoE routing — achieving GPT-4 level performance at dramatically lower inference cost. DeepSeek-R1 uses GRPO for reasoning without supervised chain-of-thought data.", resource:"DeepSeek-V3 Technical Report 2024" },
+          { id:"t7", text:"Tokenisation — BPE, WordPiece, SentencePiece, and why it matters", desc:"All text is converted to integers before an LLM sees it. BPE merges frequent byte pairs iteratively. The tokeniser choice affects multilingual performance, code quality, arithmetic ability, and context efficiency. CS336 implements BPE from scratch.", resource:"Stanford CS336 — Lecture 1" },
+          { id:"t8", text:"Reasoning models — chain-of-thought, o1/o3, RL-trained extended thinking", desc:"OpenAI o1 uses RL to train extended chain-of-thought reasoning at test time. The model generates a long internal reasoning trace before producing the final answer. A fundamentally different compute profile from standard generation — more tokens, same model.", resource:"OpenAI o1 System Card 2024" },
+          { id:"t9", text:"Scaling laws and compute-optimal training — Chinchilla revisited", desc:"The Chinchilla result (20 tokens per parameter) was derived for a specific training budget. For inference-heavy deployments, a smaller model trained on more data is optimal — Llama's strategy. This tradeoff is how you choose the right model for a given deployment constraint.", resource:"Chinchilla — Hoffmann et al. 2022" },
+        ],
+        resources:[
+          { id:"r1", text:"Stanford CS336 — Language Modeling from Scratch 2025 (YouTube)", url:"https://www.youtube.com/playlist?list=PLoROMvodv4rOY23Y7RVmbIDnRIJqGFRSd", type:"youtube" },
+          { id:"r2", text:"GPT-4 Technical Report (paper)", url:"https://arxiv.org/abs/2303.08774", type:"paper" },
+          { id:"r3", text:"DeepSeek-V3 Technical Report (paper)", url:"https://arxiv.org/abs/2412.19437", type:"paper" },
+          { id:"r4", text:"Anthropic Constitutional AI paper (paper)", url:"https://arxiv.org/abs/2212.08073", type:"paper" },
+          { id:"r5", text:"Lilian Weng — How to train really large LLMs (blog)", url:"https://lilianweng.github.io/posts/2021-09-25-train-large/", type:"blog" },
+          { id:"r6", text:"Chinchilla — Hoffmann et al. 2022 (paper)", url:"https://arxiv.org/abs/2203.15556", type:"paper" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement BPE tokeniser from scratch — follow CS336 Assignment 1", desc:"CS336 first assignment is a BPE tokeniser — implement merge rules, vocabulary construction, and encode/decode. This demystifies tokenisation and explains why certain inputs cost more tokens." , megaProject:{proj:"A",step:6}},
+          { id:"i2", text:"Read and annotate DeepSeek-V3 and GPT-4 technical reports — extract architecture differences", desc:"Read both reports side by side. Make a table: architecture differences, training objective, data scale, alignment approach, inference cost. Trains the paper-reading skill while building a mental model of how models diverge." },
+          { id:"i3", text:"Run the same 20 prompts through GPT-4o, Claude 3.5, Gemini Pro, DeepSeek — document differences", desc:"Use the same hard prompts (multi-step reasoning, code, ambiguous instructions) across all four. Differences in output style, refusal patterns, and reasoning quality are directly explained by their different alignment and architecture choices." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Llama 3 technical report — the most detailed open frontier model report", desc:"Meta Llama 3 is unusually detailed about data curation, training infrastructure, and evaluation methodology. The most accessible window into how a frontier-scale model is actually built.", url:"https://arxiv.org/abs/2407.21783" },
+          { id:"e2", topic:"Multi-head Latent Attention — DeepSeek KV cache compression", desc:"MLA projects the KV cache into a low-dimensional latent space, reducing memory by 5-13x vs standard MHA. This is the key architectural innovation making DeepSeek-V2/V3 inference-efficient.", url:"https://arxiv.org/abs/2405.04434" },
+          { id:"e3", topic:"Mixture of Experts deep dive — sparse routing and expert capacity", desc:"MoE models activate only a subset of expert FFN layers per token. Understanding routing, load balancing loss, and expert capacity is increasingly essential as MoE becomes the dominant architecture.", url:"https://arxiv.org/abs/2401.04088" },
+        ]
+      },
+      {
         id:"ra3", week:"Month 9+", title:"Specialisation & Research", duration:"ongoing",
         tags:["research","agents","multimodal"],
         theory:[
@@ -574,10 +969,164 @@ const ROADMAP = [
         extraReading:[
           { id:"e1", topic:"How to read a research paper efficiently", desc:"Most people read papers wrong — understanding how to skim for contribution before reading deeply saves enormous time over a research career.", url:"https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf" },
           { id:"e2", topic:"Open problems in interpretability and mechanistic understanding", desc:"Interpretability research tries to understand what computations actually happen inside LLMs; it's one of the most intellectually rich areas in AI and entirely open.", url:"https://transformer-circuits.pub/" },
+          { id:"e3", topic:"GNN primer — message passing, GCN, GAT, expressivity limits", desc:"Graph Neural Networks extend deep learning to relational data (molecules, social graphs, chip netlists). The key ideas: message passing aggregation, spectral vs spatial formulations, and the WL expressivity ceiling. Relevant if you touch any graph-structured data at Marvell.", url:"https://distill.pub/2021/gnn-intro/" },
+          { id:"e4", topic:"GIN — achieving maximum 1-WL expressivity with sum aggregation", desc:"Xu et al. proved that mean/max aggregation is strictly less expressive than sum aggregation for graph isomorphism. GIN uses injective MLP+sum to reach the 1-WL ceiling — the theoretical foundation for understanding what GNNs can and can't distinguish.", url:"https://arxiv.org/abs/1810.00826" },
+          { id:"e5", topic:"Graph Transformers — full attention over nodes with structural positional encodings", desc:"Graph Transformers apply self-attention across all node pairs (not just edges), using Laplacian eigenvectors or shortest-path distances as positional encodings. Relevant for large-scale chip design and EDA workflows.", url:"https://arxiv.org/abs/2106.05234" },
+        ]
+      },
+    ]
+  },
+  {
+    phase: "Scientific ML",
+    color: "#10b981",
+    items: [
+      {
+        id:"sci1", week:"Parallel Track", title:"Neural Operators & Scientific Deep Learning", duration:"2–3 months",
+        tags:["neural-operators","fno","deeponet","scientific-ml","simulation"],
+        theory:[
+          { id:"t1", text:"Neural operators — learning maps between function spaces", desc:"Standard NNs learn functions R^n to R^m. Neural operators learn maps between function spaces: given a PDE coefficient function, output the solution function. This enables a single trained model to solve a PDE at any discretisation — not just the training grid.", resource:"FNO — Li et al. 2021" },
+          { id:"t2", text:"Fourier Neural Operator (FNO) — global convolution in spectral domain", desc:"FNO applies learnable convolution in Fourier space: FFT the input function, multiply by learnable complex weights, inverse FFT. Efficiently captures long-range dependencies that local convolutions miss — critical for wave propagation, fluid dynamics, and climate modelling.", resource:"FNO — Li et al. 2021" },
+          { id:"t3", text:"DeepONet — branch-trunk architecture for operator learning", desc:"DeepONet uses two sub-networks: a branch net encodes the input function at sensor points, a trunk net encodes the query locations. Their dot product gives the operator output. Grounded in the universal approximation theorem for operators.", resource:"Lu et al. 2021 — DeepONet" },
+          { id:"t4", text:"Equivariant networks — encoding physical symmetries into architecture", desc:"Physical systems obey symmetries (rotation, translation, permutation). E(3)-equivariant networks encode these structurally — the model cannot violate them. Standard in molecular simulation, protein structure prediction, and materials science.", resource:"Thomas et al. 2018 — Tensor Field Networks" },
+          { id:"t5", text:"Implicit neural representations — coordinate networks for continuous fields", desc:"INRs represent signals (images, volumes, 3D scenes, physics fields) as neural networks mapping coordinates to values: f(x,y,z,t) → field value. NeRF is the most famous application. For scientific ML, they enable continuous field representations not bound to a grid.", resource:"Mildenhall et al. 2021 — NeRF" },
+          { id:"t6", text:"Graph neural networks for physical simulation — particles and meshes", desc:"GNS uses message-passing GNNs over particle or mesh graphs. Each node sends force messages to neighbours. This architecture underlies neural simulation surrogates for fluids, solids, and granular materials.", resource:"Sanchez-Gonzalez et al. 2020 — GNS" },
+          { id:"t7", text:"Diffusion models for scientific data generation — proteins, molecules, materials", desc:"Diffusion adapted for science: DiffSBDD generates drug-like molecules, AlphaFold 3 uses diffusion for structure prediction, and new work generates crystal structures. The score function plays the role of a physics-based energy.", resource:"Jing et al. 2022 — DiffSBDD" },
+          { id:"t8", text:"ML for climate and weather — GraphCast, Pangu, FourCastNet", desc:"Three independent groups achieved better-than-NWP forecast accuracy using neural operators and transformers trained on ERA5 reanalysis data. The clearest demonstration that scientific ML is production-ready for high-stakes applications.", resource:"GraphCast — Lam et al. 2023" },
+          { id:"t9", text:"Foundation models for scientific ML — towards universal PDE solvers", desc:"Recent work trains large transformers on diverse PDE datasets to produce general-purpose solvers that zero-shot generalise to unseen equations. This is the direction the field is heading — scientific foundation models analogous to GPT.", resource:"Herde et al. 2024 — Poseidon" },
+        ],
+        resources:[
+          { id:"r1", text:"FNO Paper — Li et al. 2021 (paper)", url:"https://arxiv.org/abs/2010.08895", type:"paper" },
+          { id:"r2", text:"DeepONet Paper — Lu et al. 2021 (paper)", url:"https://arxiv.org/abs/1910.03193", type:"paper" },
+          { id:"r3", text:"Neural Operator Survey — Kovachki et al. 2023 (paper)", url:"https://arxiv.org/abs/2108.08481", type:"paper" },
+          { id:"r4", text:"GraphCast — Lam et al. 2023 (paper)", url:"https://arxiv.org/abs/2212.12794", type:"paper" },
+          { id:"r5", text:"Zongyi Li — FNO Tutorial (YouTube)", url:"https://www.youtube.com/watch?v=IaS72aHrJKE", type:"youtube" },
+          { id:"r6", text:"MIT 6.S191 — AI for Scientific Discovery lecture (YouTube)", url:"https://introtodeeplearning.com/", type:"course" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement a 1D FNO from scratch — solve Burgers equation, compare to analytical solution", desc:"Implement the spectral convolution layer (FFT, weight multiplication, iFFT) in PyTorch and train on Burgers equation data. Measure relative L2 error vs the analytical solution." , megaProject:{proj:"C",step:1}},
+          { id:"i2", text:"Train a GNN simulator on a simple spring-mass system — predict multi-step trajectories", desc:"Build a 1D spring-mass simulation dataset, construct a graph where masses are nodes and springs are edges, train a GNN to predict one-step acceleration, and rollout multi-step predictions." },
+          { id:"i3", text:"Reproduce GraphCast inference on ERA5 data — generate a 10-day weather forecast", desc:"Use open-sourced GraphCast weights to generate a global weather forecast from ERA5 initial conditions. Visualise the result. Makes the ML-for-weather story concrete." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"AlphaFold 2 — protein structure prediction as geometry and attention", desc:"AlphaFold 2 solved a 50-year biology grand challenge using attention over amino acid pair representations and an equivariant structure module. The best example of physics constraints and deep learning working together.", url:"https://www.nature.com/articles/s41586-021-03819-2" },
+          { id:"e2", topic:"Spectral bias — why NNs learn low frequencies first", desc:"NNs preferentially fit low-frequency components early in training. This creates fundamental challenges for problems with high-frequency solutions (wave equations, turbulence) and is why novel activation functions like SIREN exist.", url:"https://arxiv.org/abs/1806.08734" },
+          { id:"e3", topic:"Poseidon — foundation model for PDEs, zero-shot generalisation", desc:"Poseidon trains a scalable transformer on diverse PDE datasets and demonstrates zero-shot generalisation to unseen equations. The most concrete realisation of the foundation model vision for scientific ML.", url:"https://arxiv.org/abs/2405.19101" },
+          { id:"e4", topic:"Learned optimisation — using ML to learn better optimisers for scientific problems", desc:"Instead of Adam or L-BFGS, learn the update rule itself from data. For scientific inverse problems where you run the same optimisation loop thousands of times, learned optimisers can dramatically accelerate convergence.", url:"https://arxiv.org/abs/2203.00397" },
+        ]
+      },
+      {
+        id:"sci2", week:"Parallel Track", title:"AI for Drug Discovery, Materials & Biology", duration:"2–3 months",
+        tags:["drug-discovery","molecular","protein","materials","genomics"],
+        theory:[
+          { id:"t1", text:"Molecular representation — SMILES, molecular graphs, 3D conformers", desc:"Molecules can be represented as strings (SMILES), graphs (atoms as nodes, bonds as edges), or 3D point clouds. The choice determines which architectures apply and what geometric invariances are needed.", resource:"Wieder et al. 2020 — Compact Survey" },
+          { id:"t2", text:"GNNs for molecular property prediction — message passing over atom graphs", desc:"Predicting molecular properties (solubility, toxicity, binding affinity) is the canonical graph ML task. Atoms are nodes; bonds are edges; message passing aggregates neighbour information to produce a molecular-level prediction via readout.", resource:"Gilmer et al. 2017 — MPNN" },
+          { id:"t3", text:"AlphaFold 2 — protein structure prediction architecture and key ideas", desc:"AlphaFold 2 uses MSA features, row/column attention over residue pair representations, and an equivariant structure module. Fundamental reading for anyone working at the biology-ML interface.", resource:"Jumper et al. 2021 — AlphaFold 2" },
+          { id:"t4", text:"Generative models for molecules — SMILES-based, graph, 3D diffusion", desc:"SMILES-based autoregressive models are simple but ignore geometry. Graph-based generation builds molecules atom by atom. 3D diffusion models (DiffSBDD, EDM) generate 3D structures directly — now the dominant approach for drug design.", resource:"DiffSBDD — Schneuing et al. 2022" },
+          { id:"t5", text:"Genomics and sequence ML — DNA language models, variant effect prediction", desc:"DNA and protein sequences use the same architectures as text. HyenaDNA and Nucleotide Transformer apply LLM-style pretraining to genomic sequences. Downstream tasks: variant effect prediction, regulatory element classification, gene expression.", resource:"HyenaDNA — Nguyen et al. 2023" },
+        ],
+        resources:[
+          { id:"r1", text:"AlphaFold 2 Paper — Jumper et al. 2021 (paper)", url:"https://www.nature.com/articles/s41586-021-03819-2", type:"paper" },
+          { id:"r2", text:"GNNs for Drug Discovery — practical intro (blog)", url:"https://www.blopig.com/blog/2022/02/a-practical-introduction-to-graph-neural-networks-for-drug-discovery/", type:"blog" },
+          { id:"r3", text:"HuggingFace — BioML models on Hub (docs)", url:"https://huggingface.co/models?pipeline_tag=text-classification&sort=trending&search=bio", type:"docs" },
+          { id:"r4", text:"Molecular ML Lectures — Valence Discovery (YouTube)", url:"https://www.youtube.com/c/ValenceDiscovery", type:"youtube" },
+        ],
+        implementation:[
+          { id:"i1", text:"Train a GNN for molecular property prediction on QM9 — predict HOMO-LUMO gap", desc:"QM9 is the standard small molecule benchmark. Train a basic MPNN on atom-graph representations to predict the HOMO-LUMO energy gap. The hello world of molecular ML." },
+          { id:"i2", text:"Fine-tune ESM-2 on HuggingFace for secondary structure prediction", desc:"ESM-2 is Meta protein language model, available on HuggingFace. Fine-tune it on secondary structure labels. Introduces the protein ML workflow and HuggingFace Hub for scientific models." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"AlphaFold 3 — diffusion for all molecular types", desc:"AlphaFold 3 extends structure prediction to arbitrary molecular complexes using a diffusion architecture. A significant architectural shift showing diffusion reach beyond images.", url:"https://www.nature.com/articles/s41586-024-07487-w" },
+          { id:"e2", topic:"Active learning for drug discovery — querying experiments efficiently", desc:"Active learning selects the most informative molecules to synthesise, minimising expensive experiments. Bayesian optimisation over molecular space is the standard approach.", url:"https://arxiv.org/abs/2012.12919" },
+        ]
+      },
+      {
+        id:"sci3", week:"Parallel Track", title:"AI for Mechanical Engineering & Manufacturing", duration:"2–3 months",
+        tags:["manufacturing","fea-surrogate","digital-twin","predictive-maintenance","generative-design","inspection"],
+        theory:[
+          { id:"t1", text:"FEA surrogate models — replacing finite element solvers with neural operators", desc:"Full FEA (ANSYS, Abaqus) for stress, deformation, and thermal fields can take minutes to hours per simulation. Neural operator surrogates (FNO, DeepONet) trained on FEA outputs can query the same solution in milliseconds with <5% error. This directly enables real-time design exploration and optimisation loops that were previously computationally infeasible.", resource:"Chen et al. 2021 — Learning FEA Surrogates" },
+          { id:"t2", text:"Digital twins — physics + data fusion for live simulation of physical assets", desc:"A digital twin is a computational model of a physical asset that updates in real-time from sensor data. The ML layer handles the gap between the physics model and reality (sensor noise, unmodelled dynamics, degradation). This is the dominant paradigm in smart manufacturing, turbine monitoring, and precision machining.", resource:"Grieves & Vickers 2017 — Digital Twin" },
+          { id:"t3", text:"Predictive maintenance — remaining useful life estimation from sensor time series", desc:"Predicting when a machine will fail before it does. The core ML problem: given vibration, temperature, current, and acoustic emission signals over time, estimate remaining useful life (RUL). CNN-LSTM and transformer architectures now dominate the benchmarks. The CMAPSS and PRONOSTIA datasets are the standard evaluation benchmarks.", resource:"NASA CMAPSS Dataset" },
+          { id:"t4", text:"Computer vision for manufacturing inspection — defect detection and quality control", desc:"Vision-based quality inspection replaces manual inspection on production lines. Standard pipeline: high-resolution camera → CNN/ViT feature extractor → anomaly detector or classifier. Anomaly detection is preferred over pure classification because defect categories are not fully known in advance — MVTec AD is the standard benchmark.", resource:"MVTec AD Dataset — Bergmann et al. 2019" },
+          { id:"t5", text:"Generative design and topology optimisation — AI-assisted structural design", desc:"Topology optimisation finds the optimal material distribution within a design space for given loads and constraints. Traditional SIMP is slow for 3D high-resolution domains. Neural network surrogates learn the optimisation landscape and generate near-optimal designs in seconds. NVIDIA Modulus and the TO-dataset are the starting points.", resource:"Nie et al. 2020 — TopologyGAN" },
+          { id:"t6", text:"CFD surrogate models — learning fluid flow fields for aerodynamics and thermal management", desc:"Computational fluid dynamics (OpenFOAM, Fluent) is the other dominant computational bottleneck in mechanical design. FNO applied to CFD can predict full velocity and pressure fields at arbitrary query points from boundary conditions. Applications: HVAC design, heat exchanger optimisation, aerodynamic drag prediction.", resource:"FNO for Navier-Stokes — Li et al. 2021" },
+          { id:"t7", text:"Tool wear and surface finish prediction — manufacturing process ML", desc:"In CNC machining and additive manufacturing, tool condition and process parameters (feed rate, depth of cut, spindle speed) directly determine surface roughness (Ra) and dimensional accuracy. ML models trained on cutting force signals and acoustic emission data can predict tool wear and remaining tool life — reducing scrap and unplanned downtime.", resource:"Ding et al. 2019 — Tool Wear Survey" },
+          { id:"t8", text:"Graph neural networks for mesh-based simulation — FEM as a graph problem", desc:"Finite element meshes are graphs: nodes are mesh points, edges are element connections. GNNs (specifically MeshGraphNets by DeepMind) learn to simulate physics on these irregular meshes — handling variable geometry and mesh resolution, which structured grids cannot. Directly applicable to structural and fluid simulation.", resource:"Pfaff et al. 2021 — MeshGraphNets" },
+          { id:"t9", text:"Anomaly detection in manufacturing — unsupervised and semi-supervised approaches", desc:"Most manufacturing defects are rare and poorly labelled — pure supervised classification fails. Unsupervised approaches (autoencoders, normalising flows, diffusion reconstruction) learn the distribution of normal parts and flag deviations. PatchCore and WinCLIP are the current state-of-the-art on MVTec. This is the dominant real-world framing in industry.", resource:"Roth et al. 2022 — PatchCore" },
+          { id:"t10", text:"Reinforcement learning for process optimisation — CNC, additive manufacturing, assembly", desc:"RL agents learn optimal process parameters (or sequences) by interacting with a simulation or controlled real environment. Applications: optimising CNC toolpaths to minimise surface roughness, learning extrusion parameters in FDM 3D printing, and robotic assembly sequence optimisation. The sim-to-real gap is the main engineering challenge.", resource:"Kiran et al. 2022 — RL for Industrial Control" },
+          { id:"t11", text:"Foundation models for engineering — CAD, simulation, and multimodal technical documents", desc:"Recent work applies LLMs and multimodal models directly to engineering workflows: CAD feature recognition, automated BOM extraction from drawings, natural language interfaces to FEA tools, and retrieval-augmented engineering design assistants. This is the direct intersection with your Marvell GenAI work — building AI tools for technical domains.", resource:"Makatura et al. 2023 — Generative AI for Engineering" },
+        ],
+        resources:[
+          { id:"r1", text:"MeshGraphNets — Pfaff et al. 2021 (paper)", url:"https://arxiv.org/abs/2010.03409", type:"paper" },
+          { id:"r2", text:"TopologyGAN — Nie et al. 2020 (paper)", url:"https://arxiv.org/abs/2003.04685", type:"paper" },
+          { id:"r3", text:"MVTec Anomaly Detection Dataset (docs)", url:"https://www.mvtec.com/company/research/datasets/mvtec-ad", type:"docs" },
+          { id:"r4", text:"NASA CMAPSS Turbofan Degradation Dataset (docs)", url:"https://data.nasa.gov/Aerospace/CMAPSS-Jet-Engine-Simulated-Data/ff5v-kuh6", type:"docs" },
+          { id:"r5", text:"NVIDIA Modulus — Physics-ML framework for engineering (docs)", url:"https://docs.nvidia.com/deeplearning/modulus/index.html", type:"docs" },
+          { id:"r6", text:"DeepMind MeshGraphNets — Blog and Code (blog)", url:"https://deepmind.google/discover/blog/learning-to-simulate-complex-physics-with-graph-networks/", type:"blog" },
+          { id:"r7", text:"PatchCore Paper — Roth et al. 2022 (paper)", url:"https://arxiv.org/abs/2106.08265", type:"paper" },
+          { id:"r8", text:"Liang et al. — Survey of ML for Manufacturing (paper)", url:"https://arxiv.org/abs/1910.07107", type:"paper" },
+        ],
+        implementation:[
+          { id:"i1", text:"Train a CNN anomaly detector on MVTec AD — replicate PatchCore on one product category", desc:"Download MVTec AD (leather, metal nut, or transistor category — closest to manufacturing context). Train PatchCore (no labels needed — only normal training images) and evaluate AUROC on the test set. This is the full production anomaly detection pipeline used in real factories." , megaProject:{proj:"C",step:2}},
+          { id:"i2", text:"Build a predictive maintenance model on NASA CMAPSS — predict RUL from sensor time series", desc:"NASA CMAPSS has multivariate time series from jet engine sensors with run-to-failure trajectories. Train a 1D-CNN or LSTM to predict remaining useful life (RUL). Evaluate RMSE and score function. This is the standard benchmark every predictive maintenance paper uses." },
+          { id:"i3", text:"Train a surrogate model for a simple FEA problem — predict stress field from geometry and load", desc:"Generate 500-1000 simple 2D FEA samples (rectangle under point load — solvable analytically or with a lightweight FEA script). Train a small CNN or FNO to predict the von Mises stress field from geometry and load inputs. Compare predicted field to ground truth FEA. This is a miniature version of the industrial FEA surrogate problem." },
+          { id:"i4", text:"Implement MeshGraphNets on a simple spring-mass or beam simulation", desc:"Build a 1D or 2D finite element mesh as a graph (nodes at mesh points, edges connecting neighbours). Train a GNN to predict one-step displacement updates from applied forces. Rollout multi-step simulation and compare to analytical solution. This links the graph ML work from sci1 directly to FEM." },
+          { id:"i5", text:"Build a GenAI assistant for a mechanical engineering task — CAD query, material selection, or process planning", desc:"Use your Marvell GenAI skills (RAG + LLM) to build a domain-specific assistant over mechanical engineering documentation: query a material properties database, answer questions from a machining handbook, or walk through process planning from a part drawing. This directly connects your ME background to your GenAI engineering work." , megaProject:{proj:"C",step:3}},
+        ],
+        extraReading:[
+          { id:"e1", topic:"Physics-informed neural networks for solid mechanics — stress and deformation", desc:"PINNs embed the governing equations of solid mechanics (equilibrium, compatibility, constitutive law) into the loss function. For problems where FEA mesh generation is difficult (complex geometries, crack propagation), PINNs offer a mesh-free alternative. The limitations at scale are real but the approach is valuable for understanding.", url:"https://arxiv.org/abs/2110.01002" },
+          { id:"e2", topic:"Generative models for additive manufacturing — optimising print parameters with diffusion", desc:"Diffusion models and VAEs applied to FDM/SLA parameter optimisation: given a desired surface finish and strength, generate the optimal combination of layer height, infill, temperature, and speed. Early work but directly actionable for anyone with manufacturing experience.", url:"https://arxiv.org/abs/2309.07605" },
+          { id:"e3", topic:"WinCLIP — zero-shot anomaly detection using vision-language models", desc:"WinCLIP uses CLIP (a vision-language model) for zero-shot industrial anomaly detection — no training images needed. The model is prompted with text descriptions of normal vs anomalous states. This bridges your GenAI background (LLMs, multimodal) with the manufacturing inspection problem.", url:"https://arxiv.org/abs/2303.14814" },
+          { id:"e4", topic:"Graph networks for structural simulation — from MeshGraphNets to production", desc:"DeepMind's MeshGraphNets paper is the foundation. The follow-up work (MultiScale MeshGraphNets, BSMS-GNN) handles large meshes efficiently. Reading the sequence from MeshGraphNets to current SOTA gives you a complete view of where neural simulation for structural mechanics is heading.", url:"https://arxiv.org/abs/2109.08716" },
+          { id:"e5", topic:"Digital twin platforms — Azure Digital Twins, NVIDIA Omniverse, Siemens Xcelerator", desc:"The industrial digital twin market is where most manufacturing AI is actually deployed. Understanding the platform landscape (what they provide, what you build on top) is practically useful for any ML engineer moving into industrial applications.", url:"https://blogs.microsoft.com/blog/2022/10/12/microsoft-azure-digital-twins/" },
+        ]
+      },
+    ]
+  },
+  {
+    phase: "Research & Applied Scientist Pivot",
+    color: "#ec4899",
+    items: [
+      {
+        id:"rp1", week:"2–3 Year Track", title:"Building a Research Portfolio for Scientist Roles", duration:"6–12 months",
+        tags:["research","papers","kaggle","portfolio","conferences","huggingface","publishing"],
+        theory:[
+          { id:"t1", text:"The applied scientist role — half engineering, half research, full ownership", desc:"Applied Scientists spend roughly half their time productionising ML and half doing publishable research. Key distinction from ML engineer: you own the research direction. Key distinction from research scientist: your work must ship. This hybrid is the role to target in a 2-3 year horizon from a strong engineering base.", resource:"Abhishek Divekar — Engineer to Scientist" },
+          { id:"t2", text:"How to read research papers — the three-pass method", desc:"Pass 1 (5 min): title, abstract, headings, conclusion — extract the main claim. Pass 2 (1 hr): read carefully, understand figures and equations. Pass 3 (4-5 hr): understand every derivation, identify assumptions and weaknesses. Most papers only warrant Pass 2.", resource:"How to Read a Paper — Keshav 2007" },
+          { id:"t3", text:"Identifying a research contribution — novelty, significance, rigour", desc:"A paper contribution is one of: new method outperforming prior work on standard benchmarks, new theory explaining existing empirical observations, new dataset enabling new research, or new framework unifying existing work. Identifying which type shapes how you evaluate and write papers.", resource:"CS224N Research Project Guide" },
+          { id:"t4", text:"Conference landscape — NeurIPS, ICML, ICLR, ACL, workshop papers", desc:"NeurIPS/ICML/ICLR accept both theory and empirical work; high bar but broadly respected. ACL/EMNLP prefer clean empirical NLP. Workshop papers at top conferences have 40-60% acceptance rates and are the realistic first publication target. Targeting the right venue is as important as the work.", resource:"Divekar — Notes on ML conferences" },
+          { id:"t5", text:"Paper writing — structuring a contribution clearly and credibly", desc:"Abstract: 5 sentences (problem, gap, approach, result, implication). Introduction: motivation, gap, contribution, structure. Related work: position your work. Method: precisely reproducible. Experiments: ablations, statistical significance, qualitative analysis. Conclusion: do not just repeat the abstract.", resource:"Simon Peyton Jones — How to Write a Great Research Paper" },
+          { id:"t6", text:"HuggingFace Hub — open science, model cards, and community visibility", desc:"Publishing code and models on HuggingFace dramatically increases citation and visibility. Papers with models on Hub get adopted faster. A detailed model card (training data, evaluation, limitations, usage) is the standard for responsible publishing and community trust.", resource:"HuggingFace — Open Science Guide" },
+          { id:"t7", text:"From engineer to applied scientist — the internal transfer path", desc:"The most reliable path without a PhD: produce production impact in your engineering role, simultaneously build a research track record (workshop papers, Kaggle, open-source), then transfer internally. Internal transfer is dramatically easier than external recruiting because you have earned trust and context.", resource:"David Fan — Breaking into ML Research Without PhD" },
+          { id:"t8", text:"Kaggle and competitions — building verifiable ML skills and visibility", desc:"Kaggle competitions provide labelled data, a leaderboard, and a community. A top-10% finish on a featured competition is a concrete, verifiable signal. Solo medals demonstrate capability; team medals demonstrate collaboration. The winning solution write-ups are among the best practical ML education available.", resource:"Kaggle Learn + Competition Discussions" },
+        ],
+        resources:[
+          { id:"r1", text:"How to Read a Paper — Keshav 2007 (paper)", url:"https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf", type:"paper" },
+          { id:"r2", text:"How to Write a Great Research Paper — Simon Peyton Jones (YouTube)", url:"https://www.youtube.com/watch?v=VK51E3gHENc", type:"youtube" },
+          { id:"r3", text:"Abhishek Divekar — Engineer to ML Scientist (blog)", url:"https://medium.com/@ardivekar/engineer-to-ml-scientist-notes-on-a-2-year-journey-of-growth-ed4d16d22044", type:"blog" },
+          { id:"r4", text:"David Fan — Breaking into ML Research Without a PhD (blog)", url:"https://davidfan.io/blog/2022/02/breaking-into-industry-ml-ai-research-without-a-phd/", type:"blog" },
+          { id:"r5", text:"HuggingFace Hub — Model and Dataset Publishing (docs)", url:"https://huggingface.co/docs/hub/index", type:"docs" },
+          { id:"r6", text:"Papers with Code — track state-of-the-art results (docs)", url:"https://paperswithcode.com/", type:"docs" },
+          { id:"r7", text:"Connected Papers — visualise a paper citation graph (docs)", url:"https://www.connectedpapers.com/", type:"docs" },
+          { id:"r8", text:"Semantic Scholar — research discovery with citation data (docs)", url:"https://www.semanticscholar.org/", type:"docs" },
+        ],
+        implementation:[
+          { id:"i1", text:"Reproduce one ML paper completely — train it, match reported results within 5%", desc:"Pick a paper with public code. Read it, then implement it yourself without looking at the code. Train on the same dataset. When you match within 5%, read the original code and identify differences." , megaProject:{proj:"C",step:4}},
+          { id:"i2", text:"Enter one Kaggle competition start-to-finish and write up your approach", desc:"EDA, baseline, feature engineering, model selection, ensembling, and a write-up of your approach. Top-30% on a first competition is realistic and a meaningful signal. The write-up itself is important — it builds the habit of documenting ML decisions." },
+          { id:"i3", text:"Publish a technical blog post — explain a system or paper clearly to a public audience", desc:"Write a clear 1500-word technical post about something you built or a paper you reproduced. Writing for a public audience forces precision and reveals gaps. Posts that explain things clearly get read and shared." },
+          { id:"i4", text:"Submit a 4-page paper to a workshop at NeurIPS, ICML, or ICLR", desc:"Target a workshop aligned with your Marvell work (efficient ML, GenAI systems, agent evaluation). Workshop papers are 4-8 pages with 40-60% acceptance rates. Your first submission teaches the entire submission and review process." },
+          { id:"i5", text:"Publish a model or dataset on HuggingFace Hub with a detailed model card", desc:"Fine-tune a model for a specific task (code generation, technical QA, EDA document parsing) and publish with a complete model card. Downloads and likes on Hub are a proxy for community impact and appear on your public profile." },
+          { id:"i6", text:"Contribute a real feature or fix to LangChain, LlamaIndex, or HuggingFace", desc:"Fix a real bug or implement a real feature in a production open-source codebase. The code review process teaches production standards. Core contributors get noticed and recruited — it is a career accelerant." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Research scientist vs applied scientist vs ML engineer — the differences", desc:"Eugene Yan breakdown: research scientists produce papers as primary output; applied scientists balance production impact with publishable research; ML engineers own production systems. Understanding where you want to end up shapes which projects to prioritise at Marvell.", url:"https://eugeneyan.com/writing/data-science-roles/" },
+          { id:"e2", topic:"Andrej Karpathy recipe — debugging research code before you scale", desc:"Start simple, overfit a tiny dataset first, babysit your loss curves, avoid trying to be clever early. The discipline to follow this saves months of wasted compute. Required reading before running your first research experiment.", url:"http://karpathy.github.io/2019/04/25/recipe/" },
+          { id:"e3", topic:"TensorTonic premium tier — ML interview prep for scientist roles", desc:"The premium tier adds company-specific ML interview questions relevant to Applied Scientist roles at major labs. Worth paying for when 12+ months in and actively targeting research-adjacent roles.", url:"https://www.tensortonic.com/" },
+          { id:"e4", topic:"How to give a research talk — Kayvon Fatahalian guide", desc:"A great talk motivates the problem first (not the method), uses visual intuition over equations, gives the key insight in the first 5 minutes, and leaves the audience wanting to read the paper.", url:"http://graphics.cs.cmu.edu/nsp/course/15-869/fall14/pdfs/giving_a_talk.pdf" },
         ]
       },
     ]
   }
+
 ];
 
 const STATUS = {
@@ -586,11 +1135,52 @@ const STATUS = {
   done: { bg:"#0d1f0f", border:"#238636", icon:"●", color:C.green },
 };
 
+const MEGA_PROJECTS = {
+  A: {
+    id:"A", name:"From-Scratch Transformer", color:"#6366f1", bg:"#1e1b4b", border:"#4338ca", emoji:"🧠",
+    totalSteps:6,
+    subtitle:"Build a complete LLM — every component yours",
+    nature:"from_scratch",
+    steps:[
+      "Tensor ops: matmul + SVD (mf1)",
+      "Autograd engine: Value class + .backward() (c3)",
+      "Neural net layers on your autograd (c3)",
+      "Multi-head attention using your layers (c9)",
+      "GPT decoder: assemble your components (c10)",
+      "BPE tokenizer wired to your transformer (ra)",
+    ]},
+  B: {
+    id:"B", name:"Production Agent System", color:"#3b82f6", bg:"#0f1e3d", border:"#1d4ed8", emoji:"🤖",
+    totalSteps:6,
+    subtitle:"Understand before abstracting, then ship",
+    nature:"framework_assisted",
+    steps:[
+      "Async foundation: concurrent LLM calls (eng1)",
+      "ReAct from scratch: raw loop, no frameworks (g2)",
+      "RAG pipeline: add retrieval to your agent (g3)",
+      "LangGraph upgrade: production state + memory (mv3)",
+      "Eval: LLM-as-judge on your agent (mv3)",
+      "Ship: FastAPI + SSE streaming endpoint (mv3)",
+    ]},
+  C: {
+    id:"C", name:"Research Portfolio", color:"#ec4899", bg:"#2d0f1f", border:"#9d174d", emoji:"🔬",
+    totalSteps:4,
+    subtitle:"Independent showcase pieces — right tool for each",
+    nature:"portfolio",
+    steps:[
+      "FNO solver: spectral conv from scratch (sci1)",
+      "PatchCore: manufacturing vision inspector (sci3)",
+      "ME GenAI: Project B skills, new domain (sci3)",
+      "Paper reproduction: match results within 5% (rp1)",
+    ]},
+};
+
 const TYPE_BADGE = {
-  youtube: { label:"▶ YouTube", bg:"#3d1212", color:"#f85149" },
-  blog: { label:"✍ Blog", bg:"#0d1f2d", color:"#58a6ff" },
-  docs: { label:"📄 Docs", bg:"#1a1f2e", color:"#a5d6ff" },
-  paper: { label:"📝 Paper", bg:"#2d1b3d", color:"#d2a8ff" },
+  youtube: { label:"▶ YouTube",  bg:"#3d1212", color:"#f85149" },
+  paper:   { label:"📝 Paper",   bg:"#2d1b3d", color:"#d2a8ff" },
+  blog:    { label:"✍ Blog",    bg:"#0d1f2d", color:"#58a6ff" },
+  docs:    { label:"📄 Docs",    bg:"#1a1f2e", color:"#a5d6ff" },
+  course:  { label:"🎓 Course",  bg:"#1a1208", color:"#d29922" },
 };
 
 const ALL_ITEMS = ROADMAP.flatMap(p => p.items);
@@ -663,6 +1253,8 @@ export default function App() {
   const [view, setView] = useState("roadmap");
   const [activeSection, setActiveSection] = useState({});
   const [loaded, setLoaded] = useState(false);
+  const [rFilter, setRFilter] = useState("all");
+  const [openBuild, setOpenBuild] = useState({});
 
   useEffect(() => {
     (async () => {
@@ -717,7 +1309,7 @@ export default function App() {
 
         <div style={{marginBottom:26}}>
           <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:-0.4}}>ML/AI Mastery</div>
-          <div style={{fontSize:11,color:C.dim,marginTop:3,lineHeight:1.4}}>Basics → Cracked → Marvell Ready</div>
+          <div style={{fontSize:11,color:C.dim,marginTop:3,lineHeight:1.4}}>MTech → Marvell GenAI → Research</div>
         </div>
 
         <div style={{marginBottom:24,padding:"14px",background:C.elevated,borderRadius:10,border:`1px solid ${C.border}`}}>
@@ -746,7 +1338,7 @@ export default function App() {
 
         <div style={{marginBottom:20}}>
           <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:6,paddingLeft:2}}>Views</div>
-          {[["roadmap","📋  Roadmap"],["stats","📊  Stats"]].map(([v,l])=>(
+          {[["roadmap","📋  Roadmap"],["resources","🔗  Resources"],["build","⚙️  Build"],["stats","📊  Stats"]].map(([v,l])=>(
             <button key={v} onClick={()=>setView(v)} style={{width:"100%",display:"flex",alignItems:"center",padding:"8px 10px",borderRadius:7,border:"none",cursor:"pointer",fontSize:13,fontWeight:600,background:view===v?"#0d1f42":"transparent",color:view===v?C.accent:C.muted,textAlign:"left",marginBottom:2,transition:"all 0.15s"}}>{l}</button>
           ))}
         </div>
@@ -795,7 +1387,7 @@ export default function App() {
                 <div style={{display:"flex",alignItems:"center",gap:8}}>
                   <div style={{width:8,height:8,borderRadius:"50%",background:phase.color}}/>
                   <span style={{fontWeight:700,fontSize:17,color:C.text}}>{phase.phase}</span>
-                  <span style={{fontSize:13,color:C.dim,background:C.elevated,padding:"2px 8px",borderRadius:99}}>{phDone}/{phase.items.length}</span>
+                  <span style={{fontSize:12,color:phDone===phase.items.length?C.green:C.dim,background:phDone===phase.items.length?"#0d1f0f":C.elevated,padding:"2px 8px",borderRadius:99,border:`1px solid ${phDone===phase.items.length?"#238636":C.border2}`}}>{phDone}/{phase.items.length}</span>
                 </div>
                 <span style={{color:C.dim,fontSize:11}}>{phOpen?"▲":"▼"}</span>
               </div>
@@ -892,6 +1484,261 @@ export default function App() {
           );
         })}
 
+
+        {/* ── RESOURCES VIEW ── */}
+        {view==="resources" && (() => {
+          const resTab = rFilter.startsWith("x:") ? "extra" : "main";
+          const typeFilter = rFilter.startsWith("x:") ? rFilter.slice(2) : rFilter;
+
+          const allMain = ROADMAP.flatMap(phase =>
+            phase.items.flatMap(item =>
+              (item.resources||[]).map(r => ({...r, itemId:item.id, itemTitle:item.title, phase:phase.phase, phaseColor:phase.color, isExtra:false}))
+            )
+          );
+          const allExtra = ROADMAP.flatMap(phase =>
+            phase.items.flatMap(item =>
+              (item.extraReading||[]).map(e => ({...e, id:e.id, text:e.topic, url:e.url||"", type:"extra", itemId:item.id, itemTitle:item.title, phase:phase.phase, phaseColor:phase.color, isExtra:true, desc:e.desc}))
+            )
+          );
+
+          const pool = resTab==="extra" ? allExtra : allMain;
+          const filtered = typeFilter==="all" ? pool : pool.filter(r=>r.type===typeFilter);
+
+          const mainTypes = ["all","youtube","course","paper","blog","docs"];
+          const EXTRA_BADGE = {label:"✨ Extra",bg:"#2d1b3d",color:"#a371f7"};
+
+          // Group by phase
+          const grouped = ROADMAP.map(phase => ({
+            phase: phase.phase,
+            color: phase.color,
+            items: filtered.filter(r => r.phase === phase.phase)
+          })).filter(g => g.items.length > 0);
+
+          const totalChecked = resTab==="extra"
+            ? allExtra.filter(e=>checks[`${e.itemId}__extra__${e.id}`]).length
+            : allMain.filter(r=>checks[`${r.itemId}__resources__${r.id}`]).length;
+
+          return (
+            <div>
+              {/* Header */}
+              <div style={{marginBottom:16}}>
+                <div style={{fontSize:20,fontWeight:700,color:C.text,marginBottom:4}}>Resources</div>
+                <div style={{fontSize:12,color:C.dim}}>{totalChecked}/{pool.length} completed in current view</div>
+              </div>
+
+              {/* Main tab switcher */}
+              <div style={{display:"flex",gap:3,marginBottom:14,background:C.elevated,padding:3,borderRadius:9,width:"fit-content"}}>
+                {[["main","📚  Resources"],["extra","✨  Extra Reading"]].map(([tab,label])=>(
+                  <button key={tab} onClick={()=>setRFilter(tab==="main"?"all":"x:all")}
+                    style={{padding:"5px 14px",borderRadius:7,border:"none",cursor:"pointer",fontSize:12,fontWeight:600,
+                      background: resTab===tab ? C.surface : "transparent",
+                      color: resTab===tab ? C.text : C.dim,
+                      boxShadow: resTab===tab ? "0 1px 3px rgba(0,0,0,0.3)" : "none",
+                      transition:"all 0.15s"}}>
+                    {label}
+                  </button>
+                ))}
+              </div>
+
+              {/* Type filter chips — only for main resources */}
+              {resTab==="main" && (
+                <div style={{display:"flex",gap:5,marginBottom:14,flexWrap:"wrap"}}>
+                  {mainTypes.map(t=>{
+                    const count = t==="all" ? allMain.length : allMain.filter(r=>r.type===t).length;
+                    const badge = TYPE_BADGE[t]||{label:"All",bg:C.elevated,color:C.muted};
+                    const active = typeFilter===t;
+                    return (
+                      <button key={t} onClick={()=>setRFilter(t)}
+                        style={{padding:"3px 11px",borderRadius:99,border:`1px solid ${active?(badge.color||C.accent):C.border}`,
+                          background:active?(badge.bg||C.elevated):"transparent",
+                          color:active?(badge.color||C.accent):C.dim,fontSize:12,fontWeight:600,cursor:"pointer"}}>
+                        {t==="all"?"All ✦":badge.label}
+                        <span style={{opacity:0.55,fontSize:10,marginLeft:4}}>{count}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              )}
+
+              {/* Grouped by phase */}
+              {grouped.length===0 && (
+                <div style={{color:C.dim,fontSize:13,textAlign:"center",padding:"32px 0"}}>No resources match this filter.</div>
+              )}
+              {grouped.map(group=>(
+                <div key={group.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
+                  {/* Phase header */}
+                  <div style={{padding:"9px 14px",background:C.surface,borderBottom:`1px solid ${C.border}`,display:"flex",alignItems:"center",gap:8}}>
+                    <div style={{width:8,height:8,borderRadius:"50%",background:group.color,flexShrink:0}}/>
+                    <span style={{fontWeight:700,fontSize:13,color:C.text}}>{group.phase}</span>
+                    <span style={{fontSize:11,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99,marginLeft:"auto"}}>
+                      {group.items.filter(r=>resTab==="extra"?checks[`${r.itemId}__extra__${r.id}`]:checks[`${r.itemId}__resources__${r.id}`]).length}/{group.items.length}
+                    </span>
+                  </div>
+                  {/* Items */}
+                  {group.items.map((r,i)=>{
+                    const checkKey = resTab==="extra" ? `${r.itemId}__extra__${r.id}` : `${r.itemId}__resources__${r.id}`;
+                    const checked = !!checks[checkKey];
+                    const badge = resTab==="extra" ? EXTRA_BADGE : (TYPE_BADGE[r.type]||{label:r.type,bg:C.elevated,color:C.dim});
+                    const handleCheck = ()=> resTab==="extra" ? toggleCheck(r.itemId,"extra",r.id) : toggleCheck(r.itemId,"resources",r.id);
+                    return (
+                      <div key={`${r.itemId}-${r.id}`} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 14px",borderBottom:i<group.items.length-1?`1px solid ${C.border2}`:"none",background:checked?"#0d150d":"transparent",transition:"background 0.15s"}}>
+                        <div onClick={handleCheck} style={{flexShrink:0,width:15,height:15,borderRadius:3,marginTop:3,
+                          border:`1.5px solid ${checked?(resTab==="extra"?"#9333ea":"#238636"):C.border}`,
+                          background:checked?(resTab==="extra"?"#9333ea":"#238636"):"transparent",
+                          cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                          {checked && <span style={{color:"#fff",fontSize:9,fontWeight:800,lineHeight:1}}>✓</span>}
+                        </div>
+                        <div style={{flex:1,minWidth:0}}>
+                          <div style={{display:"flex",alignItems:"flex-start",gap:6,flexWrap:"wrap",marginBottom:2}}>
+                            {r.url ? (
+                              <a href={r.url} target="_blank" rel="noreferrer"
+                                style={{fontSize:13,color:checked?C.dim:C.accent,textDecoration:checked?"line-through":"underline",lineHeight:1.5,wordBreak:"break-word"}}>
+                                {r.text}
+                              </a>
+                            ) : (
+                              <span style={{fontSize:13,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
+                            )}
+                            <span style={{fontSize:10,padding:"1px 6px",borderRadius:99,background:badge.bg,color:badge.color,flexShrink:0,marginTop:2}}>{badge.label}</span>
+                          </div>
+                          <div style={{fontSize:10,color:C.dim}}>{r.itemTitle}</div>
+                          {resTab==="extra" && r.desc && (
+                            <div style={{fontSize:11,color:C.muted,marginTop:3,lineHeight:1.5}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
+                          )}
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              ))}
+            </div>
+          );
+        })()}
+
+        {/* ── BUILD VIEW ── */}
+        {view==="build" && (() => {
+          const allBuilds = ROADMAP.flatMap(phase =>
+            phase.items.flatMap(item =>
+              (item.implementation||[]).map(b => ({...b, itemId:item.id, itemTitle:item.title, phase:phase.phase, phaseColor:phase.color}))
+            )
+          );
+          const total_b = allBuilds.length;
+          const done_b = allBuilds.filter(b=>checks[`${b.itemId}__implementation__${b.id}`]).length;
+          const megaByProj = {A:[], B:[], C:[]};
+          allBuilds.forEach(b=>{ if(b.megaProject) megaByProj[b.megaProject.proj]?.push(b); });
+          return (
+            <div>
+              <div style={{marginBottom:16}}>
+                <div style={{fontSize:20,fontWeight:700,color:C.text,marginBottom:4}}>All Build Tasks</div>
+                <div style={{fontSize:12,color:C.dim,marginBottom:8}}>{done_b}/{total_b} completed across the roadmap</div>
+                <div style={{background:C.elevated,borderRadius:99,height:4}}>
+                  <div style={{background:`linear-gradient(90deg,${C.yellow},#f59e0b)`,width:`${Math.round((done_b/total_b)*100)}%`,height:"100%",borderRadius:99,transition:"width 0.4s"}}/>
+                </div>
+              </div>
+
+              {/* ── Mega Project Cards ── */}
+              <div style={{marginBottom:20}}>
+                <div style={{fontSize:11,fontWeight:700,color:C.dim,textTransform:"uppercase",letterSpacing:0.7,marginBottom:8}}>Mega Projects</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+                  {Object.values(MEGA_PROJECTS).map(mp=>{
+                    const steps = megaByProj[mp.id]||[];
+                    const doneSteps = steps.filter(b=>checks[`${b.itemId}__implementation__${b.id}`]).length;
+                    return (
+                      <div key={mp.id} style={{background:mp.bg,border:`1px solid ${mp.border}`,borderRadius:10,padding:"12px 14px"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+                          <span style={{fontSize:15}}>{mp.emoji}</span>
+                          <span style={{fontSize:12,fontWeight:700,color:mp.color,lineHeight:1.3}}>{mp.name}</span>
+                        </div>
+                        {/* Step progress bar */}
+                        <div style={{display:"flex",gap:3,marginBottom:7}}>
+                          {Array.from({length:mp.totalSteps},(_,i)=>{
+                            const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
+                            const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
+                            return <div key={i} title={mp.steps[i]} style={{flex:1,height:5,borderRadius:3,background:isDone?mp.color:`${mp.color}22`,transition:"background 0.3s"}}/>;
+                          })}
+                        </div>
+                        <div style={{fontSize:10,color:mp.color,opacity:0.75,marginBottom:7}}>{doneSteps}/{mp.totalSteps} steps complete</div>
+                        {/* Step checklist */}
+                        {mp.steps.map((stepLabel,i)=>{
+                          const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
+                          const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
+                          return (
+                            <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}>
+                              <div style={{width:14,height:14,borderRadius:"50%",flexShrink:0,marginTop:1,
+                                border:`1.5px solid ${isDone?mp.color:`${mp.color}35`}`,
+                                background:isDone?mp.color:"transparent",
+                                display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                {isDone
+                                  ? <span style={{color:"#fff",fontSize:8,fontWeight:800,lineHeight:1}}>✓</span>
+                                  : <span style={{fontSize:8,color:mp.color,opacity:0.5,fontWeight:700}}>{i+1}</span>}
+                              </div>
+                              <span style={{fontSize:10,color:isDone?mp.color:C.dim,textDecoration:isDone?"line-through":"none",lineHeight:1.35}}>{stepLabel}</span>
+                            </div>
+                          );
+                        })}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+
+              {/* ── All tasks by phase ── */}
+              {ROADMAP.map(phase=>{
+                const phBuilds = phase.items.flatMap(item=>(item.implementation||[]).map(b=>({...b,itemId:item.id,itemTitle:item.title})));
+                if(!phBuilds.length) return null;
+                const phDone_b = phBuilds.filter(b=>checks[`${b.itemId}__implementation__${b.id}`]).length;
+                return (
+                  <div key={phase.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
+                    <div style={{padding:"9px 14px",background:C.surface,display:"flex",alignItems:"center",gap:8,borderBottom:`1px solid ${C.border}`}}>
+                      <div style={{width:7,height:7,borderRadius:"50%",background:phase.color}}/>
+                      <span style={{fontWeight:700,fontSize:13,color:C.text}}>{phase.phase}</span>
+                      <span style={{fontSize:11,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99,marginLeft:"auto"}}>{phDone_b}/{phBuilds.length}</span>
+                    </div>
+                    <div style={{padding:"4px 0"}}>
+                      {phBuilds.map((b,i)=>{
+                        const checked = !!checks[`${b.itemId}__implementation__${b.id}`];
+                        const mp = b.megaProject ? MEGA_PROJECTS[b.megaProject.proj] : null;
+                        const isOpen_b = openBuild[`${b.itemId}-${b.id}`];
+                        return (
+                          <div key={`${b.itemId}-${b.id}`} style={{padding:"8px 14px",borderBottom:i<phBuilds.length-1?`1px solid ${C.border2}`:"none",background:checked?"#0d150d":"transparent"}}>
+                            <div style={{display:"flex",alignItems:"flex-start",gap:9,cursor:"pointer"}} onClick={()=>setOpenBuild(p=>({...p,[`${b.itemId}-${b.id}`]:!p[`${b.itemId}-${b.id}`]}))}>
+                              <div onClick={e=>{e.stopPropagation();toggleCheck(b.itemId,"implementation",b.id);}} style={{flexShrink:0,width:15,height:15,borderRadius:3,marginTop:3,
+                                border:`1.5px solid ${checked?"#9e6a03":C.border}`,background:checked?"#2d2208":"transparent",
+                                cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                {checked && <span style={{color:C.yellow,fontSize:9,fontWeight:800,lineHeight:1}}>✓</span>}
+                              </div>
+                              <div style={{flex:1,minWidth:0}}>
+                                <div style={{display:"flex",alignItems:"flex-start",gap:6,flexWrap:"wrap",marginBottom:2}}>
+                                  <span style={{fontSize:13,color:checked?C.dim:C.text,textDecoration:checked?"line-through":"none",lineHeight:1.45,flex:1}}>{b.text}</span>
+                                  {mp && (
+                                    <span title={`Step ${b.megaProject.step}: ${mp.steps[b.megaProject.step-1]}`}
+                                      style={{fontSize:10,padding:"1px 8px",borderRadius:99,background:mp.bg,color:mp.color,
+                                        border:`1px solid ${mp.border}`,flexShrink:0,whiteSpace:"nowrap",cursor:"default"}}>
+                                      {mp.emoji} {b.megaProject.step}/{mp.totalSteps}
+                                    </span>
+                                  )}
+                                  {b.desc && <span style={{fontSize:10,color:C.dim,flexShrink:0,marginTop:2}}>{isOpen_b?"▲":"▼"}</span>}
+                                </div>
+                                {mp && <div style={{fontSize:10,color:mp.color,opacity:0.65,marginBottom:2}}>{mp.name} · Step {b.megaProject.step}: {mp.steps[b.megaProject.step-1]}</div>}
+                                <div style={{fontSize:10,color:C.dim}}>{b.itemTitle}</div>
+                              </div>
+                            </div>
+                            {isOpen_b && b.desc && (
+                              <div style={{marginLeft:24,marginTop:5,fontSize:12,color:C.muted,lineHeight:1.6,
+                                background:C.bg,borderLeft:`2px solid ${mp?mp.color:C.yellow}40`,
+                                paddingLeft:10,paddingTop:4,paddingBottom:4,borderRadius:"0 4px 4px 0"}}>{b.desc}</div>
+                            )}
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          );
+        })()}
+
+                {/* ── STATS VIEW ── */}
         {view==="stats" && (
           <div style={{display:"grid",gap:12}}>
             <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
