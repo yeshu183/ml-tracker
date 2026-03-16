@@ -16,22 +16,24 @@ const store = {
   }
 };
 
-// ─── Dark mode palette ───
+// ─── Dark mode palette (inspired by Lena Voita's #92bf32 warmth) ───
 const C = {
-  bg:       "#0d1117",
-  surface:  "#161b22",
-  elevated: "#21262d",
-  border:   "#30363d",
-  border2:  "#21262d",
-  text:     "#e6edf3",
-  muted:    "#8b949e",
-  dim:      "#6e7681",
+  bg:       "#0c1116",
+  surface:  "#141920",
+  elevated: "#1e242c",
+  border:   "#2d3440",
+  border2:  "#1e242c",
+  text:     "#e8eef4",
+  muted:    "#8d9bab",
+  dim:      "#5e6d7e",
   accent:   "#58a6ff",
-  green:    "#3fb950",
-  yellow:   "#d29922",
+  green:    "#7fb32d",   // Lena #7fb32d — warm yellow-green, not cold GitHub green
+  lena:     "#92bf32",   // Lena primary brand colour
+  yellow:   "#c99a1a",
   purple:   "#a371f7",
   teal:     "#39d353",
-  red:      "#f85149",
+  red:      "#b01277",   // Lena decoder magenta — warmer than pure red
+  pink:     "#e05c9a",   // lighter variant for text on red bg
 };
 
 const ROADMAP = [
@@ -112,7 +114,7 @@ const ROADMAP = [
   },
   {
     phase: "Deep Math",
-    color: "#0891b2",
+    color: "#f97316",
     summary: "Advanced mathematics for the Scientific ML track and rigorous paper reading — multivariable calculus, differential equations, Fourier analysis, and transform methods. Essential if you pursue neural operators or physics-informed ML; valuable revision for anyone who wants to read mathematical ML papers with full comprehension.",
     items: [
       {
@@ -187,7 +189,7 @@ const ROADMAP = [
   },
   {
     phase: "Foundation",
-    color: "#7c3aed",
+    color: "#6366f1",
     items: [{
       id: "w0", week: "Week 0", title: "NumPy & PyTorch Foundations", duration: "1 week",
       tags: ["numpy","pytorch","setup"],
@@ -327,7 +329,7 @@ const ROADMAP = [
 
   {
     phase: "ML Fundamentals",
-    color: "#1d6fe8",
+    color: "#3b82f6",
     icon: "🤖",
     summary: "Classical machine learning — the algorithms every ML engineer must be able to derive, implement, and explain. These are the foundation beneath every neural network abstraction.",
     items: [
@@ -523,7 +525,7 @@ const ROADMAP = [
   ,
   {
     phase: "DL Fundamentals",
-    color: "#7c3aed",
+    color: "#8b5cf6",
     icon: "🧠",
     summary: "Deep learning from first principles through transformers. Build each component from scratch before using the framework abstractions. Every topic connects back to gradient flow.",
     items: [
@@ -609,7 +611,7 @@ const ROADMAP = [
   ,
   {
     phase: "NLP Fundamentals",
-    color: "#10b981",
+    color: "#14b8a6",
     icon: "💬",
     summary: "Language as data — from raw text to transformers. Builds directly on the DL Fundamentals mechanics. This phase follows the natural progression: text representations → language modelling → sequence models → attention → transformers for language.",
     items: [
@@ -786,7 +788,7 @@ const ROADMAP = [
 ,
   {
     phase: "GenAI Engineer Prep — Marvell",
-    color: "#0ea877",
+    color: "#22c55e",
     items: [
       {
         id:"g1", week:"Prep Week 1", title:"LLMs in Production: The Mental Model", duration:"1 week",
@@ -948,7 +950,7 @@ const ROADMAP = [
   },
   {
     phase: "Marvell Engineering Track",
-    color: "#0ea5e9",
+    color: "#38bdf8",
     items: [
       {
         id:"mv3", week:"Priority 1", title:"GenAI Agent Systems & Production Engineering", duration:"4–6 weeks",
@@ -1070,7 +1072,7 @@ const ROADMAP = [
   },
   {
     phase: "Road Ahead",
-    color: "#9333ea",
+    color: "#a855f7",
     items: [
       {
         id:"ft1", week:"After Month 6", title:"Hands-on LLM Fine-tuning — SFT, LoRA, QLoRA & DPO",
@@ -1375,7 +1377,7 @@ const ROADMAP = [
   },
   {
     phase: "Scientific ML",
-    color: "#10b981",
+    color: "#06b6d4",
     items: [
       {
         id:"sci1", week:"Parallel Track", title:"Neural Operators & Scientific Deep Learning", duration:"2–3 months",
@@ -1618,7 +1620,7 @@ const ROADMAP = [
   ,
   {
     phase: "Interview Mastery",
-    color: "#06b6d4",
+    color: "#f43f5e",
     icon: "🎯",
     summary: "Two-layer interview competency: technical depth you build in every other phase, plus applied ML judgment interviewers actually filter on. Five units cover data judgment, model debugging, experimentation, production system design, and communication. Run these parallel to the rest of the roadmap.",
     items: [
@@ -2046,9 +2048,9 @@ const ROADMAP = [
 ];
 
 const STATUS = {
-  not_started: { bg:"#1c2128", border:"#30363d", icon:"○", color:C.dim },
-  in_progress: { bg:"#2d2208", border:"#9e6a03", icon:"◑", color:C.yellow },
-  done: { bg:"#0d1f0f", border:"#238636", icon:"●", color:C.green },
+  not_started: { bg:"#171d26", border:"#2d3440", icon:"○", color:C.dim },
+  in_progress: { bg:"#271f08", border:"#8a5c00", icon:"◑", color:C.yellow },
+  done:        { bg:"#0d1a09", border:`${C.lena}60`, icon:"●", color:C.lena },
 };
 
 const MEGA_PROJECTS = {
@@ -2403,7 +2405,7 @@ const TYPE_BADGE = {
 
 const ALL_ITEMS = ROADMAP.flatMap(p => p.items || []);
 
-function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type }) {
+function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type, isTheory }) {
   const [open, setOpen] = useState(false);
 
   const flavour = !desc ? "explain"
@@ -2414,11 +2416,11 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type 
     : "explain";
 
   const FLAVOURS = {
-    trap:      { bar:"#f59e0b", bg:"#1a1200", label:"⚠ trap",      color:"#f59e0b" },
-    insight:   { bar:"#3fb950", bg:"#0a1a0d", label:"★ insight",   color:"#3fb950" },
-    why:       { bar:"#a371f7", bg:"#160d24", label:"◆ why",        color:"#a371f7" },
-    interview: { bar:"#06b6d4", bg:"#001a22", label:"✦ interview", color:"#06b6d4" },
-    explain:   { bar:"#30363d", bg:"#0d1117", label:null,           color:"#6e7681" },
+    trap:      { bar:"#f59e0b", bg:"#1a1200", label:"⚠ Trap",           color:"#f59e0b" },
+    insight:   { bar:"#3fb950", bg:"#0a1a0d", label:"★ Key Insight",    color:"#3fb950" },
+    why:       { bar:"#a371f7", bg:"#160d24", label:"◆ Why It Matters",  color:"#a371f7" },
+    interview: { bar:"#06b6d4", bg:"#001a22", label:"✦ Interview",       color:"#06b6d4" },
+    explain:   { bar:"#58a6ff", bg:"#0d1117", label:null,                color:"#8b949e" },
   };
   const fs = FLAVOURS[flavour] || FLAVOURS.explain;
 
@@ -2446,31 +2448,43 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type 
   const pill = getResourcePill();
 
   return (
-    <div style={{ marginBottom:10 }}>
-      {/* Row 1: checkbox · label · expand */}
-      <div style={{ display:"flex", alignItems:"flex-start", gap:10, cursor:"pointer" }}
-        onClick={() => setOpen(o=>!o)}>
+    <div style={{ marginBottom:12 }}>
+      {/* Row 1: checkbox · label · controls */}
+      <div style={{ display:"flex", alignItems:"flex-start", gap:10, cursor: desc ? "pointer" : "default" }}
+        onClick={() => desc && setOpen(o=>!o)}>
         <div onClick={e=>{e.stopPropagation(); onChange();}}
           style={{ flexShrink:0, width:17, height:17, borderRadius:4, marginTop:2,
-            border:`1.5px solid ${checked?"#238636":C.border}`,
-            background:checked?"#238636":"transparent",
+            border:`1.5px solid ${checked?C.lena:C.border}`,
+            background:checked?C.lena:"transparent",
             cursor:"pointer", display:"flex", alignItems:"center",
             justifyContent:"center", transition:"all 0.15s" }}>
-          {checked && <span style={{ color:"#fff", fontSize:10, fontWeight:900, lineHeight:1 }}>✓</span>}
+          {checked && <span style={{ color:"#0c1116", fontSize:10, fontWeight:900, lineHeight:1 }}>✓</span>}
         </div>
+
         <div style={{ flex:1, minWidth:0 }}>
           {isLink && url
             ? <a href={url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}
-                style={{ fontSize:13, color:checked?C.dim:C.accent,
+                style={{ fontSize:14, color:checked?C.dim:C.accent,
                   textDecoration:checked?"line-through":"underline", lineHeight:1.5, fontWeight:500 }}>
                 {label}
               </a>
-            : <span style={{ fontSize:13, color:checked?C.dim:C.text,
+            : <span style={{ fontSize:14, color:checked?C.dim:C.text,
                 textDecoration:checked?"line-through":"none", lineHeight:1.5, fontWeight:500 }}>
                 {label}
               </span>
           }
+          {/* Inline flavour badge — visible when collapsed, only for non-link items with a named flavour */}
+          {!open && desc && !isLink && fs.label && (
+            <div style={{ marginTop:5, display:"inline-flex", alignItems:"center", gap:5,
+              padding:"2px 8px 2px 6px", borderRadius:6,
+              background:`${fs.bar}18`, border:`1px solid ${fs.bar}30`,
+              fontSize:10, fontWeight:700, color:fs.color, letterSpacing:0.3 }}>
+              <div style={{ width:5, height:5, borderRadius:"50%", background:fs.bar, flexShrink:0 }}/>
+              {fs.label}
+            </div>
+          )}
         </div>
+
         <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0, paddingTop:2 }}>
           {isLink && type && TYPE_BADGE[type] && (
             <span style={{ fontSize:10, padding:"2px 8px", borderRadius:6,
@@ -2479,29 +2493,41 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type 
             </span>
           )}
           {desc && (
-            <span style={{ fontSize:11, color:open?fs.color:C.dim, fontWeight:600,
-              whiteSpace:"nowrap", transition:"color 0.15s" }}>
-              {open?"▲ hide":"▼ expand"}
-            </span>
+            isTheory && !open
+              ? <span className="reveal-btn" style={{ fontSize:11, padding:"3px 12px", borderRadius:7,
+                  background:"#6366f114", color:"#818cf8",
+                  border:"1px solid #6366f128", fontWeight:700,
+                  cursor:"pointer", whiteSpace:"nowrap", letterSpacing:0.2 }}>
+                  Reveal ⇨
+                </span>
+              : <span style={{ fontSize:11, color:open?fs.color:C.dim, fontWeight:600,
+                  whiteSpace:"nowrap", transition:"color 0.15s" }}>
+                  {open?"▲ hide":"▼"}
+                </span>
           )}
         </div>
       </div>
 
-      {/* Row 2: resource pill below label */}
-      {pill && <div style={{ marginLeft:27, marginTop:5 }}>{pill}</div>}
+      {/* Resource pill */}
+      {pill && <div style={{ marginLeft:27, marginTop:6 }}>{pill}</div>}
 
-      {/* Row 3: callout box */}
+      {/* Full-width callout — Lena-style, 1.9 line-height, 14px radius */}
       {open && desc && (
-        <div style={{ marginLeft:27, marginTop:6, marginBottom:4,
-          borderRadius:"0 8px 8px 0", borderLeft:`3px solid ${fs.bar}`,
-          background:fs.bg, padding:"10px 14px" }}>
+        <div className="callout-box" style={{ marginTop:12, marginBottom:6, borderRadius:14,
+          borderLeft:`4px solid ${fs.bar}`,
+          background:fs.bg, padding:"16px 20px",
+          boxShadow:`inset 0 0 0 1px ${fs.bar}20` }}>
           {fs.label && (
-            <div style={{ fontSize:10, fontWeight:700, color:fs.color,
-              letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>
-              {fs.label}
+            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
+              <div style={{ width:8, height:8, borderRadius:"50%", background:fs.bar, flexShrink:0 }}/>
+              <span style={{ fontSize:11, fontWeight:800, color:fs.color,
+                textTransform:"uppercase", letterSpacing:1 }}>
+                {fs.label}
+              </span>
+              <div style={{ flex:1, height:1, background:`${fs.bar}28` }}/>
             </div>
           )}
-          <div style={{ fontSize:12.5, color:"#c9d1d9", lineHeight:1.75 }}>{desc}</div>
+          <div style={{ fontSize:13.5, color:"#d0d9e4", lineHeight:1.9 }}>{desc}</div>
         </div>
       )}
     </div>
@@ -2509,29 +2535,79 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type 
 }
 
 
+// ── Extra reading depth classifier ──────────────────────────────────────────
+function classifyExtraDepth(item) {
+  const url = (item.url||"").toLowerCase();
+  const topic = (item.topic||"").toLowerCase();
+  if (/arxiv\.org|springer|nature\.com|openreview|papers\.nips\.cc|jmlr\.org|cambridge\.org|proceedings\.ml/.test(url)
+      || /paper|survey|chapter|textbook|book$/.test(topic)) return "deep";
+  if (/youtube\.com|colah\.github|distill\.pub|3blue1brown|illustrated|visual|intro |overview|primer/.test(url+topic)) return "surface";
+  return "deeper";
+}
+
+const DEPTH_TIERS = [
+  { key:"surface", label:"Quick Read",   emoji:"👁",  color:"#58a6ff", bg:"#0d1f3c33", border:"#1f3a6e",
+    sub:"Visual explainers, intros, and blog posts" },
+  { key:"deeper",  label:"Going Deeper", emoji:"🔬", color:"#3fb950", bg:"#0a1a0d33", border:"#1a3a1a",
+    sub:"In-depth writeups and substantial guides" },
+  { key:"deep",    label:"Deep Dive",    emoji:"📄",  color:"#a371f7", bg:"#160d2433", border:"#3d1a6e",
+    sub:"Papers, textbooks, and primary sources" },
+];
+
 function ExtraItem({ item, checked, onChange }) {
   const [open, setOpen] = useState(false);
   return (
-    <div style={{ marginBottom:7 }}>
+    <div className="extra-item" style={{ marginBottom:7, padding:"2px 4px" }}>
       <div style={{ display:"flex", alignItems:"flex-start", gap:8, cursor:"pointer" }} onClick={() => setOpen(o=>!o)}>
-        <div onClick={e=>{e.stopPropagation(); onChange();}} style={{ flexShrink:0, width:16, height:16, borderRadius:3, marginTop:3, border:`1.5px solid ${checked?"#9333ea":"#30363d"}`, background:checked?"#9333ea":"transparent", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div onClick={e=>{e.stopPropagation(); onChange();}} style={{ flexShrink:0, width:16, height:16, borderRadius:3, marginTop:3, border:`1.5px solid ${checked?"#9333ea":"#2d3440"}`, background:checked?"#9333ea":"transparent", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
           {checked && <span style={{ color:"#fff", fontSize:10, fontWeight:800, lineHeight:1 }}>✓</span>}
         </div>
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
-            <span style={{ fontSize:13, color:checked?C.dim:"#c9a5ff", textDecoration:checked?"line-through":"none" }}>{item.topic}</span>
+            <span style={{ fontSize:13, color:checked?"#5e6d7e":"#c9a5ff", textDecoration:checked?"line-through":"none" }}>{item.topic}</span>
             {item.url && (
               <a href={item.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:10, color:"#a371f7", textDecoration:"underline" }}>↗ read</a>
             )}
-            <span style={{ fontSize:10, color:C.dim, marginLeft:"auto" }}>{open?"▲":"▼"}</span>
+            <span style={{ fontSize:10, color:"#5e6d7e", marginLeft:"auto" }}>{open?"▲":"▼"}</span>
           </div>
         </div>
       </div>
       {open && item.desc && (
-        <div style={{ marginLeft:24, marginTop:4, fontSize:12.5, color:"#c9d1d9", lineHeight:1.75, background:"#160d24", borderLeft:"3px solid #a371f7", paddingLeft:12, paddingTop:8, paddingBottom:8, borderRadius:"0 8px 8px 0" }}>
+        <div style={{ marginLeft:24, marginTop:6, fontSize:13, color:"#d0d9e4", lineHeight:1.85, background:"#160d24", borderLeft:"3px solid #a371f7", paddingLeft:14, paddingTop:10, paddingBottom:10, borderRadius:"0 10px 10px 0" }}>
           {item.desc}
         </div>
       )}
+    </div>
+  );
+}
+
+// Tiered extra reading renderer — used in both roadmap and interview views
+function TieredExtraReading({ items, itemId, checks, toggleCheck }) {
+  const grouped = DEPTH_TIERS
+    .map(t => ({ ...t, items: items.filter(e => classifyExtraDepth(e) === t.key) }))
+    .filter(t => t.items.length > 0);
+  return (
+    <div>
+      {grouped.map((tier, ti) => (
+        <div key={tier.key} style={{ marginBottom: ti < grouped.length-1 ? 22 : 0 }}>
+          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
+            <span style={{ fontSize:15 }}>{tier.emoji}</span>
+            <span style={{ fontSize:11, fontWeight:800, color:tier.color,
+              textTransform:"uppercase", letterSpacing:0.8 }}>{tier.label}</span>
+            <span style={{ fontSize:11, color:C.dim }}>⇨ {tier.sub}</span>
+            <span style={{ marginLeft:"auto", fontSize:11, color:tier.color, fontWeight:700,
+              background:`${tier.color}15`, padding:"1px 9px", borderRadius:99 }}>
+              {tier.items.filter(e=>checks[`${itemId}__extra__${e.id}`]).length}/{tier.items.length}
+            </span>
+          </div>
+          <div className="lena-hr" style={{background:`linear-gradient(90deg,${tier.color}40,transparent)`,marginBottom:10}}/>
+          {tier.items.map(e => (
+            <ExtraItem key={e.id} item={e}
+              checked={!!checks[`${itemId}__extra__${e.id}`]}
+              onChange={() => toggleCheck(itemId,"extra",e.id)}/>
+          ))}
+        </div>
+      ))}
     </div>
   );
 }
@@ -2614,6 +2690,8 @@ export default function App() {
   const [openBuild, setOpenBuild] = useState({});
   const [drillAnswers, setDrillAnswers] = useState({});
   const [drillConf, setDrillConf] = useState({});
+  const [hoveredPhase, setHoveredPhase] = useState(null);
+  const [expandedMega, setExpandedMega] = useState({A:true,B:false,C:false});
 
   useEffect(() => {
     (async () => {
@@ -2671,76 +2749,150 @@ export default function App() {
   if (!loaded) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:C.bg,color:C.muted,fontFamily:"monospace"}}>Loading...</div>;
 
   return (
-    <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",background:C.bg,height:"100vh",color:C.text,display:"flex",overflow:"hidden"}}>
-      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
+    <div style={{fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",background:C.bg,height:"100vh",color:C.text,display:"flex",overflow:"hidden"}}>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
+        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
+        * { box-sizing: border-box; }
+
+        /* Phase cards — overview */
+        .phase-card { transition: all 0.18s ease; cursor:pointer; }
+        .phase-card:hover { border-color: var(--phase-color) !important; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px var(--phase-color-alpha, rgba(0,0,0,0.1)); }
+
+        /* Sidebar nav buttons */
+        .nav-btn { transition: all 0.13s ease; }
+        .nav-btn:hover { background: #92bf3212 !important; color: #92bf32 !important; }
+
+        /* Reveal button */
+        .reveal-btn { transition: all 0.13s ease; }
+        .reveal-btn:hover { background: #6366f128 !important; border-color: #818cf880 !important; color: #a5b4fc !important; }
+
+        /* Status cycle button */
+        .status-btn { transition: all 0.15s ease; }
+        .status-btn:hover { transform: scale(1.1); }
+
+        /* CheckRow — full callout animation */
+        .callout-box { animation: fadeSlideIn 0.18s ease; }
+
+        /* Tag chips */
+        .tag-chip { transition: background 0.12s; }
+        .tag-chip:hover { background: #92bf3215 !important; border-color: #92bf3240 !important; color: #92bf32 !important; }
+
+        /* Lena-style thick HR divider */
+        .lena-hr { height: 3px; border: none; border-radius: 99px; margin: 0; }
+
+        /* Section tab buttons */
+        .sec-tab { transition: all 0.14s ease; }
+        .sec-tab:hover { background: rgba(255,255,255,0.04) !important; }
+
+        /* Extra reading items */
+        .extra-item { transition: background 0.12s; border-radius: 8px; }
+        .extra-item:hover { background: #92bf3208 !important; }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #2d3440; border-radius: 99px; }
+        ::-webkit-scrollbar-thumb:hover { background: #92bf3260; }
+      `}</style>
 
       {/* ── Sidebar ── */}
-      <div style={{width:270,flexShrink:0,borderRight:`1px solid ${C.border}`,background:C.surface,height:"100vh",overflowY:"auto",display:"flex",flexDirection:"column",padding:"24px 18px"}}>
+      <div style={{width:272,flexShrink:0,borderRight:`1px solid ${C.border}`,background:C.surface,height:"100vh",overflowY:"auto",display:"flex",flexDirection:"column",padding:"22px 16px"}}>
 
-        <div style={{marginBottom:26}}>
-          <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:-0.4}}>ML/AI Mastery</div>
-          <div style={{fontSize:11,color:C.dim,marginTop:3,lineHeight:1.4}}>MTech → Marvell GenAI → Research</div>
+        {/* Title */}
+        <div style={{marginBottom:22}}>
+          <div style={{fontSize:16,fontWeight:800,color:C.text,letterSpacing:-0.5,lineHeight:1.2}}>
+            ML/AI Mastery
+          </div>
+          <div style={{marginTop:4,display:"flex",alignItems:"center",gap:5}}>
+            <span style={{fontSize:10,color:C.lena,fontWeight:700,letterSpacing:0.8,textTransform:"uppercase"}}>For You</span>
+            <span style={{fontSize:10,color:C.dim}}>· MTech → Marvell → Research</span>
+          </div>
+          {/* Lena-style thick HR */}
+          <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena},${C.lena}44)`,marginTop:10}}/>
         </div>
 
-        <div style={{marginBottom:24,padding:"14px",background:C.elevated,borderRadius:10,border:`1px solid ${C.border}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
-            <span style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.6}}>Progress</span>
-            <span style={{fontSize:14,fontWeight:800,color:C.text}}>{pct}%</span>
+        {/* Progress widget */}
+        <div style={{marginBottom:22,padding:"14px 14px 12px",background:C.elevated,borderRadius:14,border:`1px solid ${C.border}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
+            <span style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.8}}>Progress</span>
+            <span style={{fontSize:18,fontWeight:800,color:C.lena,letterSpacing:-0.5}}>{pct}<span style={{fontSize:11,fontWeight:600,color:C.dim}}>%</span></span>
           </div>
-          <div style={{background:C.bg,borderRadius:99,height:5,marginBottom:9}}>
-            <div style={{background:`linear-gradient(90deg,${C.accent},#39d353)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.5s"}}/>
+          <div style={{background:C.bg,borderRadius:99,height:6,marginBottom:10,overflow:"hidden"}}>
+            <div style={{background:`linear-gradient(90deg,${C.lena},#b8e05a)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.6s cubic-bezier(0.4,0,0.2,1)"}}/>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2}}>
-            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
-              <div style={{fontSize:16,fontWeight:800,color:C.green}}>{done}</div>
-              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Done</div>
-            </div>
-            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
-              <div style={{fontSize:16,fontWeight:800,color:C.yellow}}>{inProg}</div>
-              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Active</div>
-            </div>
-            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
-              <div style={{fontSize:16,fontWeight:800,color:C.muted}}>{total-done-inProg}</div>
-              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Left</div>
-            </div>
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:3}}>
+            {[
+              {val:done,   label:"Done",   color:C.green},
+              {val:inProg, label:"Active", color:C.yellow},
+              {val:total-done-inProg, label:"Left", color:C.dim},
+            ].map(({val,label,color})=>(
+              <div key={label} style={{textAlign:"center",padding:"6px 2px",background:C.bg,borderRadius:8}}>
+                <div style={{fontSize:15,fontWeight:800,color,lineHeight:1}}>{val}</div>
+                <div style={{fontSize:9,color:C.dim,marginTop:2,letterSpacing:0.3,textTransform:"uppercase"}}>{label}</div>
+              </div>
+            ))}
           </div>
         </div>
 
-        <div style={{marginBottom:20}}>
-          <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:6,paddingLeft:2}}>Views</div>
-          {[["roadmap","📋  Roadmap"],["resources","🔗  Resources"],["build","⚙️  Build"],["interview","🎯  Interview"],["stats","📊  Stats"]].map(([v,l])=>(
-            <button key={v} onClick={()=>setView(v)} style={{width:"100%",display:"flex",alignItems:"center",padding:"8px 10px",borderRadius:7,border:"none",cursor:"pointer",fontSize:13,fontWeight:600,background:view===v?"#0d1f42":"transparent",color:view===v?C.accent:C.muted,textAlign:"left",marginBottom:2,transition:"all 0.15s"}}>{l}</button>
-          ))}
+        {/* Nav */}
+        <div style={{marginBottom:18}}>
+          <div style={{fontSize:9,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:5,paddingLeft:4}}>Views</div>
+          {[["overview","🗺","Overview"],["roadmap","📋","Roadmap"],["resources","🔗","Resources"],["build","⚙️","Build"],["interview","🎯","Interview"],["stats","📊","Stats"]].map(([v,ico,label])=>{
+            const active = view===v;
+            return (
+              <button key={v} className="nav-btn" onClick={()=>setView(v)} style={{
+                width:"100%",display:"flex",alignItems:"center",gap:8,
+                padding:"7px 10px",borderRadius:9,border:"none",cursor:"pointer",
+                fontSize:12,fontWeight:active?700:500,
+                background:active?`${C.lena}18`:"transparent",
+                color:active?C.lena:C.muted,
+                textAlign:"left",marginBottom:1,
+              }}>
+                <span style={{fontSize:13,width:16,textAlign:"center"}}>{ico}</span>
+                {label}
+                {active && <div style={{marginLeft:"auto",width:4,height:4,borderRadius:"50%",background:C.lena}}/>}
+              </button>
+            );
+          })}
         </div>
 
+        {/* Phase list with • bullets */}
         <div style={{flex:1}}>
-          <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:10,paddingLeft:2}}>Phases</div>
+          <div style={{fontSize:9,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:8,paddingLeft:4}}>Phases</div>
           {ROADMAP.map(phase=>{
             const phDone=phase.items.filter(i=>progress[i.id]==="done").length;
             const phPct=Math.round((phDone/phase.items.length)*100);
+            const complete = phDone===phase.items.length;
             return (
-              <div key={phase.phase} style={{marginBottom:16,paddingLeft:2}}>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
-                  <div style={{display:"flex",alignItems:"center",gap:7,minWidth:0}}>
-                    <div style={{width:3,height:16,borderRadius:2,background:phase.color,flexShrink:0}}/>
-                    <span style={{fontSize:11,fontWeight:600,color:C.muted,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{phase.phase}</span>
-                  </div>
-                  <span style={{fontSize:10,color:C.dim,flexShrink:0,marginLeft:4}}>{phDone}/{phase.items.length}</span>
+              <div key={phase.phase} style={{marginBottom:13,paddingLeft:4,cursor:"pointer"}}
+                onClick={()=>{setView("roadmap");setExpandedPhases(p=>({...p,[phase.phase]:true}));}}>
+                <div style={{display:"flex",alignItems:"center",gap:0,marginBottom:4}}>
+                  {/* Lena-style • bullet */}
+                  <span style={{fontSize:14,color:complete?C.lena:phase.color,marginRight:9,lineHeight:1}}>•</span>
+                  <span style={{fontSize:11,fontWeight:600,color:complete?C.lena:C.muted,lineHeight:1.3,
+                    overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>
+                    {phase.phase}
+                  </span>
+                  <span style={{fontSize:9,color:complete?C.lena:C.dim,flexShrink:0,marginLeft:4,fontWeight:complete?700:400}}>
+                    {phDone}/{phase.items.length}
+                  </span>
                 </div>
-                <div style={{background:C.elevated,borderRadius:99,height:3,marginLeft:14}}>
-                  <div style={{background:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s",opacity:0.75}}/>
+                <div style={{background:C.elevated,borderRadius:99,height:2,marginLeft:23}}>
+                  <div style={{background:complete?C.lena:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s",opacity:complete?1:0.7}}/>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div style={{paddingTop:16,borderTop:`1px solid ${C.border}`}}>
+        <div style={{paddingTop:14,borderTop:`1px solid ${C.border}`}}>
           <button onClick={async()=>{
             if(!confirm("Reset all progress, checks, and notes?")) return;
             setProgress({}); setChecks({}); setNotes({});
             try{await store.set("p","{}"); await store.set("c","{}"); await store.set("n","{}");} catch{}
-          }} style={{fontSize:11,color:C.dim,background:"transparent",border:`1px solid ${C.border}`,borderRadius:6,padding:"6px 10px",cursor:"pointer",width:"100%"}}>Reset Everything</button>
+          }} style={{fontSize:10,color:C.dim,background:"transparent",border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",cursor:"pointer",width:"100%",letterSpacing:0.3}}>Reset Everything</button>
         </div>
       </div>
 
@@ -2748,25 +2900,189 @@ export default function App() {
       <div style={{flex:1,overflowY:"auto",height:"100vh"}}>
       <div style={{maxWidth:860,margin:"0 auto",padding:"24px 32px"}}>
 
+        {/* ── OVERVIEW VIEW ── */}
+        {view==="overview" && (
+          <div>
+            {/* Page header */}
+            <div style={{marginBottom:24}}>
+              <div style={{fontSize:26,fontWeight:800,color:C.text,letterSpacing:-0.6,marginBottom:5}}>Your Learning Map</div>
+              <div style={{fontSize:13,color:C.dim}}>{ROADMAP.length} phases · {total} concepts · <span style={{color:C.lena,fontWeight:700}}>{pct}%</span> complete</div>
+              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena}70,transparent)`,marginTop:14}}/>
+            </div>
+
+            {/* ── A: Resume banner — active items first ── */}
+            {(() => {
+              const activeItems = ALL_ITEMS.filter(i=>progress[i.id]==="in_progress");
+              if (!activeItems.length) return null;
+              return (
+                <div style={{marginBottom:28,padding:"18px 20px",borderRadius:14,
+                  background:`linear-gradient(135deg,${C.lena}12,${C.lena}06)`,
+                  border:`1px solid ${C.lena}35`}}>
+                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
+                    <div style={{width:8,height:8,borderRadius:"50%",background:C.lena,
+                      boxShadow:`0 0 8px ${C.lena}80`}}/>
+                    <span style={{fontSize:11,fontWeight:800,color:C.lena,textTransform:"uppercase",
+                      letterSpacing:1}}>Continue where you left off</span>
+                  </div>
+                  <div style={{display:"grid",gridTemplateColumns:`repeat(${Math.min(activeItems.length,3)},1fr)`,gap:10}}>
+                    {activeItems.slice(0,3).map(item=>{
+                      const phase = ROADMAP.find(p=>p.items.some(i=>i.id===item.id));
+                      const tC=getC(item,"theory"),rC=getC(item,"resources"),iC=getC(item,"implementation");
+                      const done = tC.checked+rC.checked+iC.checked;
+                      const total = tC.total+rC.total+iC.total;
+                      const pctItem = total>0?Math.round((done/total)*100):0;
+                      return (
+                        <div key={item.id} style={{background:C.surface,borderRadius:10,padding:"12px 14px",
+                          border:`1px solid ${phase?.color||C.border}30`,cursor:"pointer"}}
+                          onClick={()=>{setView("roadmap");
+                            setExpandedPhases(p=>({...p,[phase?.phase]:true}));
+                            setExpanded(e=>({...e,[item.id]:true}));}}>
+                          <div style={{fontSize:9,fontWeight:800,color:phase?.color,textTransform:"uppercase",
+                            letterSpacing:0.8,marginBottom:4}}>{phase?.phase}</div>
+                          <div style={{fontSize:13,fontWeight:700,color:C.text,lineHeight:1.35,marginBottom:8}}>
+                            {item.title}
+                          </div>
+                          <div style={{background:C.elevated,borderRadius:99,height:3,marginBottom:5}}>
+                            <div style={{height:"100%",width:`${pctItem}%`,background:C.lena,
+                              borderRadius:99,transition:"width 0.4s"}}/>
+                          </div>
+                          <div style={{fontSize:10,color:C.lena,fontWeight:700}}>{done}/{total} tasks · {pctItem}%</div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  {activeItems.length>3 && (
+                    <div style={{fontSize:11,color:C.dim,marginTop:10}}>
+                      +{activeItems.length-3} more active concepts
+                    </div>
+                  )}
+                </div>
+              );
+            })()}
+
+            {/* ── Phase grid ── */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:14}}>
+              {ROADMAP.map(phase=>{
+                const phDone = phase.items.filter(i=>progress[i.id]==="done").length;
+                const phInProg = phase.items.filter(i=>progress[i.id]==="in_progress").length;
+                const phPct = Math.round((phDone/phase.items.length)*100);
+                const complete = phDone===phase.items.length;
+                const totalChecks = phase.items.reduce((sum,item)=>
+                  sum+["theory","resources","implementation"].reduce((s,sec)=>
+                    s+(item[sec]||[]).filter(c=>checks[`${item.id}__${sec}__${c.id}`]).length,0),0);
+                const totalPossible = phase.items.reduce((sum,item)=>
+                  sum+["theory","resources","implementation"].reduce((s,sec)=>s+(item[sec]||[]).length,0),0);
+                return (
+                  <div key={phase.phase} className="phase-card"
+                    style={{"--phase-color":phase.color,
+                      background:C.surface, borderRadius:14, overflow:"hidden",
+                      border:`1px solid ${complete?`${C.lena}40`:C.border}`, cursor:"pointer"}}
+                    onClick={()=>{ setView("roadmap"); setExpandedPhases(p=>({...p,[phase.phase]:true})); }}>
+
+                    {/* Header */}
+                    <div style={{background:`linear-gradient(135deg,${complete?C.lena:phase.color}1e,${complete?C.lena:phase.color}06)`,
+                      borderBottom:`1px solid ${complete?C.lena:phase.color}28`,
+                      padding:"16px 20px 13px", position:"relative", overflow:"hidden"}}>
+                      <div style={{position:"absolute",right:-20,top:-20,width:80,height:80,
+                        borderRadius:"50%",background:`${complete?C.lena:phase.color}10`,pointerEvents:"none"}}/>
+                      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
+                        <div style={{fontSize:16,fontWeight:800,color:complete?C.lena:C.text,letterSpacing:-0.3,lineHeight:1.25,flex:1}}>
+                          {phase.phase}
+                        </div>
+                        {complete && <span style={{fontSize:10,color:C.lena,fontWeight:800,
+                          background:`${C.lena}18`,padding:"2px 8px",borderRadius:99,
+                          letterSpacing:0.5,flexShrink:0,marginTop:2}}>DONE ✓</span>}
+                      </div>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginTop:6}}>
+                        <span style={{fontSize:11,color:complete?C.lena:phase.color,fontWeight:700}}>
+                          {phDone}/{phase.items.length} concepts
+                        </span>
+                        {phInProg>0 && <span style={{fontSize:10,color:C.yellow}}>· {phInProg} active</span>}
+                        <span style={{fontSize:10,color:C.dim,marginLeft:"auto"}}>
+                          {totalChecks}/{totalPossible} tasks
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Progress bar */}
+                    <div style={{height:4,background:C.elevated}}>
+                      <div style={{height:"100%",width:`${phPct}%`,
+                        background:complete?`linear-gradient(90deg,${C.lena},#b8e05a)`:phase.color,
+                        transition:"width 0.5s cubic-bezier(0.4,0,0.2,1)"}}/>
+                    </div>
+
+                    {/* Summary */}
+                    {phase.summary && (
+                      <div style={{padding:"10px 20px 4px",fontSize:11,color:C.muted,lineHeight:1.65}}>
+                        {phase.summary.length>120 ? phase.summary.slice(0,120)+"…" : phase.summary}
+                      </div>
+                    )}
+
+                    {/* Concept list */}
+                    <div style={{padding:"6px 20px 14px"}}>
+                      {phase.items.slice(0,5).map((item,i)=>{
+                        const st = progress[item.id]||"not_started";
+                        const dotColor = st==="done"?C.lena:st==="in_progress"?C.yellow:"transparent";
+                        const dotBorder = st==="not_started"?`1.5px solid ${C.border}`:"none";
+                        return (
+                          <div key={item.id} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",
+                            borderBottom:i<Math.min(4,phase.items.length-1)?`1px solid ${C.border2}`:"none"}}>
+                            <div style={{width:7,height:7,borderRadius:"50%",flexShrink:0,
+                              background:dotColor,border:dotBorder,
+                              boxShadow:st==="in_progress"?`0 0 5px ${C.yellow}60`:"none"}}/>
+                            <span style={{fontSize:12,color:st==="done"?C.dim:C.muted,
+                              textDecoration:st==="done"?"line-through":"none",
+                              overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>
+                              {item.title}
+                            </span>
+                            {st==="in_progress" && (
+                              <span style={{fontSize:9,color:C.yellow,fontWeight:800,
+                                background:"#27200818",padding:"1px 6px",borderRadius:3,flexShrink:0,letterSpacing:0.3}}>
+                                ACTIVE
+                              </span>
+                            )}
+                          </div>
+                        );
+                      })}
+                      {phase.items.length>5 && (
+                        <div style={{fontSize:11,color:complete?C.lena:phase.color,paddingTop:7,fontWeight:600}}>
+                          +{phase.items.length-5} more ⇨
+                        </div>
+                      )}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
         {view==="roadmap" && ROADMAP.filter(p=>p.phase!=="Interview Mastery").map(phase=>{
           const phDone = phase.items.filter(i=>progress[i.id]==="done").length;
           const phOpen = expandedPhases[phase.phase];
           return (
-            <div key={phase.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
+            <div key={phase.phase} style={{marginBottom:12,border:`1px solid ${C.border}`,borderRadius:14,overflow:"hidden"}}>
               <div onClick={()=>togglePhase(phase.phase)} style={{cursor:"pointer",borderBottom:phOpen?`1px solid ${C.border}`:"none",background:C.surface}}>
-                {/* Colour accent bar */}
-                <div style={{height:3,background:`linear-gradient(90deg, ${phase.color}, ${phase.color}44)`,opacity:phOpen?1:0.5,transition:"opacity 0.2s"}}/>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px 10px"}}>
+                {/* Lena-style thick accent bar */}
+                <div style={{height:4,background:`linear-gradient(90deg, ${phase.color}, ${phase.color}55)`,opacity:phOpen?1:0.6,transition:"opacity 0.2s"}}/>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"13px 18px 11px"}}>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:phase.summary&&phOpen?4:0}}>
-                      <span style={{fontWeight:800,fontSize:16,color:C.text,letterSpacing:-0.3}}>{phase.phase}</span>
-                      <span style={{fontSize:11,color:phDone===phase.items.length?C.green:C.dim,background:phDone===phase.items.length?"#0d1f0f":C.elevated,padding:"1px 8px",borderRadius:99,border:`1px solid ${phDone===phase.items.length?"#238636":C.border2}`,fontWeight:600,flexShrink:0}}>{phDone}/{phase.items.length}</span>
+                    <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:phase.summary&&phOpen?5:0}}>
+                      <span style={{fontWeight:800,fontSize:16,color:C.text,letterSpacing:-0.4}}>{phase.phase}</span>
+                      <span style={{fontSize:11,
+                        color:phDone===phase.items.length?C.lena:C.dim,
+                        background:phDone===phase.items.length?`${C.lena}18`:C.elevated,
+                        padding:"2px 9px",borderRadius:99,
+                        border:`1px solid ${phDone===phase.items.length?`${C.lena}50`:C.border2}`,
+                        fontWeight:700,flexShrink:0}}>
+                        {phDone}/{phase.items.length}
+                      </span>
                     </div>
                     {phase.summary && phOpen && (
-                      <div style={{fontSize:12,color:C.muted,lineHeight:1.5,maxWidth:600,marginTop:2}}>{phase.summary}</div>
+                      <div style={{fontSize:12,color:C.muted,lineHeight:1.65,maxWidth:600,marginTop:3}}>{phase.summary}</div>
                     )}
                   </div>
-                  <span style={{color:C.dim,fontSize:11,marginLeft:12,flexShrink:0}}>{phOpen?"▲":"▼"}</span>
+                  <span style={{color:C.dim,fontSize:12,marginLeft:12,flexShrink:0}}>{phOpen?"▲":"▼"}</span>
                 </div>
               </div>
 
@@ -2787,116 +3103,172 @@ export default function App() {
                 ];
 
                 return (
-                  <div key={item.id} style={{borderBottom:idx<phase.items.length-1?`1px solid ${C.border2}`:"none",borderRadius:isOpen?8:0,background:isOpen?C.elevated:"transparent",transition:"background 0.15s",marginBottom:isOpen?4:0}}>
+                  <div key={item.id} style={{borderBottom:idx<phase.items.length-1?`1px solid ${C.border2}`:"none",borderRadius:isOpen?12:0,background:isOpen?C.elevated:"transparent",transition:"background 0.15s",marginBottom:isOpen?5:0}}>
                     {/* Clickable item row */}
-                    <div onClick={()=>toggleItem(item.id)} style={{padding:"12px 16px",display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer"}}>
-                      <button onClick={e=>cycleStatus(item.id,e)} title="Cycle status" style={{flexShrink:0,width:28,height:28,borderRadius:7,border:`1.5px solid ${st.border}`,background:st.bg,color:st.color,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
+                    <div onClick={()=>toggleItem(item.id)} style={{padding:"13px 18px",display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer"}}>
+                      <button onClick={e=>cycleStatus(item.id,e)} className="status-btn" title="Cycle status" style={{flexShrink:0,width:30,height:30,borderRadius:9,border:`1.5px solid ${st.border}`,background:st.bg,color:st.color,fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
                         {st.icon}
                       </button>
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
                           <div style={{flex:1}}>
-                            <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:3}}>
-                              <span style={{fontSize:10,fontWeight:800,color:phase.color,letterSpacing:1,textTransform:"uppercase",padding:"1px 7px",background:phase.color+"14",borderRadius:4,border:`1px solid ${phase.color}30`}}>{item.week}</span>
+                            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
+                              <span style={{fontSize:10,fontWeight:800,color:phase.color,letterSpacing:0.8,textTransform:"uppercase",padding:"2px 8px",background:phase.color+"18",borderRadius:5,border:`1px solid ${phase.color}35`}}>{item.week}</span>
                               <span style={{fontSize:10,color:C.dim,fontWeight:500}}>{item.duration}</span>
                             </div>
-                            <div style={{fontSize:16,fontWeight:700,color:status==="done"?C.muted:C.text,textDecoration:status==="done"?"line-through":"none",lineHeight:1.35,letterSpacing:-0.2}}>{item.title}</div>
+                            <div style={{fontSize:15,fontWeight:700,color:status==="done"?C.dim:C.text,textDecoration:status==="done"?"line-through":"none",lineHeight:1.4,letterSpacing:-0.2}}>{item.title}</div>
+                            {/* ── B: Mini-stats pills when collapsed ── */}
+                            {!isOpen && (tC.checked>0||rC.checked>0||iC.checked>0||tC.total>0) && (
+                              <div style={{display:"flex",gap:5,marginTop:6,flexWrap:"wrap"}}>
+                                {[
+                                  {emoji:"📖",s:tC,color:"#6366f1"},
+                                  {emoji:"🔗",s:rC,color:C.accent},
+                                  {emoji:"⚙️",s:iC,color:C.yellow},
+                                ].filter(p=>p.s.total>0).map(({emoji,s,color})=>(
+                                  <span key={emoji} style={{
+                                    fontSize:10,display:"inline-flex",alignItems:"center",gap:3,
+                                    padding:"2px 7px",borderRadius:99,
+                                    background:s.checked===s.total&&s.total>0?`${color}20`:`${color}0a`,
+                                    border:`1px solid ${s.checked===s.total&&s.total>0?`${color}50`:`${color}20`}`,
+                                    color:s.checked===s.total&&s.total>0?color:C.dim,
+                                    fontWeight:s.checked>0?700:400,
+                                  }}>
+                                    {emoji} {s.checked}/{s.total}
+                                    {s.checked===s.total&&s.total>0 && <span style={{fontSize:9}}>✓</span>}
+                                  </span>
+                                ))}
+                              </div>
+                            )}
                             {(item.tags||[]).length > 0 && (
-                              <div style={{display:"flex",gap:4,marginTop:5,flexWrap:"wrap"}}>
-                                {(item.tags||[]).map(t=><span key={t} style={{fontSize:10,color:C.dim,background:C.bg,padding:"1px 7px",borderRadius:3,border:`1px solid ${C.border2}`,letterSpacing:0.1}}>{t}</span>)}
+                              <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>
+                                {(item.tags||[]).map(t=>(
+                                  <span key={t} className="tag-chip" style={{fontSize:10,color:C.dim,background:C.bg,padding:"2px 8px",borderRadius:5,border:`1px solid ${C.border2}`,letterSpacing:0.1,cursor:"default"}}>{t}</span>
+                                ))}
                               </div>
                             )}
                           </div>
                           <div style={{display:"flex",gap:4,flexShrink:0,marginTop:2}} onClick={e=>e.stopPropagation()}>
-                            <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} title="Add note" style={{width:28,height:28,borderRadius:6,border:`1px solid ${hasNote?"#1f6feb":C.border}`,background:hasNote?"#0d1f42":"transparent",color:hasNote?C.accent:C.dim,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
+                            <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} title="Add note" style={{width:28,height:28,borderRadius:7,border:`1px solid ${hasNote?`${C.accent}60`:C.border}`,background:hasNote?`${C.accent}15`:"transparent",color:hasNote?C.accent:C.dim,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* Section tabs — full-width, outside the flex row so border spans edge-to-edge */}
+                    {/* ── E: Two-column layout when open — vertical nav + content ── */}
                     {isOpen && (
-                      <div style={{borderTop:`1px solid ${C.border}`,borderBottom:`1px solid ${C.border}`,background:C.bg,padding:"10px 16px",display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center"}} onClick={e=>e.stopPropagation()}>
-                        {SECS.map(sec=>{
-                          const active = curSec===sec.key;
-                          return (
-                            <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"6px 16px",borderRadius:6,border:`1.5px solid ${active?sec.color:C.border2}`,background:active?sec.color+"18":"transparent",color:active?sec.color:C.dim,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:6,transition:"all 0.15s",letterSpacing:0.3}}>
-                              <span>{sec.emoji}</span>
-                              <span style={{textTransform:"uppercase",fontSize:11,letterSpacing:0.5}}>{sec.label}</span>
-                              {sec.stats && sec.stats.total>0 && (
-                                <span style={{background:active?sec.color+"30":C.elevated,color:active?sec.color:C.dim,borderRadius:4,padding:"0 6px",fontSize:10,fontWeight:800,minWidth:24,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>
-                              )}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                      <div style={{display:"flex",borderTop:`1px solid ${C.border}`,minHeight:200}}
+                        onClick={e=>e.stopPropagation()}>
 
-                    {/* Section content */}
-                    {isOpen && curSec && (
-                      <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,padding:"18px 20px 16px"}}>
-                        {curSec==="theory" && (
-                          <div>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
-                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#6366f1,#a371f7)",flexShrink:0}}/>
-                              <div>
-                                <div style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Concepts</div>
-                                <div style={{fontSize:11,color:C.dim}}>Click ▼ expand to reveal — try to answer before reading</div>
-                              </div>
+                        {/* Left: vertical section nav (Lena in-page sidebar) */}
+                        <div style={{width:148,flexShrink:0,borderRight:`1px solid ${C.border}`,
+                          background:C.bg,padding:"14px 0",display:"flex",flexDirection:"column",gap:1}}>
+                          {SECS.map(sec=>{
+                            const active = curSec===sec.key;
+                            const allDone = sec.stats.total>0&&sec.stats.checked===sec.stats.total;
+                            return (
+                              <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{
+                                display:"flex",alignItems:"center",gap:8,
+                                padding:"9px 14px",border:"none",cursor:"pointer",
+                                background:active?C.elevated:"transparent",
+                                borderLeft:`3px solid ${active?sec.color:"transparent"}`,
+                                textAlign:"left",width:"100%",transition:"all 0.13s",
+                              }}>
+                                <span style={{fontSize:14,flexShrink:0}}>{sec.emoji}</span>
+                                <div style={{flex:1,minWidth:0}}>
+                                  <div style={{fontSize:11,fontWeight:active?800:600,
+                                    color:active?sec.color:allDone?C.lena:C.dim,
+                                    letterSpacing:0.3,textTransform:"uppercase",lineHeight:1}}>
+                                    {sec.label}
+                                  </div>
+                                  {sec.stats.total>0 && (
+                                    <div style={{fontSize:10,marginTop:2,
+                                      color:allDone?C.lena:active?sec.color:C.dim,
+                                      fontWeight:allDone?700:400}}>
+                                      {sec.stats.checked}/{sec.stats.total}
+                                      {allDone && " ✓"}
+                                    </div>
+                                  )}
+                                </div>
+                              </button>
+                            );
+                          })}
+                        </div>
+
+                        {/* Right: section content */}
+                        <div style={{flex:1,minWidth:0,background:C.surface,padding:"20px 22px 18px",
+                          borderRadius:"0 0 12px 0"}}>
+                          {!curSec && (
+                            <div style={{display:"flex",flexDirection:"column",alignItems:"center",
+                              justifyContent:"center",height:"100%",minHeight:160,gap:8,color:C.dim}}>
+                              <span style={{fontSize:28}}>👈</span>
+                              <span style={{fontSize:12}}>Choose a section to study</span>
                             </div>
-                            {(item.theory||[]).map(c=>(
-                              <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
-                            ))}
-                          </div>
-                        )}
-                        {curSec==="resources" && (
-                          <div>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
-                              <div style={{width:3,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.accent},#1f6feb)`,flexShrink:0}}/>
-                              <div>
-                                <div style={{fontSize:11,color:C.accent,fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Resources</div>
-                                <div style={{fontSize:11,color:C.dim}}>Primary learning materials for this topic</div>
+                          )}
+                          {curSec==="theory" && (
+                            <div>
+                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+                                <div style={{width:4,height:28,borderRadius:2,background:"linear-gradient(180deg,#6366f1,#a371f7)",flexShrink:0}}/>
+                                <div style={{flex:1}}>
+                                  <div style={{fontSize:11,color:"#818cf8",fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>Concepts</div>
+                                  <div style={{fontSize:11,color:C.dim}}>Try to recall from memory before revealing</div>
+                                </div>
                               </div>
+                              <div className="lena-hr" style={{background:"linear-gradient(90deg,#6366f140,transparent)",marginBottom:14}}/>
+                              {(item.theory||[]).map(c=>(
+                                <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource} isTheory={true}/>
+                              ))}
                             </div>
-                            {(item.resources||[]).map(r=>(
-                              <CheckRow key={r.id} checked={!!checks[`${item.id}__resources__${r.id}`]} onChange={()=>toggleCheck(item.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
-                            ))}
-                          </div>
-                        )}
-                        {curSec==="implementation" && (
-                          <div>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
-                              <div style={{width:3,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.yellow},#b45309)`,flexShrink:0}}/>
-                              <div>
-                                <div style={{fontSize:11,color:C.yellow,fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Build Tasks</div>
-                                <div style={{fontSize:11,color:C.dim}}>Hands-on projects — understanding only solidifies through building</div>
+                          )}
+                          {curSec==="resources" && (
+                            <div>
+                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+                                <div style={{width:4,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.accent},#1f6feb)`,flexShrink:0}}/>
+                                <div style={{flex:1}}>
+                                  <div style={{fontSize:11,color:C.accent,fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>Resources</div>
+                                  <div style={{fontSize:11,color:C.dim}}>Primary learning materials for this topic</div>
+                                </div>
                               </div>
+                              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.accent}40,transparent)`,marginBottom:14}}/>
+                              {(item.resources||[]).map(r=>(
+                                <CheckRow key={r.id} checked={!!checks[`${item.id}__resources__${r.id}`]} onChange={()=>toggleCheck(item.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
+                              ))}
                             </div>
-                            {(item.implementation||[]).map(i=>(
-                              <CheckRow key={i.id} checked={!!checks[`${item.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(item.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
-                            ))}
-                          </div>
-                        )}
-                        {curSec==="extraReading" && (
-                          <>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
-                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
-                              <div>
-                                <div style={{fontSize:11,color:"#a371f7",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
-                                <div style={{fontSize:11,color:"#6e7681"}}>Optional — for going deeper beyond the curriculum</div>
+                          )}
+                          {curSec==="implementation" && (
+                            <div>
+                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+                                <div style={{width:4,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.yellow},#8a5c00)`,flexShrink:0}}/>
+                                <div style={{flex:1}}>
+                                  <div style={{fontSize:11,color:C.yellow,fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>Build Tasks</div>
+                                  <div style={{fontSize:11,color:C.dim}}>Hands-on projects — understanding solidifies through building</div>
+                                </div>
                               </div>
+                              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.yellow}40,transparent)`,marginBottom:14}}/>
+                              {(item.implementation||[]).map(i=>(
+                                <CheckRow key={i.id} checked={!!checks[`${item.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(item.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
+                              ))}
                             </div>
-                            {(item.extraReading||[]).map(e=>(
-                              <ExtraItem key={e.id} item={e} checked={!!checks[`${item.id}__extra__${e.id}`]} onChange={()=>toggleCheck(item.id,"extra",e.id)}/>
-                            ))}
-                          </>
-                        )}
+                          )}
+                          {curSec==="extraReading" && (
+                            <div>
+                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
+                                <div style={{width:4,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
+                                <div style={{flex:1}}>
+                                  <div style={{fontSize:11,color:"#a371f7",fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
+                                  <div style={{fontSize:11,color:C.dim}}>Tiered by depth — Quick Read ⇨ Going Deeper ⇨ Deep Dive</div>
+                                </div>
+                              </div>
+                              <div className="lena-hr" style={{background:"linear-gradient(90deg,#a371f740,transparent)",marginBottom:16}}/>
+                              <TieredExtraReading items={item.extraReading||[]} itemId={item.id} checks={checks} toggleCheck={toggleCheck}/>
+                            </div>
+                          )}
+                        </div>
                       </div>
                     )}
 
                     {hasNote && !isOpen && (
-                      <div style={{margin:"0 16px 10px 56px",fontSize:12,color:C.muted,background:C.bg,padding:"6px 10px",borderRadius:5,borderLeft:`2px solid ${phase.color}`}}>
-                        {notes[item.id].length>110?notes[item.id].slice(0,110)+"...":notes[item.id]}
+                      <div style={{margin:"0 18px 12px 60px",fontSize:12,color:C.muted,background:C.bg,padding:"7px 12px",borderRadius:8,borderLeft:`3px solid ${phase.color}`,lineHeight:1.6}}>
+                        {notes[item.id].length>120?notes[item.id].slice(0,120)+"…":notes[item.id]}
                       </div>
                     )}
                   </div>
@@ -2996,35 +3368,52 @@ export default function App() {
                       {group.items.filter(r=>resTab==="extra"?checks[`${r.itemId}__extra__${r.id}`]:checks[`${r.itemId}__resources__${r.id}`]).length}/{group.items.length}
                     </span>
                   </div>
-                  {/* Items */}
+                  {/* Items — C: type-colored left border */}
                   {group.items.map((r,i)=>{
                     const checkKey = resTab==="extra" ? `${r.itemId}__extra__${r.id}` : `${r.itemId}__resources__${r.id}`;
                     const checked = !!checks[checkKey];
                     const badge = resTab==="extra" ? EXTRA_BADGE : (TYPE_BADGE[r.type]||{label:r.type,bg:C.elevated,color:C.dim});
                     const handleCheck = ()=> resTab==="extra" ? toggleCheck(r.itemId,"extra",r.id) : toggleCheck(r.itemId,"resources",r.id);
+                    const borderColor = resTab==="extra" ? "#9333ea" : (badge.color||C.dim);
                     return (
-                      <div key={`${r.itemId}-${r.id}`} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 14px",borderBottom:i<group.items.length-1?`1px solid ${C.border2}`:"none",background:checked?"#0d150d":"transparent",transition:"background 0.15s"}}>
+                      <div key={`${r.itemId}-${r.id}`} style={{
+                        display:"flex",alignItems:"flex-start",gap:10,
+                        padding:"10px 14px 10px 0",
+                        borderBottom:i<group.items.length-1?`1px solid ${C.border2}`:"none",
+                        background:checked?`${borderColor}08`:"transparent",
+                        transition:"background 0.15s",
+                        borderLeft:`3px solid ${checked?borderColor:`${borderColor}40`}`,
+                        paddingLeft:14,
+                      }}>
                         <div onClick={handleCheck} style={{flexShrink:0,width:15,height:15,borderRadius:3,marginTop:3,
-                          border:`1.5px solid ${checked?(resTab==="extra"?"#9333ea":"#238636"):C.border}`,
-                          background:checked?(resTab==="extra"?"#9333ea":"#238636"):"transparent",
-                          cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
-                          {checked && <span style={{color:"#fff",fontSize:15,fontWeight:800,lineHeight:1}}>✓</span>}
+                          border:`1.5px solid ${checked?borderColor:C.border}`,
+                          background:checked?borderColor:"transparent",
+                          cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",
+                          transition:"all 0.15s"}}>
+                          {checked && <span style={{color:"#fff",fontSize:9,fontWeight:900,lineHeight:1}}>✓</span>}
                         </div>
                         <div style={{flex:1,minWidth:0}}>
-                          <div style={{display:"flex",alignItems:"flex-start",gap:6,flexWrap:"wrap",marginBottom:2}}>
-                            {r.url ? (
-                              <a href={r.url} target="_blank" rel="noreferrer"
-                                style={{fontSize:15,color:checked?C.dim:C.accent,textDecoration:checked?"line-through":"underline",lineHeight:1.5,wordBreak:"break-word"}}>
-                                {r.text}
-                              </a>
-                            ) : (
-                              <span style={{fontSize:15,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
-                            )}
-                            <span style={{fontSize:14,padding:"1px 6px",borderRadius:99,background:badge.bg,color:badge.color,flexShrink:0,marginTop:2}}>{badge.label}</span>
+                          <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8,marginBottom:2}}>
+                            <div style={{flex:1,minWidth:0}}>
+                              {r.url ? (
+                                <a href={r.url} target="_blank" rel="noreferrer"
+                                  style={{fontSize:14,color:checked?C.dim:C.text,textDecoration:checked?"line-through":"none",lineHeight:1.5,wordBreak:"break-word",fontWeight:500}}>
+                                  {r.text}
+                                </a>
+                              ) : (
+                                <span style={{fontSize:14,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
+                              )}
+                            </div>
+                            {/* Badge on the right */}
+                            <span style={{fontSize:10,padding:"2px 8px",borderRadius:6,
+                              background:badge.bg,color:badge.color,flexShrink:0,
+                              fontWeight:700,whiteSpace:"nowrap",marginTop:2}}>
+                              {badge.label}
+                            </span>
                           </div>
-                          <div style={{fontSize:14,color:C.dim}}>{r.itemTitle}</div>
+                          <div style={{fontSize:12,color:C.dim}}>{r.itemTitle}</div>
                           {resTab==="extra" && r.desc && (
-                            <div style={{fontSize:15,color:C.muted,marginTop:3,lineHeight:1.5}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
+                            <div style={{fontSize:12,color:C.muted,marginTop:4,lineHeight:1.65}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
                           )}
                         </div>
                       </div>
@@ -3057,50 +3446,106 @@ export default function App() {
                 </div>
               </div>
 
-              {/* ── Mega Project Cards ── */}
-              <div style={{marginBottom:20}}>
-                <div style={{fontSize:15,fontWeight:700,color:C.dim,textTransform:"uppercase",letterSpacing:0.7,marginBottom:8}}>Mega Projects</div>
-                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
-                  {Object.values(MEGA_PROJECTS).map(mp=>{
+              {/* ── D: Horizontal stepper timeline ── */}
+              <div style={{marginBottom:28}}>
+                <div style={{fontSize:11,fontWeight:800,color:C.dim,textTransform:"uppercase",letterSpacing:1,marginBottom:16}}>Mega Projects</div>
+
+                {/* Timeline connector row */}
+                <div style={{display:"flex",alignItems:"flex-start",gap:0,position:"relative",marginBottom:4}}>
+                  {Object.values(MEGA_PROJECTS).map((mp,mi)=>{
                     const steps = megaByProj[mp.id]||[];
                     const doneSteps = steps.filter(b=>checks[`${b.itemId}__implementation__${b.id}`]).length;
+                    const pct_mp = mp.totalSteps>0?Math.round((doneSteps/mp.totalSteps)*100):0;
+                    const isExp = expandedMega[mp.id];
                     return (
-                      <div key={mp.id} style={{background:mp.bg,border:`1px solid ${mp.border}`,borderRadius:10,padding:"12px 14px"}}>
-                        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
-                          <span style={{fontSize:15}}>{mp.emoji}</span>
-                          <span style={{fontSize:14,fontWeight:700,color:mp.color,lineHeight:1.3}}>{mp.name}</span>
+                      <div key={mp.id} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
+                        {/* Connector line — left half */}
+                        {mi>0 && <div style={{position:"absolute",top:20,right:"50%",left:0,height:2,
+                          background:doneSteps>0?mp.color:`${mp.color}25`,zIndex:0}}/>}
+                        {/* Connector line — right half */}
+                        {mi<2 && <div style={{position:"absolute",top:20,left:"50%",right:0,height:2,
+                          background:doneSteps>0?mp.color:`${mp.color}25`,zIndex:0}}/>}
+
+                        {/* Node */}
+                        <div onClick={()=>setExpandedMega(p=>({...p,[mp.id]:!p[mp.id]}))}
+                          style={{width:42,height:42,borderRadius:"50%",
+                            background:isExp?mp.color:mp.bg,
+                            border:`2px solid ${mp.color}`,
+                            display:"flex",alignItems:"center",justifyContent:"center",
+                            fontSize:18,cursor:"pointer",position:"relative",zIndex:1,
+                            boxShadow:isExp?`0 0 16px ${mp.color}60`:"none",
+                            transition:"all 0.2s"}}>
+                          {mp.emoji}
                         </div>
-                        {/* Step progress bar */}
-                        <div style={{display:"flex",gap:3,marginBottom:7}}>
-                          {Array.from({length:mp.totalSteps},(_,i)=>{
-                            const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
-                            const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
-                            return <div key={i} title={mp.steps[i]} style={{flex:1,height:5,borderRadius:3,background:isDone?mp.color:`${mp.color}22`,transition:"background 0.3s"}}/>;
-                          })}
+
+                        {/* Label */}
+                        <div style={{marginTop:8,textAlign:"center",padding:"0 4px"}}>
+                          <div style={{fontSize:11,fontWeight:800,color:isExp?mp.color:C.muted,lineHeight:1.3,marginBottom:3}}>
+                            {mp.name}
+                          </div>
+                          {/* Step dots */}
+                          <div style={{display:"flex",gap:2,justifyContent:"center"}}>
+                            {Array.from({length:mp.totalSteps},(_,i)=>{
+                              const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
+                              const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
+                              return <div key={i} style={{width:6,height:6,borderRadius:"50%",
+                                background:isDone?mp.color:`${mp.color}28`,transition:"background 0.3s"}}/>;
+                            })}
+                          </div>
+                          <div style={{fontSize:10,color:mp.color,marginTop:3,opacity:0.8}}>{doneSteps}/{mp.totalSteps}</div>
                         </div>
-                        <div style={{fontSize:14,color:mp.color,opacity:0.75,marginBottom:7}}>{doneSteps}/{mp.totalSteps} steps complete</div>
-                        {/* Step checklist */}
-                        {mp.steps.map((stepLabel,i)=>{
-                          const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
-                          const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
-                          return (
-                            <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}>
-                              <div style={{width:14,height:14,borderRadius:"50%",flexShrink:0,marginTop:1,
-                                border:`1.5px solid ${isDone?mp.color:`${mp.color}35`}`,
-                                background:isDone?mp.color:"transparent",
-                                display:"flex",alignItems:"center",justifyContent:"center"}}>
-                                {isDone
-                                  ? <span style={{color:"#fff",fontSize:14,fontWeight:800,lineHeight:1}}>✓</span>
-                                  : <span style={{fontSize:14,color:mp.color,opacity:0.5,fontWeight:700}}>{i+1}</span>}
-                              </div>
-                              <span style={{fontSize:14,color:isDone?mp.color:C.dim,textDecoration:isDone?"line-through":"none",lineHeight:1.35}}>{stepLabel}</span>
-                            </div>
-                          );
-                        })}
                       </div>
                     );
                   })}
                 </div>
+
+                {/* Expanded step details */}
+                {Object.values(MEGA_PROJECTS).map(mp=>{
+                  if (!expandedMega[mp.id]) return null;
+                  const steps = megaByProj[mp.id]||[];
+                  return (
+                    <div key={mp.id} style={{marginTop:12,padding:"16px 18px",
+                      background:mp.bg,borderRadius:12,border:`1px solid ${mp.color}40`,
+                      animation:"fadeSlideIn 0.18s ease"}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
+                        <span style={{fontSize:16}}>{mp.emoji}</span>
+                        <span style={{fontSize:14,fontWeight:800,color:mp.color}}>{mp.name}</span>
+                        <span style={{fontSize:11,color:mp.color,opacity:0.7,marginLeft:"auto"}}>{mp.subtitle}</span>
+                      </div>
+                      <div className="lena-hr" style={{background:`linear-gradient(90deg,${mp.color}50,transparent)`,marginBottom:14}}/>
+                      {mp.steps.map((stepLabel,i)=>{
+                        const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
+                        const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
+                        return (
+                          <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
+                            {/* Step node */}
+                            <div style={{width:22,height:22,borderRadius:"50%",flexShrink:0,marginTop:1,
+                              border:`2px solid ${isDone?mp.color:`${mp.color}35`}`,
+                              background:isDone?mp.color:"transparent",
+                              display:"flex",alignItems:"center",justifyContent:"center",
+                              transition:"all 0.2s"}}>
+                              {isDone
+                                ? <span style={{color:"#fff",fontSize:10,fontWeight:900}}>✓</span>
+                                : <span style={{fontSize:10,color:mp.color,opacity:0.6,fontWeight:700}}>{i+1}</span>}
+                            </div>
+                            {/* Vertical connector */}
+                            <div style={{display:"flex",flexDirection:"column",flex:1}}>
+                              <span style={{fontSize:13,color:isDone?mp.color:C.muted,
+                                textDecoration:isDone?"line-through":"none",lineHeight:1.45,fontWeight:isDone?400:500}}>
+                                {stepLabel}
+                              </span>
+                              {stepBuild && (
+                                <span style={{fontSize:11,color:C.dim,marginTop:2}}>
+                                  in: {stepBuild.itemTitle}
+                                </span>
+                              )}
+                            </div>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* ── All tasks by phase ── */}
@@ -3235,7 +3680,7 @@ export default function App() {
                     {isOpen && curSec && (
                       <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,padding:"18px 20px 16px"}}>
                         {curSec==="theory" && (unit.theory||[]).map(c=>(
-                          <CheckRow key={c.id} checked={!!checks[`${unit.id}__theory__${c.id}`]} onChange={()=>toggleCheck(unit.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
+                          <CheckRow key={c.id} checked={!!checks[`${unit.id}__theory__${c.id}`]} onChange={()=>toggleCheck(unit.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource} isTheory={true}/>
                         ))}
                         {curSec==="resources" && (unit.resources||[]).map(r=>(
                           <CheckRow key={r.id} checked={!!checks[`${unit.id}__resources__${r.id}`]} onChange={()=>toggleCheck(unit.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
@@ -3261,16 +3706,14 @@ export default function App() {
                         )}
                         {curSec==="extraReading" && (
                           <>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
                               <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
                               <div>
                                 <div style={{fontSize:11,color:"#a371f7",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
-                                <div style={{fontSize:11,color:"#6e7681"}}>Optional — for going deeper beyond the curriculum</div>
+                                <div style={{fontSize:11,color:"#6e7681"}}>Tiered by depth — Quick Read → Going Deeper → Deep Dive</div>
                               </div>
                             </div>
-                            {(unit.extraReading||[]).map(e=>(
-                              <ExtraItem key={e.id} item={e} checked={!!checks[`${unit.id}__extra__${e.id}`]} onChange={()=>toggleCheck(unit.id,"extra",e.id)}/>
-                            ))}
+                            <TieredExtraReading items={unit.extraReading||[]} itemId={unit.id} checks={checks} toggleCheck={toggleCheck}/>
                           </>
                         )}
                       </div>
@@ -3284,65 +3727,73 @@ export default function App() {
 
         {/* ── STATS VIEW ── */}
         {view==="stats" && (
-          <div style={{display:"grid",gap:12}}>
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
+          <div style={{display:"grid",gap:14}}>
+            {/* Big count cards */}
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
               {[
-                {label:"Completed",value:done,color:C.green,bg:"#0d1f0f"},
-                {label:"In Progress",value:inProg,color:C.yellow,bg:"#2d2208"},
-                {label:"Remaining",value:total-done-inProg,color:C.muted,bg:C.elevated},
+                {label:"Completed", value:done,              color:C.lena,   bg:`${C.lena}12`,  border:`${C.lena}30`},
+                {label:"In Progress",value:inProg,           color:C.yellow, bg:"#271f0812",    border:"#8a5c0030"},
+                {label:"Remaining", value:total-done-inProg, color:C.dim,    bg:C.elevated,    border:C.border},
               ].map(c=>(
-                <div key={c.label} style={{background:c.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px",textAlign:"center"}}>
-                  <div style={{fontSize:28,fontWeight:800,color:c.color}}>{c.value}</div>
-                  <div style={{fontSize:14,fontWeight:700,color:c.color,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{c.label}</div>
+                <div key={c.label} style={{background:c.bg,borderRadius:14,border:`1px solid ${c.border}`,padding:"20px 16px",textAlign:"center"}}>
+                  <div style={{fontSize:34,fontWeight:800,color:c.color,lineHeight:1,letterSpacing:-1}}>{c.value}</div>
+                  <div style={{fontSize:11,fontWeight:700,color:c.color,marginTop:6,textTransform:"uppercase",letterSpacing:1,opacity:0.8}}>{c.label}</div>
                 </div>
               ))}
             </div>
 
-            <div style={{background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px"}}>
-              <div style={{fontWeight:700,fontSize:15,marginBottom:14,color:C.text}}>Progress by Phase</div>
+            {/* Phase progress */}
+            <div style={{background:C.surface,borderRadius:14,border:`1px solid ${C.border}`,padding:"18px 20px"}}>
+              <div style={{fontWeight:800,fontSize:15,marginBottom:6,color:C.text,letterSpacing:-0.2}}>Progress by Phase</div>
+              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena}60,transparent)`,marginBottom:18}}/>
               {ROADMAP.map(phase=>{
                 const phDone=phase.items.filter(i=>progress[i.id]==="done").length;
                 const phPct=Math.round((phDone/phase.items.length)*100);
+                const complete=phDone===phase.items.length;
                 const totalChecks=phase.items.reduce((sum,item)=>sum+["theory","resources","implementation"].reduce((s,sec)=>s+(item[sec]||[]).filter(c=>checks[`${item.id}__${sec}__${c.id}`]).length,0),0);
                 const totalPossible=phase.items.reduce((sum,item)=>sum+["theory","resources","implementation"].reduce((s,sec)=>s+(item[sec]||[]).length,0),0);
+                const barColor = complete ? C.lena : phase.color;
                 return (
-                  <div key={phase.phase} style={{marginBottom:14}}>
-                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
-                      <div style={{display:"flex",alignItems:"center",gap:7}}>
-                        <div style={{width:7,height:7,borderRadius:"50%",background:phase.color}}/>
-                        <span style={{fontSize:14,fontWeight:600,color:C.muted}}>{phase.phase}</span>
+                  <div key={phase.phase} style={{marginBottom:16}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
+                      <div style={{display:"flex",alignItems:"center",gap:8}}>
+                        <span style={{fontSize:14,color:barColor,lineHeight:1}}>•</span>
+                        <span style={{fontSize:13,fontWeight:600,color:complete?C.lena:C.muted}}>{phase.phase}</span>
+                        {complete && <span style={{fontSize:10,color:C.lena,fontWeight:800,background:`${C.lena}18`,padding:"1px 7px",borderRadius:99,letterSpacing:0.5}}>DONE</span>}
                       </div>
-                      <div style={{display:"flex",gap:12}}>
-                        <span style={{fontSize:14,color:C.dim}}>{totalChecks}/{totalPossible} tasks</span>
-                        <span style={{fontSize:14,color:C.dim}}>{phDone}/{phase.items.length} concepts</span>
+                      <div style={{display:"flex",gap:12,alignItems:"center"}}>
+                        <span style={{fontSize:12,color:C.dim}}>{totalChecks}/{totalPossible} tasks</span>
+                        <span style={{fontSize:12,color:complete?C.lena:C.dim,fontWeight:complete?700:400}}>{phDone}/{phase.items.length}</span>
                       </div>
                     </div>
-                    <div style={{background:C.elevated,borderRadius:99,height:4}}>
-                      <div style={{background:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s"}}/>
+                    <div style={{background:C.elevated,borderRadius:99,height:5,overflow:"hidden"}}>
+                      <div style={{background:complete?`linear-gradient(90deg,${C.lena},#b8e05a)`:barColor,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.5s cubic-bezier(0.4,0,0.2,1)"}}/>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            <div style={{background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px"}}>
-              <div style={{fontWeight:700,fontSize:15,marginBottom:12,color:C.text}}>Your Notes</div>
+            {/* Notes */}
+            <div style={{background:C.surface,borderRadius:14,border:`1px solid ${C.border}`,padding:"18px 20px"}}>
+              <div style={{fontWeight:800,fontSize:15,marginBottom:6,color:C.text}}>Your Notes</div>
+              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.accent}50,transparent)`,marginBottom:16}}/>
               {ALL_ITEMS.filter(i=>notes[i.id]).length===0 ? (
-                <div style={{color:C.dim,fontSize:14,textAlign:"center",padding:"14px 0"}}>No notes yet. Use 📝 on any concept.</div>
+                <div style={{color:C.dim,fontSize:13,textAlign:"center",padding:"16px 0"}}>No notes yet — use 📝 on any concept to add one.</div>
               ) : ALL_ITEMS.filter(i=>notes[i.id]).map(item=>(
-                <div key={item.id} style={{marginBottom:9,padding:"9px 11px",background:C.bg,borderRadius:7,borderLeft:`2px solid ${C.accent}`}}>
-                  <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:2}}>{item.title}</div>
-                  <div style={{fontSize:14,color:C.muted,lineHeight:1.6}}>{notes[item.id]}</div>
+                <div key={item.id} style={{marginBottom:10,padding:"10px 14px",background:C.bg,borderRadius:10,borderLeft:`3px solid ${C.accent}`}}>
+                  <div style={{fontSize:13,fontWeight:700,color:C.text,marginBottom:3}}>{item.title}</div>
+                  <div style={{fontSize:13,color:C.muted,lineHeight:1.7}}>{notes[item.id]}</div>
                 </div>
               ))}
             </div>
 
-            <div style={{textAlign:"center"}}>
+            <div style={{textAlign:"center",paddingBottom:8}}>
               <button onClick={async()=>{
                 if(!confirm("Reset all progress, checks, and notes?")) return;
                 setProgress({}); setChecks({}); setNotes({});
                 try{await store.set("p","{}"); await store.set("c","{}"); await store.set("n","{}");} catch{}
-              }} style={{fontSize:15,color:C.red,background:"transparent",border:`1px solid #5a1e1e`,borderRadius:6,padding:"6px 13px",cursor:"pointer"}}>Reset Everything</button>
+              }} style={{fontSize:13,color:C.pink,background:"transparent",border:`1px solid ${C.red}50`,borderRadius:9,padding:"8px 18px",cursor:"pointer",letterSpacing:0.2}}>Reset Everything</button>
             </div>
           </div>
         )}
@@ -3352,14 +3803,18 @@ export default function App() {
 
       {/* Note modal */}
       {activeNote && (
-        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:16}}>
-          <div style={{background:C.surface,borderRadius:12,padding:20,width:"100%",maxWidth:440,border:`1px solid ${C.border}`,boxShadow:"0 20px 60px rgba(0,0,0,0.5)"}}>
-            <div style={{fontWeight:700,fontSize:14,marginBottom:2,color:C.text}}>{ALL_ITEMS.find(i=>i.id===activeNote)?.title}</div>
-            <div style={{fontSize:11,color:C.dim,marginBottom:12}}>Key insights, links, confusion points, things to revisit</div>
-            <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} autoFocus placeholder="Write anything..." style={{width:"100%",height:120,padding:10,borderRadius:7,border:`1px solid ${C.border}`,fontSize:13,fontFamily:"inherit",resize:"vertical",outline:"none",color:C.text,lineHeight:1.6,boxSizing:"border-box",background:C.elevated}}/>
-            <div style={{display:"flex",gap:8,marginTop:11,justifyContent:"flex-end"}}>
-              <button onClick={()=>{setActiveNote(null);setNoteText("");}} style={{padding:"6px 14px",borderRadius:6,border:`1px solid ${C.border}`,background:"transparent",fontSize:12,cursor:"pointer",color:C.muted}}>Cancel</button>
-              <button onClick={saveNote} style={{padding:"6px 14px",borderRadius:6,border:"none",background:C.accent,color:"#0d1117",fontSize:12,fontWeight:700,cursor:"pointer"}}>Save</button>
+        <div style={{position:"fixed",inset:0,background:"rgba(8,12,18,0.82)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:16}}>
+          <div style={{background:C.surface,borderRadius:16,padding:"22px 24px",width:"100%",maxWidth:460,border:`1px solid ${C.border}`,boxShadow:"0 24px 64px rgba(0,0,0,0.6)"}}>
+            <div style={{fontWeight:800,fontSize:15,marginBottom:3,color:C.text,letterSpacing:-0.2}}>{ALL_ITEMS.find(i=>i.id===activeNote)?.title}</div>
+            <div style={{fontSize:11,color:C.dim,marginBottom:4,lineHeight:1.5}}>Key insights, links, confusion points, things to revisit</div>
+            <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena}50,transparent)`,marginBottom:14}}/>
+            <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} autoFocus placeholder="Write anything..." style={{width:"100%",height:130,padding:"12px 14px",borderRadius:10,border:`1px solid ${C.border}`,fontSize:13,fontFamily:"'Inter',-apple-system,sans-serif",resize:"vertical",outline:"none",color:C.text,lineHeight:1.7,boxSizing:"border-box",background:C.elevated,transition:"border-color 0.15s"}}
+              onFocus={e=>e.target.style.borderColor=`${C.lena}60`}
+              onBlur={e=>e.target.style.borderColor=C.border}
+            />
+            <div style={{display:"flex",gap:8,marginTop:12,justifyContent:"flex-end"}}>
+              <button onClick={()=>{setActiveNote(null);setNoteText("");}} style={{padding:"7px 16px",borderRadius:9,border:`1px solid ${C.border}`,background:"transparent",fontSize:12,cursor:"pointer",color:C.muted,fontWeight:600}}>Cancel</button>
+              <button onClick={saveNote} style={{padding:"7px 16px",borderRadius:9,border:"none",background:C.lena,color:"#0c1116",fontSize:12,fontWeight:800,cursor:"pointer",letterSpacing:0.2}}>Save ⇨</button>
             </div>
           </div>
         </div>

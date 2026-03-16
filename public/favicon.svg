@@ -1,0 +1,58 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1a1f2e"/>
+      <stop offset="100%" stop-color="#0c1116"/>
+    </linearGradient>
+    <linearGradient id="g1" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#92bf32"/>
+      <stop offset="100%" stop-color="#58c4a8"/>
+    </linearGradient>
+    <linearGradient id="g2" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#6366f1"/>
+      <stop offset="100%" stop-color="#92bf32"/>
+    </linearGradient>
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- Background rounded square -->
+  <rect width="100" height="100" rx="20" fill="url(#bg)"/>
+
+  <!-- Neural network: 3 layers -->
+  <!-- Layer 1 (input): 2 nodes at x=22 -->
+  <!-- Layer 2 (hidden): 3 nodes at x=50 -->
+  <!-- Layer 3 (output): 1 node at x=78 -->
+
+  <!-- Connections L1→L2 -->
+  <g stroke="#92bf32" stroke-width="1.2" opacity="0.35">
+    <line x1="22" y1="33" x2="50" y2="26"/>
+    <line x1="22" y1="33" x2="50" y2="50"/>
+    <line x1="22" y1="33" x2="50" y2="74"/>
+    <line x1="22" y1="67" x2="50" y2="26"/>
+    <line x1="22" y1="67" x2="50" y2="50"/>
+    <line x1="22" y1="67" x2="50" y2="74"/>
+  </g>
+
+  <!-- Connections L2→L3 -->
+  <g stroke="#92bf32" stroke-width="1.2" opacity="0.35">
+    <line x1="50" y1="26" x2="78" y2="50"/>
+    <line x1="50" y1="50" x2="78" y2="50"/>
+    <line x1="50" y1="74" x2="78" y2="50"/>
+  </g>
+
+  <!-- Layer 1 nodes (input) -->
+  <circle cx="22" cy="33" r="7" fill="#0c1116" stroke="url(#g2)" stroke-width="2" filter="url(#glow)"/>
+  <circle cx="22" cy="67" r="7" fill="#0c1116" stroke="url(#g2)" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Layer 2 nodes (hidden) -->
+  <circle cx="50" cy="26" r="7" fill="#0c1116" stroke="url(#g1)" stroke-width="2" filter="url(#glow)"/>
+  <circle cx="50" cy="50" r="9" fill="#0c1116" stroke="url(#g1)" stroke-width="2.5" filter="url(#glow)"/>
+  <circle cx="50" cy="74" r="7" fill="#0c1116" stroke="url(#g1)" stroke-width="2" filter="url(#glow)"/>
+
+  <!-- Layer 3 node (output) — brightest -->
+  <circle cx="78" cy="50" r="9" fill="#92bf3222" stroke="url(#g1)" stroke-width="2.5" filter="url(#glow)"/>
+  <circle cx="78" cy="50" r="4" fill="#92bf32"/>
+</svg>
