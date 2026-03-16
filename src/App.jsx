@@ -4,12 +4,15 @@ import { useState, useEffect } from "react";
 const store = {
   get: async (key) => {
     try { if (window.storage) return await window.storage.get(key); } catch {}
-    const v = localStorage.getItem("mlt4_" + key);
-    return v ? { value: v } : null;
+    try {
+      const v = localStorage.getItem("mlt4_" + key);
+      return v ? { value: v } : null;
+    } catch {}
+    return null;
   },
   set: async (key, val) => {
     try { if (window.storage) { await window.storage.set(key, val); return; } } catch {}
-    localStorage.setItem("mlt4_" + key, val);
+    try { localStorage.setItem("mlt4_" + key, val); } catch {}
   }
 };
 
@@ -46,9 +49,9 @@ const ROADMAP = [
           { id:"t4", text:"Orthogonality, projections, and least squares — the geometric view of linear regression", desc:"Least squares is the orthogonal projection of b onto the column space of A. This geometric view shows why normal equations work and why QR decomposition is numerically better than solving the normal equations directly.", resource:"Gilbert Strang — MIT 18.06" },
           { id:"t5", text:"Eigenvalues and eigenvectors — the invariant directions of a transformation", desc:"Eigenvectors are directions a transformation only scales. They are the foundation for PCA, spectral clustering, understanding gradient descent dynamics (loss landscape curvature), and the Neural Tangent Kernel — all appearing constantly in ML research.", resource:"Gilbert Strang — MIT 18.06" },
           { id:"t6", text:"SVD — the single most important matrix factorisation for ML", desc:"SVD decomposes any matrix A = UΣVᵀ into rotation-scale-rotation. It underlies PCA, low-rank approximation (LoRA is SVD-based!), matrix completion, recommendation systems, and attention head analysis. Understand this cold.", resource:"Gilbert Strang — MIT 18.06" },
-          { id:"t7", text:"Positive semi-definite (PSD) matrices — covariance, Hessian, and kernel matrices", desc:"PSD matrices are symmetric matrices with non-negative eigenvalues. Every covariance matrix is PSD. Every valid kernel matrix is PSD. The Hessian is PSD at a minimum. This property appears in optimisation theory, Gaussian processes, and model convergence proofs.", resource:"Mathematics for ML Book" },
-          { id:"t8", text:"Matrix calculus — gradients of matrix and vector expressions", desc:"How do you differentiate L = (Xw - y)ᵀ(Xw - y) with respect to w? Matrix calculus gives you the rules. These are used in every paper that derives update rules. The Matrix Cookbook is the reference — but understanding the derivations is the goal.", resource:"Mathematics for ML Book" },
-          { id:"t9", text:"Norms and distances — L1, L2, Frobenius, spectral, nuclear", desc:"L2 regularisation penalises the Frobenius norm of weights. LoRA constrains the nuclear norm. Spectral normalisation bounds the largest singular value. Each norm has a different geometric meaning and different effect on the optimisation landscape.", resource:"Mathematics for ML Book" },
+          { id:"t7", text:"Positive semi-definite (PSD) matrices — covariance, Hessian, and kernel matrices", desc:"PSD matrices are symmetric matrices with non-negative eigenvalues. Every covariance matrix is PSD. Every valid kernel matrix is PSD. The Hessian is PSD at a minimum. This property appears in optimisation theory, Gaussian processes, and model convergence proofs.", resource:"Mathematics for ML — Chapter 2: Linear Algebra" },
+          { id:"t8", text:"Matrix calculus — gradients of matrix and vector expressions", desc:"How do you differentiate L = (Xw - y)ᵀ(Xw - y) with respect to w? Matrix calculus gives you the rules. These are used in every paper that derives update rules. The Matrix Cookbook is the reference — but understanding the derivations is the goal.", resource:"Mathematics for ML — Chapter 5: Vector Calculus" },
+          { id:"t9", text:"Norms and distances — L1, L2, Frobenius, spectral, nuclear", desc:"L2 regularisation penalises the Frobenius norm of weights. LoRA constrains the nuclear norm. Spectral normalisation bounds the largest singular value. Each norm has a different geometric meaning and different effect on the optimisation landscape.", resource:"Mathematics for ML — Chapter 2: Linear Algebra" },
         ],
         resources:[
           { id:"r1", text:"3Blue1Brown — Essence of Linear Algebra (YouTube)", url:"https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab", type:"youtube" },
@@ -105,6 +108,13 @@ const ROADMAP = [
           { id:"e3", topic:"MIT 6.041 — Probabilistic Systems Analysis OCW, free problem sets", desc:"MIT's probability course with 25 problem sets and full solutions. If you want deeper probability beyond ML-specific coverage, these are the canonical rigorous exercises. Problem sets 1–5 are directly relevant to ML foundations.", url:"https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/" },
         ]
       },
+    ]
+  },
+  {
+    phase: "Deep Math",
+    color: "#0891b2",
+    summary: "Advanced mathematics for the Scientific ML track and rigorous paper reading — multivariable calculus, differential equations, Fourier analysis, and transform methods. Essential if you pursue neural operators or physics-informed ML; valuable revision for anyone who wants to read mathematical ML papers with full comprehension.",
+    items: [
       {
         id: "mf3", week: "Weeks 4–7", title: "Multivariable Calculus", duration: "3–4 weeks",
         tags: ["calculus","gradients","integration","vector-calculus"],
@@ -327,10 +337,10 @@ const ROADMAP = [
         theory: [
           { id:"t1", text:"Cost function (MSE) — loss surface geometry", desc:"MSE creates a bowl-shaped (convex) loss surface, which guarantees gradient descent will find the global minimum — this convexity property is rare and precious.", resource:"3Blue1Brown — NN Chapter 1" },
           { id:"t2", text:"Gradient descent — walking downhill on the loss surface", desc:"The most fundamental optimization algorithm in all of ML; everything from SGD to Adam is a variant of this core idea.", resource:"Andrew Ng — Coursera" },
-          { id:"t3", text:"Derive the MSE gradient with respect to weights by hand", desc:"Doing this derivation on paper once builds the intuition for why the gradient points in the direction of steepest ascent and why we negate it.", resource:"Mathematics for ML Book" },
+          { id:"t3", text:"Derive the MSE gradient with respect to weights by hand", desc:"Doing this derivation on paper once builds the intuition for why the gradient points in the direction of steepest ascent and why we negate it.", resource:"Mathematics for ML — Chapter 9: Linear Regression" },
           { id:"t4", text:"Learning rate — why too high diverges, too low crawls", desc:"The learning rate is the most important hyperparameter you'll ever tune; understanding its effect geometrically prevents a lot of blind trial-and-error.", resource:"3Blue1Brown — NN Chapter 1" },
           { id:"t5", text:"Normal equation — closed-form vs iterative tradeoff", desc:"The normal equation gives the exact answer in one step but scales as O(n³) with features; understanding this tradeoff explains why we use gradient descent at all.", resource:"Andrew Ng — Coursera" },
-          { id:"t6", text:"Assumptions of linear regression — linearity, independence, homoscedasticity", desc:"These assumptions are why linear regression fails on most real-world problems; knowing them helps you diagnose when the model is wrong, not just when it's inaccurate.", resource:"Mathematics for ML Book" },
+          { id:"t6", text:"Assumptions of linear regression — linearity, independence, homoscedasticity", desc:"These assumptions are why linear regression fails on most real-world problems; knowing them helps you diagnose when the model is wrong, not just when it's inaccurate.", resource:"Mathematics for ML — Chapter 9: Linear Regression" },
         ],
         resources: [
           { id:"r1", text:"3Blue1Brown — Neural Networks Chapter 1 (YouTube)", url:"https://www.youtube.com/watch?v=aircAruvnKk", type:"youtube" },
@@ -352,14 +362,19 @@ const ROADMAP = [
         theory: [
           { id:"t1", text:"Why MSE fails for classification — geometrically", desc:"MSE penalises confident correct predictions, making it actively harmful for classification; seeing this geometrically explains why cross-entropy was invented.", resource:"StatQuest — Logistic Regression" },
           { id:"t2", text:"Sigmoid function — probability output and saturation problem", desc:"Sigmoid squashes any value to (0,1) giving a probability, but saturates near 0 and 1 causing vanishing gradients — the same problem that motivated ReLU.", resource:"StatQuest — Logistic Regression" },
-          { id:"t3", text:"Cross-entropy loss — MLE derivation", desc:"Cross-entropy loss IS the maximum likelihood estimate for a Bernoulli distribution; deriving this connection from first principles makes the loss function feel inevitable rather than arbitrary.", resource:"CS229 Notes" },
+          { id:"t3", text:"Cross-entropy loss — MLE derivation", desc:"Cross-entropy loss IS the maximum likelihood estimate for a Bernoulli distribution; deriving this connection from first principles makes the loss function feel inevitable rather than arbitrary.", resource:"CS229 — Supervised Learning Notes (PDF)" },
           { id:"t4", text:"Decision boundary — what the model actually learns", desc:"Logistic regression learns a hyperplane decision boundary in feature space; understanding this geometrically explains exactly when it will and won't work.", resource:"Andrew Ng — Coursera" },
-          { id:"t5", text:"Multi-class via softmax and one-vs-rest", desc:"Two fundamentally different approaches to extending binary classification; understanding when each applies is essential for production classification systems.", resource:"CS229 Notes" },
+          { id:"t5", text:"Multi-class via softmax and one-vs-rest", desc:"Two fundamentally different approaches to extending binary classification; understanding when each applies is essential for production classification systems.", resource:"CS229 — Classification Notes (PDF)" },
+        
+          { id:"t6", text:"NLP text classification pipeline — from raw text to model input",
+            desc:"Text classification is where NLP meets the ML fundamentals you already know. The pipeline: (1) Tokenisation — split text into tokens (words, subwords via BPE). (2) Feature representation — three approaches in order of complexity: bag-of-words (term frequency vectors, fast, strong baseline for short text), bag-of-embeddings (average word embedding vectors, captures semantics), contextual embeddings (BERT [CLS] token, best quality). (3) Classification head — logistic regression on any of the above representations. Key insight: Naive Bayes on bag-of-words is a legitimate baseline that beats neural networks when you have < 1,000 labelled examples. Always start here before reaching for transformers. Lena Voita's course has the best visual treatment of why BOW vs BOE matters.", resource:"Lena Voita — NLP Course: Text Classification" },
         ],
         resources: [
           { id:"r1", text:"StatQuest — Logistic Regression (YouTube series)", url:"https://www.youtube.com/watch?v=yIYKR4sgzI8", type:"youtube" },
           { id:"r2", text:"CS229 Lecture Notes — Classification (free PDF)", url:"https://cs229.stanford.edu/notes2022fall/cs229-notes1.pdf", type:"paper" },
           { id:"r3", text:"Andrew Ng — Coursera Week 3", url:"https://www.coursera.org/learn/machine-learning", type:"course" },
+        
+          { id:"r4", text:"Lena Voita — NLP Course: Text Classification (Naive Bayes, CNNs, BOW vs BOE)", url:"https://lena-voita.github.io/nlp_course/text_classification.html", type:"blog" },
         ],
         implementation: [
           { id:"i1", text:"Logistic regression from scratch in NumPy with binary cross-entropy", desc:"Implement sigmoid, compute loss, derive gradient, update weights — the entire training loop in ~30 lines." },
@@ -374,12 +389,12 @@ const ROADMAP = [
         id:"c_svm", week:"Week 3", title:"SVMs & Kernel Methods", duration:"1 week",
         tags:["svm","kernel","margin","classification"],
         theory: [
-          { id:"t1", text:"Maximum margin classifier — why the boundary position matters", desc:"SVM doesn't just find any separating hyperplane — it finds the one maximising the margin to the nearest points (support vectors). This margin maximisation is what gives SVMs their strong generalisation guarantees.", resource:"CS229 Notes" },
+          { id:"t1", text:"Maximum margin classifier — why the boundary position matters", desc:"SVM doesn't just find any separating hyperplane — it finds the one maximising the margin to the nearest points (support vectors). This margin maximisation is what gives SVMs their strong generalisation guarantees.", resource:"CS229 — SVM Notes (PDF)" },
           { id:"t2", text:"Soft-margin SVM — C parameter and the bias-variance tradeoff", desc:"Real data is never perfectly separable. The C parameter trades off margin width against misclassification: small C = wide margin, more errors tolerated; large C = narrow margin, fewer errors. Understanding this tradeoff is the core of SVM hyperparameter tuning.", resource:"StatQuest — SVM" },
-          { id:"t3", text:"The kernel trick — infinite-dimensional feature spaces at O(n²) cost", desc:"Instead of explicitly mapping to a higher-dimensional space (expensive), kernels compute dot products in that space implicitly via K(x,z) = φ(x)·φ(z). The RBF kernel computes in an infinite-dimensional space while remaining computationally feasible.", resource:"CS229 Notes" },
+          { id:"t3", text:"The kernel trick — infinite-dimensional feature spaces at O(n²) cost", desc:"Instead of explicitly mapping to a higher-dimensional space (expensive), kernels compute dot products in that space implicitly via K(x,z) = φ(x)·φ(z). The RBF kernel computes in an infinite-dimensional space while remaining computationally feasible.", resource:"CS229 — SVM Notes (PDF)" },
           { id:"t4", text:"RBF, polynomial, and linear kernels — when to use each", desc:"Linear kernel: when features are already informative and data is large (fast). RBF: when decision boundary is non-linear and you don't know the shape. Polynomial: for image and NLP tasks. Rule: try linear first, add RBF if underfitting.", resource:"Scikit-learn Docs" },
-          { id:"t5", text:"Support vectors — what they are and why only they matter", desc:"After training, only the data points on or inside the margin (support vectors) determine the decision boundary. Removing all other points doesn't change the model — this is why SVMs are memory efficient at inference time.", resource:"CS229 Notes" },
-          { id:"t6", text:"SVM vs logistic regression — when SVMs win", desc:"SVMs outperform logistic regression when: (1) features >> samples (text classification, genomics), (2) the kernel trick can capture non-linear structure, (3) you need a sparse solution. Logistic regression wins on large datasets, probability calibration, and interpretability.", resource:"ESL Book" },
+          { id:"t5", text:"Support vectors — what they are and why only they matter", desc:"After training, only the data points on or inside the margin (support vectors) determine the decision boundary. Removing all other points doesn't change the model — this is why SVMs are memory efficient at inference time.", resource:"CS229 — SVM Notes (PDF)" },
+          { id:"t6", text:"SVM vs logistic regression — when SVMs win", desc:"SVMs outperform logistic regression when: (1) features >> samples (text classification, genomics), (2) the kernel trick can capture non-linear structure, (3) you need a sparse solution. Logistic regression wins on large datasets, probability calibration, and interpretability.", resource:"ESL — Chapter 12: SVMs" },
         ],
         resources: [
           { id:"r1", text:"StatQuest — Support Vector Machines (YouTube series, 4 videos)", url:"https://www.youtube.com/watch?v=efR1C6CvhmE", type:"youtube" },
@@ -402,12 +417,12 @@ const ROADMAP = [
         tags:["decision-tree","random-forest","xgboost","gradient-boosting"],
         theory: [
           { id:"t1", text:"Decision trees — information gain, Gini impurity, and recursive splitting", desc:"A decision tree partitions the feature space by greedily finding the split that maximally reduces impurity (Gini) or maximises information gain (entropy). Understanding this greedy search explains why trees overfit and need pruning or ensembling.", resource:"StatQuest — Decision Trees" },
-          { id:"t2", text:"Bias-variance tradeoff in trees — depth controls it directly", desc:"A depth-1 tree (stump) has high bias, low variance. A fully grown tree has near-zero bias but extreme variance (memorises training data). max_depth is the single most important hyperparameter. This is the clearest case study of the bias-variance tradeoff in all of ML.", resource:"ESL Book" },
+          { id:"t2", text:"Bias-variance tradeoff in trees — depth controls it directly", desc:"A depth-1 tree (stump) has high bias, low variance. A fully grown tree has near-zero bias but extreme variance (memorises training data). max_depth is the single most important hyperparameter. This is the clearest case study of the bias-variance tradeoff in all of ML.", resource:"ESL — Chapter 7: Model Assessment" },
           { id:"t3", text:"Random forests — bagging + feature subsampling", desc:"Two sources of randomness: (1) each tree trains on a bootstrap sample (bagging), (2) each split considers only √p random features. The first reduces variance, the second forces diversity between trees. Diversity is what makes the ensemble better than any single tree.", resource:"StatQuest — Random Forests" },
           { id:"t4", text:"Feature importance in random forests — mean decrease impurity vs permutation", desc:"MDI (mean decrease in Gini impurity) is fast but biased toward high-cardinality features. Permutation importance shuffles one feature and measures accuracy drop — more reliable. SHAP values are the gold standard but most expensive. Know all three for interviews.", resource:"Scikit-learn Docs" },
           { id:"t5", text:"Gradient boosting — fitting residuals sequentially", desc:"Unlike bagging (parallel independent trees), boosting adds trees sequentially, each fitting the residuals (negative gradient) of the previous ensemble. This reduces bias at the cost of variance — hence the learning_rate shrinkage parameter to prevent overfitting.", resource:"StatQuest — Gradient Boosting" },
           { id:"t6", text:"XGBoost, LightGBM, CatBoost — what each improves", desc:"XGBoost: second-order gradient approximation, regularisation terms (L1+L2 on leaf weights). LightGBM: histogram-based splits (100x faster on large data), leaf-wise growth (vs level-wise). CatBoost: native ordered encoding for categorical features (eliminates target encoding leakage). LightGBM is the default choice for large tabular datasets.", resource:"XGBoost Paper" },
-          { id:"t7", text:"When tree ensembles beat neural networks on tabular data", desc:"Empirically, gradient boosted trees outperform deep learning on most tabular datasets with <10M rows. Reasons: (1) no need for feature normalisation, (2) handle missing values natively, (3) work well with mixed categorical/numerical features, (4) faster to train and tune. Neural networks win when features are unstructured or interactions are very complex.", resource:"ESL Book" },
+          { id:"t7", text:"When tree ensembles beat neural networks on tabular data", desc:"Empirically, gradient boosted trees outperform deep learning on most tabular datasets with <10M rows. Reasons: (1) no need for feature normalisation, (2) handle missing values natively, (3) work well with mixed categorical/numerical features, (4) faster to train and tune. Neural networks win when features are unstructured or interactions are very complex.", resource:"ESL — Chapters 9–10: Trees and Boosting" },
           { id:"t8", text:"min_samples_leaf, n_estimators, learning_rate — the key hyperparameters", desc:"min_samples_leaf: prevents splits on tiny groups (regularisation). n_estimators: more trees = better until diminishing returns; use early stopping. learning_rate: lower rate + more trees = better but slower. The classic tradeoff: n_estimators × learning_rate is roughly constant for optimal performance.", resource:"XGBoost Docs" },
         ],
         resources: [
@@ -459,10 +474,10 @@ const ROADMAP = [
         id:"c_eval", week:"Week 6", title:"Model Evaluation & Selection", duration:"1 week",
         tags:["cross-validation","metrics","bias-variance","hyperparameter-tuning"],
         theory: [
-          { id:"t1", text:"Bias-variance decomposition — the fundamental tradeoff", desc:"Total error = bias² + variance + irreducible noise. High bias = underfitting (model too simple). High variance = overfitting (model too complex). Every regularisation technique is a tool for shifting this tradeoff. Deriving this decomposition from the MSE loss is a common interview question.", resource:"ESL Book" },
+          { id:"t1", text:"Bias-variance decomposition — the fundamental tradeoff", desc:"Total error = bias² + variance + irreducible noise. High bias = underfitting (model too simple). High variance = overfitting (model too complex). Every regularisation technique is a tool for shifting this tradeoff. Deriving this decomposition from the MSE loss is a common interview question.", resource:"ESL — Chapter 7: Bias-Variance Tradeoff" },
           { id:"t2", text:"Cross-validation — k-fold, stratified, time-series, and group CV", desc:"K-fold: randomly partition into K folds. Stratified: ensures each fold has same class distribution (critical for imbalanced data). Time-series split: never shuffle — use expanding or sliding window. Group K-fold: ensure same patient/user never appears in both train and val.", resource:"Scikit-learn Docs" },
           { id:"t3", text:"Precision, recall, F1, AUC-ROC, PR-AUC — when to use each", desc:"Accuracy: only valid for balanced classes. Precision: use when FP is costly (spam filter). Recall: use when FN is costly (cancer screening). F1: harmonic mean when both matter. AUC-ROC: threshold-independent, but misleading for extreme imbalance. PR-AUC: better for imbalanced classes — use this for fraud, disease detection.", resource:"Google ML Crash Course" },
-          { id:"t4", text:"Confusion matrix anatomy — TP, FP, TN, FN and what they cost", desc:"Every business problem has a different FP vs FN cost asymmetry. Medical diagnosis: FN (missed disease) >> FP cost. Spam filter: FP (lost email) > FN cost. Fraud detection: FN (missed fraud) >> FP (blocked transaction) cost. Always frame the metric choice in terms of business cost.", resource:"CS229 Notes" },
+          { id:"t4", text:"Confusion matrix anatomy — TP, FP, TN, FN and what they cost", desc:"Every business problem has a different FP vs FN cost asymmetry. Medical diagnosis: FN (missed disease) >> FP cost. Spam filter: FP (lost email) > FN cost. Fraud detection: FN (missed fraud) >> FP (blocked transaction) cost. Always frame the metric choice in terms of business cost.", resource:"CS229 — Learning Theory Notes (PDF)" },
           { id:"t5", text:"Hyperparameter tuning — grid search, random search, and Bayesian optimisation", desc:"Grid search: exhaustive, exponentially expensive. Random search: surprisingly effective — tries random combinations, better coverage of search space. Bayesian: uses a surrogate model to choose next point intelligently, best for expensive objective functions. Optuna is the modern default.", resource:"Random Search for Hyper-Parameter Optimization (Bergstra & Bengio)" },
         ],
         resources: [
@@ -517,10 +532,10 @@ const ROADMAP = [
         tags:["backprop","chain rule","autograd","MLP"],
         theory: [
           { id:"t1", text:"The chain rule — derive from calculus first principles", desc:"Backprop is the chain rule applied recursively across a computation graph; deriving it yourself removes all the mystery from automatic differentiation.", resource:"3Blue1Brown — Backpropagation" },
-          { id:"t2", text:"Computation graphs — forward and backward passes", desc:"Every neural network is a directed acyclic computation graph; understanding how gradients flow backward through each operation node is the key to debugging and designing architectures.", resource:"CS231n Notes" },
-          { id:"t3", text:"Activation functions — ReLU, sigmoid, tanh, GELU and their gradient properties", desc:"ReLU: simple, no vanishing gradient but 'dying ReLU' problem. Sigmoid/tanh: saturate = vanishing gradients. GELU: smooth, used in all modern transformers. The choice of activation is a choice about gradient flow.", resource:"CS231n Notes" },
+          { id:"t2", text:"Computation graphs — forward and backward passes", desc:"Every neural network is a directed acyclic computation graph; understanding how gradients flow backward through each operation node is the key to debugging and designing architectures.", resource:"CS231n — Backprop Notes" },
+          { id:"t3", text:"Activation functions — ReLU, sigmoid, tanh, GELU and their gradient properties", desc:"ReLU: simple, no vanishing gradient but 'dying ReLU' problem. Sigmoid/tanh: saturate = vanishing gradients. GELU: smooth, used in all modern transformers. The choice of activation is a choice about gradient flow.", resource:"CS231n — Neural Networks Part 1" },
           { id:"t4", text:"Vanishing and exploding gradients — causes and fixes", desc:"Vanishing: gradients become exponentially small through many layers (sigmoid/tanh saturation). Exploding: gradients become exponentially large (common in RNNs). Fixes: ReLU activations, batch normalisation, residual connections, gradient clipping.", resource:"Deep Learning Book — Bengio" },
-          { id:"t5", text:"Weight initialisation — Xavier, He, and why it matters", desc:"If weights are too small, activations and gradients vanish. Too large, they explode. Xavier init (for sigmoid/tanh) and He init (for ReLU) ensure variance stays roughly constant through layers.", resource:"CS231n Notes" },
+          { id:"t5", text:"Weight initialisation — Xavier, He, and why it matters", desc:"If weights are too small, activations and gradients vanish. Too large, they explode. Xavier init (for sigmoid/tanh) and He init (for ReLU) ensure variance stays roughly constant through layers.", resource:"CS231n — Neural Networks Part 2" },
         ],
         resources: [
           { id:"r1", text:"3Blue1Brown — Backpropagation (YouTube, 4-part series)", url:"https://www.youtube.com/watch?v=Ilg3gGewQ5U", type:"youtube" },
@@ -541,10 +556,10 @@ const ROADMAP = [
         id:"c5", week:"Week 9", title:"Regularisation, Optimisers & Training Dynamics", duration:"1 week",
         tags:["overfitting","regularisation","Adam","batch-norm"],
         theory: [
-          { id:"t1", text:"L1 and L2 regularisation — sparsity vs weight decay", desc:"L2 (weight decay): penalises w² — shrinks all weights, never zeros. L1: penalises |w| — induces exact zeros (sparse weights, automatic feature selection). Elastic net: both. In deep learning, L2 as weight_decay in the optimiser is the standard.", resource:"CS229 Notes" },
+          { id:"t1", text:"L1 and L2 regularisation — sparsity vs weight decay", desc:"L2 (weight decay): penalises w² — shrinks all weights, never zeros. L1: penalises |w| — induces exact zeros (sparse weights, automatic feature selection). Elastic net: both. In deep learning, L2 as weight_decay in the optimiser is the standard.", resource:"CS229 — Regularisation Notes (PDF)" },
           { id:"t2", text:"Dropout — ensemble interpretation and training vs inference difference", desc:"During training, randomly zero p fraction of activations. At inference, multiply by (1-p) or use inverted dropout. Interpretation: training an exponential ensemble of 2^n subnetworks. Critical: always turn off dropout at inference time (model.eval() in PyTorch).", resource:"Dropout Paper — Srivastava 2014" },
           { id:"t3", text:"Batch Normalisation — normalise activations, stabilise training", desc:"Normalise each mini-batch's activations to zero mean, unit variance, then scale/shift with learned γ and β. Reduces internal covariate shift, allows higher learning rates, acts as slight regulariser. Layer Norm is used in transformers (normalise across features, not batch).", resource:"Batch Norm Paper — Ioffe & Szegedy 2015" },
-          { id:"t4", text:"SGD, Momentum, AdaGrad, RMSProp, Adam — the optimiser family tree", desc:"SGD: noisy, can escape local minima. Momentum: exponential moving average of gradients, smooths trajectory. AdaGrad: per-parameter learning rates (good for sparse gradients). RMSProp: fixes AdaGrad's decaying learning rate. Adam: combines momentum + RMSProp, the default for most models. AdamW: Adam with proper weight decay decoupling.", resource:"CS231n Notes" },
+          { id:"t4", text:"SGD, Momentum, AdaGrad, RMSProp, Adam — the optimiser family tree", desc:"SGD: noisy, can escape local minima. Momentum: exponential moving average of gradients, smooths trajectory. AdaGrad: per-parameter learning rates (good for sparse gradients). RMSProp: fixes AdaGrad's decaying learning rate. Adam: combines momentum + RMSProp, the default for most models. AdamW: Adam with proper weight decay decoupling.", resource:"CS231n — Neural Networks Part 3" },
           { id:"t5", text:"Learning rate scheduling — warmup, cosine decay, and why they help", desc:"Constant LR: simple but suboptimal. Linear warmup: prevents large gradient steps at init when model is random. Cosine decay: smoothly reduces LR, allows fine-grained convergence. OneCycleLR: PyTorch's recommended schedule for training from scratch.", resource:"Fast.ai Course" },
         ],
         resources: [
@@ -587,8 +602,48 @@ const ROADMAP = [
           { id:"e1", topic:"Visualising and Understanding CNNs — Zeiler & Fergus 2013", url:"https://arxiv.org/abs/1311.2901", desc:"The paper that made CNN internals interpretable. Shows what each layer actually detects using deconvolutions. Changed how the field thinks about CNN feature hierarchies." },
         ]
       },
+      
+    
+    ]
+  }
+  ,
+  {
+    phase: "NLP Fundamentals",
+    color: "#10b981",
+    icon: "💬",
+    summary: "Language as data — from raw text to transformers. Builds directly on the DL Fundamentals mechanics. This phase follows the natural progression: text representations → language modelling → sequence models → attention → transformers for language.",
+    items: [
       {
-        id:"c7", week:"Week 12", title:"Word Embeddings & Representation Learning", duration:"1 week",
+        id:"c_nlp_pipe", week:"NLP Week 1", title:"NLP Pipeline & Text Representations",
+        duration:"1 week",
+        tags:["nlp","tokenization","bow","tfidf","preprocessing","naive-bayes"],
+        theory: [
+          { id:"t1", text:"Text preprocessing pipeline — tokenisation, normalisation, vocabulary",
+            desc:"Every NLP pipeline starts with the same steps: (1) Tokenisation — split text into tokens. Word-level (split on spaces): simple but misses morphology. Subword (BPE, WordPiece, SentencePiece): handles unknown words by splitting into known subword pieces. Character-level: maximum coverage, longer sequences. Modern LLMs all use subword tokenisation. (2) Normalisation — lowercasing, punctuation removal, stemming (rule-based: 'running' → 'run'), lemmatisation (dictionary-based: 'better' → 'good'). (3) Vocabulary — the set of unique tokens. OOV (out-of-vocabulary) problem: unknown words at inference time. Subword tokenisation eliminates OOV entirely.", resource:"Lena Voita — NLP Course: Text Classification" },
+          { id:"t2", text:"Bag of Words and TF-IDF — the surprisingly strong baselines",
+            desc:"Bag of Words (BOW): represent a document as a vector of word counts. Vocabulary size = vector dimension (typically 10k–100k). Ignores word order entirely. TF-IDF improvement: down-weight words that appear in every document (they carry no information). TF(t,d) × IDF(t) = (term count / doc length) × log(N / df(t)). Why these matter: (1) For short documents (tweets, headlines, product reviews), TF-IDF + logistic regression often matches BERT. (2) They are interpretable — you can see which words drove the prediction. (3) They are fast to train and serve. Rule: always try TF-IDF + logistic regression before reaching for a transformer.", resource:"Lena Voita — NLP Course: Text Classification" },
+          { id:"t3", text:"Naive Bayes for text — probabilistic classification with strong independence assumptions",
+            desc:"Naive Bayes assumes P(word_i | class) are independent across positions — clearly wrong but surprisingly effective. P(class | document) ∝ P(class) × ∏ P(word_i | class). Multinomial NB uses word counts; Bernoulli NB uses word presence. Why it works despite wrong assumptions: for text classification, the class boundaries are often linearly separable in the feature space, so the ranking of P(class|doc) is correct even if the probabilities are miscalibrated. Key property: Naive Bayes is the fastest classifier to train (one pass over data) and needs very little data. With only 100-500 examples, Naive Bayes often outperforms neural networks.", resource:"Lena Voita — NLP Course: Text Classification" },
+          { id:"t4", text:"Evaluation for NLP — precision, recall, F1 per class, micro vs macro",
+            desc:"Multi-class NLP evaluation: accuracy is misleading for imbalanced classes (sentiment with 80% positive). Per-class F1 = 2 × (precision × recall)/(precision + recall). Macro F1: average F1 across all classes equally — treats rare classes as important as common ones. Micro F1: compute TP, FP, FN globally across all classes — dominated by frequent classes. When to use each: balanced classes → accuracy or macro F1. Imbalanced classes → macro F1 (rare classes matter equally) or class-specific F1 for the minority class. For named entity recognition: use span-level F1 (both the entity type and span boundaries must match).", resource:"Lena Voita — NLP Course: Text Classification" },
+          { id:"t5", text:"CNN for text — local n-gram feature detectors",
+            desc:"1D convolutions over text work as n-gram feature detectors. A filter of width 3 sliding over a sentence detects trigram patterns. MaxPooling over time extracts the most salient pattern regardless of position. TextCNN (Kim 2014): multiple filter widths (2,3,4) in parallel → capture different n-gram lengths → concatenate → classify. Why it works: many sentiment and topic classification signals are local phrases ('not good', 'highly recommend', 'customer service'). TextCNN is 10-100× faster than LSTM and often comparable to it. In 2025 this is mostly superseded by transformers, but it appears in coding interviews and is a clean architecture example.", resource:"Lena Voita — NLP Course: Text Classification" },
+        ],
+        resources: [
+          { id:"r1", text:"Lena Voita — NLP Course: Text Classification (BOW, Naive Bayes, CNNs, interactive)", url:"https://lena-voita.github.io/nlp_course/text_classification.html", type:"blog" },
+          { id:"r2", text:"Scikit-learn — Text Feature Extraction Guide (TF-IDF, CountVectorizer)", url:"https://scikit-learn.org/stable/modules/feature_extraction.html#text-feature-extraction", type:"docs" },
+          { id:"r3", text:"TextCNN paper — Kim 2014 (Convolutional Neural Networks for Sentence Classification, free)", url:"https://arxiv.org/abs/1408.5882", type:"paper" },
+        ],
+        implementation: [
+          { id:"i1", text:"Build a text classifier pipeline: TF-IDF + LR baseline → Naive Bayes → TextCNN", desc:"Use the IMDB sentiment dataset (or AG News for multi-class). Baseline: TF-IDF + logistic regression. Compare with Naive Bayes (MultinomialNB). Then implement TextCNN in PyTorch. Document accuracy, training time, and inference speed for each. This gives you the intuition for when simple methods are sufficient." },
+          { id:"i2", text:"Tokenisation deep dive — compare word, BPE, and character tokenisation on the same text", desc:"Use the HuggingFace tokenizers library. Tokenise the same sentence (with slang, OOV words, code-switching) using: (1) whitespace split, (2) BERT WordPiece, (3) GPT-2 BPE, (4) character-level. Count tokens, compare how each handles 'don't', 'ChatGPT', 'supercalifragilistic', and a Tamil word. This makes OOV handling concrete." },
+        ],
+        extraReading: [
+          { id:"e1", topic:"Speech and Language Processing — Jurafsky & Martin Chapter 4 (Naive Bayes, free PDF)", url:"https://web.stanford.edu/~jurafsky/slp3/4.pdf", desc:"The definitive NLP textbook, now in its 3rd edition and free online. Chapter 4 covers Naive Bayes and text classification with clear derivations. Best reference when you want the statistical foundations, not just the sklearn API." },
+        ]
+      },
+      {
+        id:"c7", week:"NLP Week 2", title:"Word Embeddings & Representation Learning", duration:"1 week",
         tags:["embeddings","word2vec","semantic-space"],
         theory: [
           { id:"t1", text:"Skip-gram objective — predicting context from a target word", desc:"Given a centre word, predict the surrounding context words. This forces the model to learn a dense vector where similar words have similar contexts — hence similar embeddings.", resource:"Word2Vec Paper" },
@@ -600,6 +655,10 @@ const ROADMAP = [
           { id:"r1", text:"Illustrated Word2Vec — Jay Alammar (blog)", url:"https://jalammar.github.io/illustrated-word2vec/", type:"blog" },
           { id:"r2", text:"Word2Vec Original Papers — Mikolov et al. 2013 (free)", url:"https://arxiv.org/abs/1301.3781", type:"paper" },
           { id:"r3", text:"SBERT Paper — Sentence-BERT (2019, free)", url:"https://arxiv.org/abs/1908.10084", type:"paper" },
+        
+          { id:"r4", text:"Lena Voita — NLP Course: Word Embeddings (free, beautiful visual explanations)", url:"https://lena-voita.github.io/nlp_course/word_embeddings.html", type:"blog" },
+        
+          { id:"r5", text:"Lena Voita — NLP Course: Word Embeddings (semantic spaces, analogy tasks, analysis)", url:"https://lena-voita.github.io/nlp_course/word_embeddings.html", type:"blog" },
         ],
         implementation: [
           { id:"i1", text:"Train Word2Vec skip-gram from scratch on a text corpus in NumPy", desc:"Implement negative sampling, gradient updates, and embedding extraction. Verify that similar words cluster together in 2D t-SNE visualisation." },
@@ -610,7 +669,36 @@ const ROADMAP = [
         ]
       },
       {
-        id:"c8", week:"Week 13", title:"Recurrent Neural Networks & Sequence Modelling", duration:"1 week",
+        id:"c_lm", week:"NLP Week 3", title:"Language Modelling & Text Generation",
+        duration:"1 week",
+        tags:["language-model","perplexity","n-gram","sampling","generation"],
+        theory: [
+          { id:"t1", text:"Language modelling objective — next-token prediction as a universal task",
+            desc:"A language model defines a probability distribution over sequences: P(w1,w2,...,wn) = product of P(wi | w1,...,wi-1). This factored form turns sequence modelling into next-token prediction — a classification task over the vocabulary at each step. Why this objective is powerful: self-supervised (labels come free from data), general (a model that predicts any next token has learned grammar, facts, and reasoning). The cross-entropy loss IS the language modelling objective. This is exactly why GPT works.", resource:"Lena Voita — NLP Course: Language Modeling" },
+          { id:"t2", text:"Perplexity — measuring language model quality",
+            desc:"Perplexity = exp(-(1/N) sum log P(wi|context)). Interpretation: perplexity K means the model is as confused as if it chose uniformly among K options at each step. Good LM: perplexity 20-50 on typical text. Random baseline: perplexity = vocabulary size (~50k). Critical: perplexity is not comparable across different vocabularies or tokenisation schemes. Only use it to compare models trained on the same data with the same tokeniser.", resource:"Lena Voita — NLP Course: Language Modeling" },
+          { id:"t3", text:"N-gram language models — the statistical baseline",
+            desc:"N-gram: P(wi | w1,...,wi-1) approximated as P(wi | wi-n+1,...,wi-1). Estimated from counts. Main problem: data sparsity — most n-grams never appear in training. Fix: Kneser-Ney smoothing (redistributes probability to unseen n-grams based on diversity of contexts). N-gram models are fast and interpretable. Still useful as a diagnostic: if a neural LM barely beats a good trigram model, the task may not require long-range context.", resource:"Lena Voita — NLP Course: Language Modeling" },
+          { id:"t4", text:"Temperature, top-k, and nucleus sampling — controlling generation quality",
+            desc:"Temperature T: divide logits by T before softmax. T<1 = sharper distribution (repetitive but accurate). T>1 = flatter (diverse but less coherent). T=0 = greedy. Top-k: sample from k most probable tokens only. Top-p (nucleus, Holtzman 2020): sample from smallest set with cumulative probability >=p. Nucleus adapts to distribution shape — better than fixed k. Production defaults: temp=0.7 + top_p=0.9 for creative generation; temp=0 for factual/structured output. Beam search: globally optimal sequence but produces generic outputs — human text is NOT the most probable sequence.", resource:"Lena Voita — NLP Course: Language Modeling" },
+          { id:"t5", text:"Why greedy decoding fails — the degeneration problem",
+            desc:"Holtzman et al. 2020 showed that human text looks surprising by probability metrics — humans rarely say the most probable next word. Greedy/beam search produces text that is locally optimal but globally repetitive and generic. The model 'degenerates' into loops like 'the cat sat on the mat. the cat sat on the mat.' Nucleus sampling breaks this by introducing controlled randomness. This insight changed how all production LLM serving systems work — temperature and top_p became standard inference parameters rather than optional knobs.", resource:"Lena Voita — NLP Course: Language Modeling" },
+        ],
+        resources: [
+          { id:"r1", text:"Lena Voita — NLP Course: Language Modeling (n-grams, neural LMs, generation, perplexity)", url:"https://lena-voita.github.io/nlp_course/language_modeling.html", type:"blog" },
+          { id:"r2", text:"The Curious Case of Neural Text Degeneration — Holtzman et al. 2020 (nucleus sampling)", url:"https://arxiv.org/abs/1904.09751", type:"paper" },
+          { id:"r3", text:"Speech and Language Processing — Jurafsky & Martin Chapter 3 (N-gram LMs, free)", url:"https://web.stanford.edu/~jurafsky/slp3/3.pdf", type:"paper" },
+        ],
+        implementation: [
+          { id:"i1", text:"Build a trigram LM with Kneser-Ney smoothing — compute perplexity on held-out text", desc:"Count trigrams from a corpus (Shakespeare or Python code). Apply Kneser-Ney smoothing. Compute perplexity. Compare unigram vs bigram vs trigram. Observe GPT-2's perplexity is orders of magnitude lower — this motivates neural LMs." },
+          { id:"i2", text:"Implement temperature + top-k + nucleus sampling on GPT-2 from HuggingFace", desc:"Generate text with: greedy, beam search k=5, temp=1.0, top_k=50, top_p=0.9. Compare outputs for the same prompt. Notice: greedy/beam is repetitive. Nucleus reads more naturally. This experiment makes the degeneration problem concrete." },
+        ],
+        extraReading: [
+          { id:"e1", topic:"Speech and Language Processing — Jurafsky & Martin (free online, the canonical NLP textbook)", url:"https://web.stanford.edu/~jurafsky/slp3/", desc:"Full 3rd edition free online. Chapters 3 (n-gram LMs), 9 (RNNs), 10 (Transformers for NLP), 11 (Fine-tuning). Best NLP textbook for formal derivations. Read alongside Lena Voita for intuition." },
+        ]
+      },
+      {
+        id:"c8", week:"NLP Week 4", title:"Recurrent Neural Networks & Sequence Modelling", duration:"1 week",
         tags:["rnn","lstm","gru","sequence"],
         theory: [
           { id:"t1", text:"Hidden state — carrying information across time steps", desc:"An RNN processes sequences by maintaining a hidden state updated at each step: h_t = tanh(W_h h_{t-1} + W_x x_t). The hidden state is the model's 'memory' — but it's a fixed-size bottleneck regardless of sequence length.", resource:"Illustrated LSTM — Jay Alammar" },
@@ -623,6 +711,10 @@ const ROADMAP = [
           { id:"r1", text:"Illustrated LSTM — Jay Alammar (blog)", url:"https://colah.github.io/posts/2015-08-Understanding-LSTMs/", type:"blog" },
           { id:"r2", text:"Deep Learning Book — Chapter 10 (free online)", url:"https://www.deeplearningbook.org/", type:"book" },
           { id:"r3", text:"Unreasonable Effectiveness of RNNs — Karpathy (blog)", url:"http://karpathy.github.io/2015/05/21/rnn-effectiveness/", type:"blog" },
+        
+          { id:"r4", text:"Lena Voita — NLP Course: Language Modeling (interactive, covers n-grams to neural LMs)", url:"https://lena-voita.github.io/nlp_course/language_modeling.html", type:"blog" },
+        
+          { id:"r5", text:"Lena Voita — NLP Course: Seq2seq and Attention (best seq2seq visualisations online)", url:"https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html", type:"blog" },
         ],
         implementation: [
           { id:"i1", text:"Implement LSTM cell from scratch in NumPy — all 4 gates", desc:"Manual forward pass of a single LSTM step. Verify cell state and hidden state shapes. Then stack 2 layers, run on a sequence." },
@@ -633,7 +725,7 @@ const ROADMAP = [
         ]
       },
       {
-        id:"c9", week:"Week 14", title:"Attention Mechanism", duration:"1 week",
+        id:"c9", week:"NLP Week 5", title:"Attention Mechanism", duration:"1 week",
         tags:["attention","QKV","transformers"],
         theory: [
           { id:"t1", text:"QKV framework — differentiable soft lookup table", desc:"Attention computes a weighted combination of Values using similarity between a Query and Keys. The weights are softmax-normalised dot products. This is a differentiable, parameterised form of dictionary lookup.", resource:"Illustrated Transformer — Jay Alammar" },
@@ -646,6 +738,8 @@ const ROADMAP = [
           { id:"r1", text:"Illustrated Transformer — Jay Alammar (blog)", url:"https://jalammar.github.io/illustrated-transformer/", type:"blog" },
           { id:"r2", text:"Attention Is All You Need — Vaswani et al. 2017 (free)", url:"https://arxiv.org/abs/1706.03762", type:"paper" },
           { id:"r3", text:"Andrej Karpathy — Let's build GPT from scratch (YouTube)", url:"https://www.youtube.com/watch?v=kCc8FmEb1nY", type:"youtube" },
+        
+          { id:"r4", text:"Lena Voita — NLP Course: Seq2seq and Attention (interactive, free)", url:"https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html", type:"blog" },
         ],
         implementation: [
           { id:"i1", text:"Implement scaled dot-product attention from scratch in NumPy", desc:"Q @ K.T / sqrt(d_k), softmax, @ V. Test with causal mask for decoder. This is the single most important implementation in modern DL." },
@@ -656,7 +750,7 @@ const ROADMAP = [
         ]
       },
       {
-        id:"c10", week:"Week 15–16", title:"The Transformer Architecture", duration:"2 weeks",
+        id:"c10", week:"NLP Week 6–7", title:"The Transformer Architecture", duration:"2 weeks",
         tags:["gpt","bert","architecture","positional-encoding"],
         theory: [
           { id:"t1", text:"Positional encoding — injecting sequence order into attention", desc:"Attention has no inherent sense of position (it's a set operation). Sinusoidal PE or learned positional embeddings inject position information additively. The sinusoidal version generalises to longer sequences; RoPE (rotary PE) is the modern standard.", resource:"Illustrated Transformer" },
@@ -670,6 +764,10 @@ const ROADMAP = [
           { id:"r2", text:"Illustrated BERT — Jay Alammar (blog)", url:"https://jalammar.github.io/illustrated-bert/", type:"blog" },
           { id:"r3", text:"Attention Is All You Need Paper (free)", url:"https://arxiv.org/abs/1706.03762", type:"paper" },
           { id:"r4", text:"Deep Learning Book — Chapter 12 (free online)", url:"https://www.deeplearningbook.org/", type:"book" },
+        
+          { id:"r5", text:"Lena Voita — NLP Course: Transfer Learning — ELMo to BERT (free, interactive)", url:"https://lena-voita.github.io/nlp_course/transfer_learning.html", type:"blog" },
+        
+          { id:"r6", text:"Lena Voita — NLP Course: Language Modeling (generation strategies, perplexity, sampling)", url:"https://lena-voita.github.io/nlp_course/language_modeling.html", type:"blog" },
         ],
         implementation: [
           { id:"i1", text:"Build a character-level GPT following Karpathy's nanoGPT tutorial", desc:"The single most valuable DL implementation project. Build every component — tokeniser, embedding, attention, transformer block, training loop, generation. Run on Shakespeare. ~300 lines." },
@@ -682,9 +780,7 @@ const ROADMAP = [
           { id:"e3", topic:"CS224W — Machine Learning with Graphs (Stanford, Jure Leskovec, free)", url:"https://web.stanford.edu/class/cs224w/", desc:"The definitive GNN course. 20 lectures: message passing, GCN, GraphSAGE, GAT, knowledge graphs, link prediction, graph classification. Key applications: fraud detection (ring networks), molecular property prediction (AlphaFold uses graph attention), recommendation (PinSage). Best format: lecture videos + PyTorch Geometric colab notebooks in parallel. Read after finishing c10 — GNNs are the natural extension of transformers to non-sequential graph-structured data." },
           { id:"e4", topic:"Data Engineering for ML — Spark, Kafka, and pipeline fundamentals (practical reference)", url:"https://www.oreilly.com/library/view/fundamentals-of-data/9781098108298/", desc:"Applied scientists at large companies are expected to understand the data pipelines feeding their models. Key concepts: batch processing (Spark), stream processing (Kafka/Flink), data lakes vs warehouses, feature store architecture, pipeline orchestration (Airflow). Best format for this: not a course — read Chapter 1-3 of Fundamentals of Data Engineering (O'Reilly) as a mental model, then learn specifics on the job. The goal is to speak the language, not become a data engineer." },
         ]
-      },
-      
-    
+      }
     ]
   }
 ,
@@ -701,17 +797,21 @@ const ROADMAP = [
           { id:"t3", text:"Prompt engineering — system prompts, few-shot, chain-of-thought", desc:"These three techniques account for the majority of performance improvements you can get without changing the model; mastering them is essential for any production LLM system.", resource:"Prompt Engineering Guide" },
           { id:"t4", text:"RAG — retrieval-augmented generation, the problem it solves", desc:"LLMs have a knowledge cutoff and can't access proprietary data; RAG retrieves relevant context at inference time and adds it to the prompt, solving both problems.", resource:"Chip Huyen — LLM Engineering" },
           { id:"t5", text:"Base vs instruction-tuned vs fine-tuned — when to use each", desc:"Base models predict next tokens, instruction-tuned models follow instructions, fine-tuned models specialise in a domain; knowing which to use determines your approach.", resource:"Karpathy — Intro to LLMs" },
+          { id:"t6", text:"Structured outputs — reliable JSON, Pydantic schemas, and constrained decoding", desc:"Getting an LLM to produce consistently parseable output is one of the highest-value production skills and a direct Marvell use case (datasheet parsing, component spec extraction, BOM analysis). Three approaches by reliability: (1) Prompt-level: JSON instructions + few-shot examples. Fragile — models add prose, miss fields, use wrong types. (2) Native function calling / structured outputs: pass a JSON Schema to the API, the model fills in the fields. Supported natively by all frontier APIs (OpenAI, Anthropic, Gemini). Most reliable for well-defined schemas. (3) Constrained decoding: libraries like Outlines or Instructor intercept generation token-by-token and enforce a grammar, guaranteeing valid JSON even with local models. Pydantic models are the standard way to define schemas in Python — define a class, Instructor or structured outputs generate valid instances. Always add .model_validate(strict=False) for partial-failure tolerance on messy real-world inputs.", resource:"Pydantic Docs" },
         ],
         resources: [
           { id:"r1", text:"Andrej Karpathy — Intro to LLMs (YouTube)", url:"https://www.youtube.com/watch?v=zjkBMFhNj_g", type:"youtube" },
           { id:"r2", text:"Chip Huyen — LLM Engineering in Production (blog)", url:"https://huyenchip.com/2023/04/11/llm-engineering.html", type:"blog" },
           { id:"r3", text:"Prompt Engineering Guide (docs)", url:"https://www.promptingguide.ai/", type:"docs" },
+          { id:"r4", text:"Instructor — Pydantic-based structured LLM outputs (docs)", url:"https://python.useinstructor.com/", type:"docs" },
+          { id:"r5", text:"Outlines — guaranteed structured generation via constrained decoding (docs)", url:"https://dottxt-ai.github.io/outlines/", type:"docs" },
         ],
         implementation: [
           { id:"i1", text:"Call OpenAI/Anthropic API — build chat with system prompts", desc:"Getting your first API call working and experimenting with system prompts is the fastest way to develop production intuition." },
           { id:"i2", text:"Implement chain-of-thought prompting — compare to direct", desc:"Asking the model to think step by step dramatically improves performance on reasoning tasks; experiencing this difference makes the technique memorable." },
           { id:"i3", text:"Build a minimal RAG pipeline — chunk, embed, retrieve", desc:"A simple RAG pipeline in ~50 lines shows you the core mechanics; every production RAG system is an elaboration of this." },
           { id:"i4", text:"Experiment with few-shot examples — observe quality change", desc:"Adding 3-5 examples to your prompt and comparing outputs quantifies the improvement and builds intuition for when few-shot is worth the token cost." },
+          { id:"i5", text:"Build a Pydantic-validated structured extraction pipeline — parse 5 technical documents to JSON", desc:"Define a Pydantic schema for a structured entity (e.g. a component spec with fields: name, voltage_range, current_max, package_type, operating_temp). Use Instructor (pip install instructor) or OpenAI's structured outputs mode to extract fields from raw technical text — datasheet paragraphs, spec tables, or README files. Handle missing/ambiguous fields with Optional fields and .model_validate(strict=False). Compare: raw JSON prompt vs function calling vs Instructor. This pipeline pattern is directly applicable to Marvell datasheet and BOM parsing workflows." },
         ],
         extraReading: [
           { id:"e1", topic:"Constitutional AI and RLHF — how instruction-following is trained", desc:"Understanding how Anthropic's Constitutional AI and OpenAI's RLHF approach train instruction-following gives you insight into model behaviour and its limits.", url:"https://arxiv.org/abs/2212.08073" },
@@ -972,60 +1072,6 @@ const ROADMAP = [
     phase: "Road Ahead",
     color: "#9333ea",
     items: [
-      {
-        id:"ra1", week:"Months 4–6", title:"Modern Architectures (BERT, GPT, ViT, Diffusion)", duration:"3 months",
-        tags:["research","architectures"],
-        theory:[
-          { id:"t1", text:"BERT — bidirectional attention, masked language modelling", desc:"BERT's key innovation is bidirectional context; by masking tokens and predicting them from both directions, it learns richer representations than unidirectional models.", resource:"Jay Alammar — Illustrated BERT" },
-          { id:"t2", text:"GPT series — autoregressive LM, emergent capabilities at scale", desc:"Each GPT version demonstrated that scaling parameters and data produces emergent capabilities that weren't explicitly trained; understanding this informs how you think about model behaviour.", resource:"BERT Paper" },
-          { id:"t3", text:"Vision Transformer (ViT) — patches as tokens", desc:"ViT splits images into fixed-size patches and treats them like word tokens; this showed that Transformers can match or beat CNNs on vision without any inductive biases.", resource:"ViT Paper" },
-          { id:"t4", text:"Diffusion models — denoising as generation", desc:"Diffusion models learn to reverse a noise-addition process; at inference, they start from pure noise and iteratively denoise to produce images, audio, or other data.", resource:"ViT Paper" },
-        ],
-        resources:[
-          { id:"r1", text:"BERT Paper — Devlin et al. 2018 (paper)", url:"https://arxiv.org/abs/1810.04805", type:"paper" },
-          { id:"r2", text:"ViT Paper — Dosovitskiy et al. 2020 (paper)", url:"https://arxiv.org/abs/2010.11929", type:"paper" },
-          { id:"r3", text:"Jay Alammar — Illustrated BERT (blog)", url:"https://jalammar.github.io/illustrated-bert/", type:"blog" },
-        ],
-        implementation:[
-          { id:"i1", text:"Fine-tune BERT on a classification task with HuggingFace Transformers", desc:"HuggingFace makes fine-tuning BERT accessible in ~20 lines; doing it yourself teaches you the fine-tuning workflow you'll use constantly." },
-          { id:"i2", text:"Implement a minimal ViT patch embedding from scratch", desc:"The patch embedding layer is the only architecturally novel part of ViT; implementing it clarifies how images become sequences." },
-          { id:"i3", text:"Run Stable Diffusion locally and trace the inference code", desc:"Following the denoising loop through the actual code — UNet, VAE, scheduler — demystifies what's happening at inference time." },
-        ],
-        extraReading:[
-          { id:"e1", topic:"Masked autoencoders (MAE) — BERT-style pretraining for vision", desc:"MAE masks 75% of image patches and reconstructs them, learning strong visual representations without labels — a breakthrough in self-supervised vision.", url:"https://arxiv.org/abs/2111.06377" },
-          { id:"e2", topic:"CLIP — contrastive learning across vision and language", desc:"CLIP trains an image encoder and text encoder to agree on matching pairs; the resulting representations enable zero-shot classification and power most modern image-text systems.", url:"https://arxiv.org/abs/2103.00020" },
-          { id:"e3", topic:"DINO / DINOv2 — self-supervised vision without labels", desc:"DINO's self-distillation produces visual features with emergent segmentation properties, showing that strong vision representations can be learned without any human labels.", url:"https://arxiv.org/abs/2304.07193" },
-        ]
-      },
-      {
-        id:"ra2", week:"Months 6–9", title:"LLMs Deep Dive (RLHF, LoRA, Flash Attention)", duration:"3 months",
-        tags:["alignment","fine-tuning"],
-        theory:[
-          { id:"t1", text:"RLHF — reward modelling and PPO for alignment", desc:"RLHF trains a reward model from human preferences, then uses PPO to fine-tune the LLM to maximise that reward; this is how ChatGPT was made to follow instructions helpfully.", resource:"InstructGPT Paper" },
-          { id:"t2", text:"DPO — direct preference optimisation without RL", desc:"DPO achieves RLHF-like alignment by directly optimising a contrastive objective on preferred/rejected response pairs, eliminating the need for a separate reward model or RL training.", resource:"InstructGPT Paper" },
-          { id:"t3", text:"Flash Attention — IO-aware attention without materialising NxN matrix", desc:"Flash Attention reorders attention computation to minimise HBM reads/writes, achieving 2-4x speedup and making longer context windows feasible.", resource:"Flash Attention Paper" },
-          { id:"t4", text:"Chinchilla scaling laws — optimal compute allocation", desc:"The Chinchilla paper overturned prior scaling wisdom by showing that compute-optimal training requires far more data relative to model size than previously used.", resource:"Flash Attention Paper" },
-        ],
-        resources:[
-          { id:"r1", text:"InstructGPT Paper — Ouyang et al. 2022 (paper)", url:"https://arxiv.org/abs/2203.02155", type:"paper" },
-          { id:"r2", text:"Flash Attention Paper — Dao et al. 2022 (paper)", url:"https://arxiv.org/abs/2205.14135", type:"paper" },
-          { id:"r3", text:"LoRA Paper — Hu et al. 2021 (paper)", url:"https://arxiv.org/abs/2106.09685", type:"paper" },
-        ],
-        implementation:[
-          { id:"i1", text:"Fine-tune LLaMA or Mistral with LoRA using HuggingFace PEFT", desc:"Fine-tuning a 7B parameter model in under an hour on a single GPU demonstrates that the barrier to specialised models is now low." },
-          { id:"i2", text:"Run DPO fine-tuning on a small preference dataset", desc:"Implementing DPO gives you a hands-on understanding of preference learning without the complexity of PPO." },
-          { id:"i3", text:"Benchmark Flash Attention vs standard attention — measure speedup", desc:"Measuring the actual wall-clock speedup on different sequence lengths makes the IO-awareness argument concrete." },
-        ],
-        extraReading:[
-          { id:"e1", topic:"Reward hacking and Goodhart's Law in RLHF", desc:"Optimising a learned reward model too aggressively causes the model to find outputs that score highly on the reward model but are not actually preferred by humans.", url:"https://arxiv.org/abs/2209.13345" },
-          { id:"e2", topic:"Constitutional AI — using AI feedback instead of human labelling", desc:"Anthropic's Constitutional AI approach uses the model itself to critique and revise its own outputs, reducing the need for expensive human feedback.", url:"https://arxiv.org/abs/2212.08073" },
-          { id:"e3", topic:"Mixture of Experts architecture — Mistral MoE, GPT-4 speculation", desc:"MoE replaces dense FFN layers with a router that activates only a subset of expert networks per token, dramatically increasing model capacity without proportional compute costs.", url:"https://arxiv.org/abs/2401.04088" },
-        
-          { id:"e4", topic:"Transformer Circuits Thread — Anthropic (mechanistic interpretability, free)", url:"https://transformer-circuits.pub/", desc:"The research programme that opened mechanistic interpretability as a field. Key papers: A Mathematical Framework for Transformer Circuits (circuits in 1-2 layer models), In-Context Learning and Induction Heads. Read the introductory post first, then the induction heads paper. Relevant for research scientist roles at AI safety labs and interpretability research positions." },
-          { id:"e5", topic:"Neel Nanda — Getting Started in Transformer Interpretability (blog + Colab)", url:"https://www.neelnanda.io/mechanistic-interpretability/getting-started", desc:"Practical onramp: what induction heads are, how to find circuits with activation patching, TransformerLens library. Follow along with the provided Colab notebooks. After this you can read current mechanistic interpretability papers with genuine comprehension." },
-        ]
-      },
-
       {
         id:"ft1", week:"After Month 6", title:"Hands-on LLM Fine-tuning — SFT, LoRA, QLoRA & DPO",
         duration:"3 weeks",
@@ -1302,7 +1348,7 @@ const ROADMAP = [
           { id:"t4", text:"Claude — Constitutional AI, harmlessness-helpfulness balance, long context", desc:"Anthropic uses Constitutional AI: the model critiques and revises its own outputs to follow a set of principles. Claude 3 extended context to 200K tokens. A fundamentally different alignment approach from RLHF — preference learning through self-critique rather than human labellers.", resource:"Anthropic Constitutional AI Paper" },
           { id:"t5", text:"Gemini — native multimodality and mixture-of-experts at scale", desc:"Gemini was designed multimodal from scratch, processing interleaved image, audio, video, and text natively. Gemini Ultra uses sparse MoE, activating only a subset of the model per token — dramatically increasing model capacity without proportional compute cost.", resource:"Gemini Technical Report 2023" },
           { id:"t6", text:"DeepSeek — MoE efficiency, RL for reasoning, open weights", desc:"DeepSeek-V3 uses Multi-head Latent Attention (MLA) to compress the KV cache and fine-grained MoE routing — achieving GPT-4 level performance at dramatically lower inference cost. DeepSeek-R1 uses GRPO for reasoning without supervised chain-of-thought data.", resource:"DeepSeek-V3 Technical Report 2024" },
-          { id:"t7", text:"Tokenisation — BPE, WordPiece, SentencePiece, and why it matters", desc:"All text is converted to integers before an LLM sees it. BPE merges frequent byte pairs iteratively. The tokeniser choice affects multilingual performance, code quality, arithmetic ability, and context efficiency. CS336 implements BPE from scratch.", resource:"Stanford CS336 — Lecture 1" },
+          { id:"t7", text:"Tokenisation revisited — how vocabulary choice shapes multilingual, code, and arithmetic ability", desc:"You built the foundational understanding of BPE/WordPiece/SentencePiece in c10. At the frontier level the decisions become critical: GPT-4's vocabulary handles code and multilingual text very differently from Llama-3's. A model with too few tokens for a language will over-segment words, bloating context and degrading fluency. CS336 Assignment 1 implements BPE from scratch — the concrete goal for this item. Key insight: tokenisation is where model capability and efficiency are silently determined before training begins.", resource:"Stanford CS336 — Lecture 1" },
           { id:"t8", text:"Reasoning models — chain-of-thought, o1/o3, RL-trained extended thinking", desc:"OpenAI o1 uses RL to train extended chain-of-thought reasoning at test time. The model generates a long internal reasoning trace before producing the final answer. A fundamentally different compute profile from standard generation — more tokens, same model.", resource:"OpenAI o1 System Card 2024" },
           { id:"t9", text:"Scaling laws and compute-optimal training — Chinchilla revisited", desc:"The Chinchilla result (20 tokens per parameter) was derived for a specific training budget. For inference-heavy deployments, a smaller model trained on more data is optimal — Llama's strategy. This tradeoff is how you choose the right model for a given deployment constraint.", resource:"Chinchilla — Hoffmann et al. 2022" },
         ],
@@ -1323,31 +1369,6 @@ const ROADMAP = [
           { id:"e1", topic:"Llama 3 technical report — the most detailed open frontier model report", desc:"Meta Llama 3 is unusually detailed about data curation, training infrastructure, and evaluation methodology. The most accessible window into how a frontier-scale model is actually built.", url:"https://arxiv.org/abs/2407.21783" },
           { id:"e2", topic:"Multi-head Latent Attention — DeepSeek KV cache compression", desc:"MLA projects the KV cache into a low-dimensional latent space, reducing memory by 5-13x vs standard MHA. This is the key architectural innovation making DeepSeek-V2/V3 inference-efficient.", url:"https://arxiv.org/abs/2405.04434" },
           { id:"e3", topic:"Mixture of Experts deep dive — sparse routing and expert capacity", desc:"MoE models activate only a subset of expert FFN layers per token. Understanding routing, load balancing loss, and expert capacity is increasingly essential as MoE becomes the dominant architecture.", url:"https://arxiv.org/abs/2401.04088" },
-        ]
-      },
-      {
-        id:"ra3", week:"Month 9+", title:"Specialisation & Research", duration:"ongoing",
-        tags:["research","agents","multimodal"],
-        theory:[
-          { id:"t1", text:"Pick your lane — research, applied, multimodal, or agents", desc:"Depth beats breadth at this stage; picking one direction and going deep for 6 months will put you in the top 5% of practitioners in that area." },
-          { id:"t2", text:"Read papers weekly — trace lineage with Connected Papers", desc:"Reading one paper per week and tracing its connections builds the mental map of the field that separates people who follow the frontier from people who shape it." },
-          { id:"t3", text:"Contribute to open-source — HuggingFace, LangChain, others", desc:"Open-source contributions build your reputation, force you to write production-quality code, and put you in contact with the best practitioners in the field." },
-        ],
-        resources:[
-          { id:"r1", text:"Semantic Scholar (research discovery)", url:"https://www.semanticscholar.org/", type:"docs" },
-          { id:"r2", text:"Connected Papers (paper lineage visualisation)", url:"https://www.connectedpapers.com/", type:"docs" },
-          { id:"r3", text:"Arxiv Sanity Preserver (paper filtering)", url:"https://arxiv-sanity-lite.com/", type:"docs" },
-        ],
-        implementation:[
-          { id:"i1", text:"Start a self-directed project with a real dataset and real problem", desc:"A project driven by genuine curiosity — not a tutorial — is where intuition forms fastest; the struggle is the curriculum." },
-          { id:"i2", text:"Write up your findings — GitHub README or blog post", desc:"Writing forces you to understand what you actually learned; the act of explaining it reveals gaps you didn't know you had." },
-        ],
-        extraReading:[
-          { id:"e1", topic:"How to read a research paper efficiently", desc:"Most people read papers wrong — understanding how to skim for contribution before reading deeply saves enormous time over a research career.", url:"https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf" },
-          { id:"e2", topic:"Open problems in interpretability and mechanistic understanding", desc:"Interpretability research tries to understand what computations actually happen inside LLMs; it's one of the most intellectually rich areas in AI and entirely open.", url:"https://transformer-circuits.pub/" },
-          { id:"e3", topic:"GNN primer — message passing, GCN, GAT, expressivity limits", desc:"Graph Neural Networks extend deep learning to relational data (molecules, social graphs, chip netlists). The key ideas: message passing aggregation, spectral vs spatial formulations, and the WL expressivity ceiling. Relevant if you touch any graph-structured data at Marvell.", url:"https://distill.pub/2021/gnn-intro/" },
-          { id:"e4", topic:"GIN — achieving maximum 1-WL expressivity with sum aggregation", desc:"Xu et al. proved that mean/max aggregation is strictly less expressive than sum aggregation for graph isomorphism. GIN uses injective MLP+sum to reach the 1-WL ceiling — the theoretical foundation for understanding what GNNs can and can't distinguish.", url:"https://arxiv.org/abs/1810.00826" },
-          { id:"e5", topic:"Graph Transformers — full attention over nodes with structural positional encodings", desc:"Graph Transformers apply self-attention across all node pairs (not just edges), using Laplacian eigenvectors or shortest-path distances as positional encodings. Relevant for large-scale chip design and EDA workflows.", url:"https://arxiv.org/abs/2106.05234" },
         ]
       },
     ]
@@ -1483,7 +1504,7 @@ const ROADMAP = [
         
           { id:"t7", text:"The ELBO in practice — what the two terms actually do",
             desc:"ELBO = E_q[log p(x|z)] - KL(q(z|x) || p(z)). (1) Reconstruction term: encourages the decoder to reproduce inputs — identical to a standard reconstruction loss. (2) KL regularisation: penalises the approximate posterior for deviating from the prior. This is regularisation — prevents the encoder from memorising individual points by pushing latent codes toward the prior. In beta-VAE: weight beta>1 on KL produces more disentangled latent space but worse reconstruction. Posterior collapse debugging: if both reconstruction and KL are near zero, the encoder ignores input and decoder memorises. Fix: KL annealing — start beta=0, gradually increase during training.",
-            resource:"Probabilistic ML — Murphy 2022" },
+            resource:"Murphy PML — Chapter 21: Variational Inference" },
           { id:"t8", text:"Gaussian Process kernels — choosing and fitting them in practice",
             desc:"Key kernels: (1) RBF (squared exponential): k(x,x') = sigma^2 exp(-||x-x'||^2/2l^2). Infinitely differentiable — very smooth. Hyperparameters: lengthscale l, output scale sigma^2. (2) Matern-5/2: less smooth, better for physical processes. Preferred for real-world regression. (3) Periodic kernel: for periodic functions. Hyperparameter fitting: maximise the marginal likelihood (log p(y|X)) w.r.t. kernel params via gradient descent. This is automatic model selection — you get Occam's razor built in. Scaling: exact GP is O(n^3). For n>10k: sparse GPs with inducing points, GPyTorch's GPU-accelerated exact GP, or deep kernel learning (neural net features + GP head).",
             resource:"Gaussian Processes for ML — Rasmussen & Williams (free PDF)" },
@@ -1669,10 +1690,10 @@ const ROADMAP = [
             resource:"alirezadir/Machine-Learning-Interviews" },
           { id:"t2", text:"Model not learning — systematic debug flow",
             desc:"Q: Loss on epoch 1 is 2.3, epoch 50 is 2.29. What do you do? Systematic checks: (1) Overfit a single batch — if loss doesn't go near zero, there's a bug (wrong loss, dimension mismatch, label error). (2) Learning rate — too low (flat), too high (diverging). Plot loss vs LR. (3) Gradient flow — vanishing (deep network, no skip connections): check gradient norms per layer. (4) Data — check label correctness, feature scale mismatch (one feature range 0-100000, another 0-1). (5) Capacity — model too small for task. Rule: single-batch overfit first, then scale. This rule catches 80% of bugs.",
-            resource:"CS229 Notes" },
+            resource:"CS229 — Debugging ML Notes (PDF)" },
           { id:"t3", text:"Overfitting response ladder — 6 interventions in order",
             desc:"Q: Train loss 0.05, val loss 0.82. Walk me through your response. First confirm it's overfitting (plot loss curves — val loss was lower earlier). Then in order: (1) Early stopping — simplest, free. (2) Reduce model complexity — fewer layers/neurons. (3) L2 regularisation — weight decay, good default. (4) Dropout — forces redundant representations. (5) Data augmentation — effectively increases dataset size. (6) Collect more data — correct long-term fix. Caveat: regularisation reduces variance but increases bias — always check both train and val loss, not just val.",
-            resource:"CS229 Notes" },
+            resource:"CS229 — Regularisation Notes (PDF)" },
           { id:"t4", text:"GBM vs neural networks — when each wins (backed by research)",
             desc:"Q: 500k rows, 80 tabular features — XGBoost or NN? GBM wins: tabular data with mixed types, smaller datasets, interpretability requirement (SHAP), faster iteration, high-cardinality categoricals (CatBoost). NN wins: unstructured data (text, image, audio), very large datasets >10M, multi-task learning, when you need embeddings as output, sequential data (LSTM, Transformer). Evidence: NeurIPS 2022 paper shows GBMs beat NNs on 45/54 tabular benchmarks. Hybrid: GBM for structured + NN for unstructured features, fuse in late fusion layer.",
             resource:"XGBoost Documentation" },
@@ -2071,6 +2092,126 @@ const MEGA_PROJECTS = {
 };
 
 const RESOURCE_LINKS = {
+  "CS229 — Supervised Learning Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes1.pdf",
+  "CS229 — Classification Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes1.pdf",
+  "CS229 — SVM Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes3.pdf",
+  "CS229 — Learning Theory Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes4.pdf",
+  "CS229 — Regularisation Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes5.pdf",
+  "CS229 — Debugging ML Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes-advice.pdf",
+  "CS231n — Backprop Notes": "https://cs231n.github.io/optimization-2/",
+  "CS231n — Neural Networks Part 1": "https://cs231n.github.io/neural-networks-1/",
+  "CS231n — Neural Networks Part 2": "https://cs231n.github.io/neural-networks-2/",
+  "CS231n — Neural Networks Part 3": "https://cs231n.github.io/neural-networks-3/",
+  "ESL — Chapter 12: SVMs": "https://hastie.su.domains/ElemStatLearn/printings/ESLII_print12_toc.pdf",
+  "ESL — Chapter 7: Model Assessment": "https://hastie.su.domains/ElemStatLearn/printings/ESLII_print12_toc.pdf",
+  "ESL — Chapter 7: Bias-Variance Tradeoff": "https://hastie.su.domains/ElemStatLearn/printings/ESLII_print12_toc.pdf",
+  "ESL — Chapters 9–10: Trees and Boosting": "https://hastie.su.domains/ElemStatLearn/printings/ESLII_print12_toc.pdf",
+  "ESL — Chapter 3: Linear Methods": "https://hastie.su.domains/ElemStatLearn/printings/ESLII_print12_toc.pdf",
+  "Mathematics for ML — Chapter 2: Linear Algebra": "https://mml-book.github.io/book/mml-book.pdf#page=24",
+  "Mathematics for ML — Chapter 5: Vector Calculus": "https://mml-book.github.io/book/mml-book.pdf#page=145",
+  "Mathematics for ML — Chapter 9: Linear Regression": "https://mml-book.github.io/book/mml-book.pdf#page=249",
+  "Murphy PML — Chapter 1: Introduction": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 4: Statistics": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 5: Decision Theory": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 17: Bayesian Networks": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 18: Gaussian Processes": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 21: Variational Inference": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 23: Normalising Flows": "https://probml.github.io/pml-book/book1.html",
+  "Murphy PML — Chapter 34: Active Learning": "https://probml.github.io/pml-book/book1.html",
+  "Nearing — Mathematical Tools — Ch.7 Fourier": "https://www-mdp.eng.cam.ac.uk/web/library/enginfo/textbooks_dvd_only/nearing/math_methods.pdf",
+  "Nearing — Mathematical Tools — Ch.4 ODEs": "https://www-mdp.eng.cam.ac.uk/web/library/enginfo/textbooks_dvd_only/nearing/math_methods.pdf",
+  "Illustrated LSTM — Colah": "https://colah.github.io/posts/2015-08-Understanding-LSTMs/",
+  "Lena Voita — NLP Course: Language Modeling (generation)": "https://lena-voita.github.io/nlp_course/language_modeling.html",
+
+  "Airbnb Engineering Blog": "https://medium.com/airbnb-engineering",
+  "Attention Is All You Need Paper": "https://arxiv.org/abs/1706.03762",
+  "BERT and GPT Papers": "https://arxiv.org/abs/1810.04805",
+  "BLIP-2 Paper — Li et al. 2023 (free)": "https://arxiv.org/abs/2301.12597",
+  "Backprop.com — FAANG grading": "https://www.trybackprop.com/blog/ml_system_design_interview",
+  "Batch Norm Paper — Ioffe & Szegedy 2015": "https://arxiv.org/abs/1502.03167",
+  "Bayesian Optimisation — Shahriari et al. 2016 (survey, free)": "https://arxiv.org/abs/1012.2599",
+  "CLIP Paper — Radford et al. 2021 (free)": "https://arxiv.org/abs/2103.00020",
+  "CS229 Notes": "https://cs229.stanford.edu/notes2022fall/cs229-notes1.pdf",
+  "CS231n Notes": "https://cs231n.github.io/neural-networks-1/",
+  "CS231n — Transfer Learning Notes": "https://cs231n.github.io/transfer-learning/",
+  "Chinchilla Scaling Laws Paper": "https://arxiv.org/abs/2203.15556",
+  "Chip Huyen CS329S": "https://stanford-cs329s.github.io/syllabus.html",
+  "Chip Huyen — ML Interviews Book": "https://huyenchip.com/ml-interviews-book/",
+  "Confident Learning Paper — Northcutt 2021": "https://arxiv.org/abs/1911.00068",
+  "DPO Paper — Rafailov et al. 2023": "https://arxiv.org/abs/2305.18290",
+  "Deep Learning Book": "https://www.deeplearningbook.org/",
+  "Deep Learning Book — Bengio": "https://www.deeplearningbook.org/",
+  "DoWhy Documentation — Microsoft Research": "https://www.pywhy.org/dowhy/",
+  "DoorDash Engineering Blog": "https://doordash.engineering/blog/",
+  "Dropout Paper — Srivastava 2014": "https://jmlr.org/papers/v15/srivastava14a.html",
+  "ESL Book": "https://hastie.su.domains/ElemStatLearn/",
+  "EconML Documentation — Microsoft Research": "https://econml.azurewebsites.net/",
+  "Exponent ML System Design Guide": "https://www.tryexponent.com/courses/ml-interview",
+  "Fast.ai Course": "https://course.fast.ai/",
+  "Forecasting: Principles and Practice — Hyndman (free online)": "https://otexts.com/fpp3/",
+  "GRU Paper": "https://arxiv.org/abs/1406.1078",
+  "Gaussian Processes for ML — Rasmussen & Williams (free PDF)": "https://gaussianprocess.org/gpml/",
+  "Google ML Crash Course": "https://developers.google.com/machine-learning/crash-course",
+  "Hugging Face LLM Course": "https://huggingface.co/learn/llm-course/en/chapter1/1",
+  "Illustrated LSTM — Jay Alammar": "https://colah.github.io/posts/2015-08-Understanding-LSTMs/",
+  "Illustrated Transformer": "https://jalammar.github.io/illustrated-transformer/",
+  "Illustrated Transformer — Jay Alammar": "https://jalammar.github.io/illustrated-transformer/",
+  "Illustrated Word2Vec — Jay Alammar": "https://jalammar.github.io/illustrated-word2vec/",
+  "InstructGPT Paper — Ouyang et al. 2022 (free)": "https://arxiv.org/abs/2203.02155",
+  "Judea Pearl — The Book of Why": "https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097609/",
+  "LLaVA Paper — Liu et al. 2023 (free)": "https://arxiv.org/abs/2304.08485",
+  "Lena Voita — NLP Course: Language Modeling (free)": "https://lena-voita.github.io/nlp_course/language_modeling.html",
+  "Lena Voita — NLP Course: Language Modeling": "https://lena-voita.github.io/nlp_course/language_modeling.html",
+  "Lilian Weng — Hallucination in Language Models": "https://lilianweng.github.io/posts/2024-07-07-hallucination/",
+  "LoRA Paper — Hu et al. 2021": "https://arxiv.org/abs/2106.09685",
+  "Lyft Engineering Blog": "https://eng.lyft.com/",
+  "MLflow Model Registry Documentation": "https://mlflow.org/docs/latest/model-registry.html",
+  "Meta AI Research Blog": "https://ai.meta.com/research/",
+  "Netflix Tech Blog": "https://netflixtechblog.com/",
+  "OpenAI Spinning Up — Key Concepts": "https://spinningup.openai.com/en/latest/spinningup/rl_intro.html",
+  "OpenAI Spinning Up — Part 3: Intro to Policy Optimization": "https://spinningup.openai.com/en/latest/spinningup/rl_intro3.html",
+  "PPO Paper — Schulman et al. 2017 (free)": "https://arxiv.org/abs/1707.06347",
+  "Patrick Halina — ML Systems Design": "https://patrickhalina.com/posts/ml-systems-design-interview-guide/",
+  "Probabilistic ML — Murphy 2022": "https://probml.github.io/pml-book/",
+  "Pyro — Deep Probabilistic Programming in PyTorch (tutorials & docs)": "https://pyro.ai/examples/",
+  "Random Search for Hyper-Parameter Optimization (Bergstra & Bengio)": "https://jmlr.org/papers/v13/bergstra12a.html",
+  "ResNet Paper — He et al 2015": "https://arxiv.org/abs/1512.03385",
+  "SBERT Paper": "https://arxiv.org/abs/1908.10084",
+  "Scikit-learn Docs": "https://scikit-learn.org/stable/user_guide.html",
+  "Scikit-learn — Time Series Cross Validation": "https://scikit-learn.org/stable/modules/cross_validation.html#time-series-split",
+  "Spinning Up in Deep RL — OpenAI (free)": "https://spinningup.openai.com/en/latest/",
+  "Spotify Engineering Blog": "https://engineering.atspotify.com/",
+  "StatQuest — Decision Trees": "https://www.youtube.com/watch?v=_L39rN6gz7Y",
+  "StatQuest — Gradient Boosting": "https://www.youtube.com/watch?v=3CC4N4z3GJc",
+  "StatQuest — K-Means": "https://www.youtube.com/watch?v=4b5d3muPQmA",
+  "StatQuest — Random Forests": "https://www.youtube.com/watch?v=J4Wdy0Wc_xQ",
+  "StatQuest — SVM": "https://www.youtube.com/watch?v=efR1C6CvhmE",
+  "Sutton & Barto — Chapter 2 (free PDF)": "http://incompleteideas.net/book/the-book.html",
+  "Sutton & Barto — Chapters 3–4 (free PDF)": "http://incompleteideas.net/book/the-book.html",
+  "Sutton & Barto — Reinforcement Learning: An Introduction (free PDF)": "http://incompleteideas.net/book/the-book.html",
+  "UMAP Documentation": "https://umap-learn.readthedocs.io/en/latest/how_umap_works.html",
+  "Uber Engineering Blog": "https://www.uber.com/en-US/blog/engineering/",
+  "Unsloth Documentation": "https://unsloth.ai/docs",
+  "Variational Inference — Blei et al. 2017 (free)": "https://arxiv.org/abs/1601.00670",
+  "W&B Effective MLOps Course": "https://wandb.ai/site/courses/effective-mlops/",
+  "W&B Sweeps Documentation": "https://docs.wandb.ai/guides/sweeps",
+  "Weights & Biases Documentation": "https://docs.wandb.ai/",
+  "Word2Vec Paper": "https://arxiv.org/abs/1301.3781",
+  "XGBoost Docs": "https://xgboost.readthedocs.io/en/stable/",
+  "XGBoost Documentation": "https://xgboost.readthedocs.io/en/stable/",
+  "XGBoost Paper": "https://arxiv.org/abs/1603.02754",
+  "alirezadir ML-Interviews GitHub": "https://github.com/alirezadir/Machine-Learning-Interviews",
+  "alirezadir — ML System Design Formula": "https://github.com/alirezadir/Machine-Learning-Interviews/blob/main/src/MLSD/ml-system-design.md",
+  "alirezadir/Machine-Learning-Interviews": "https://github.com/alirezadir/Machine-Learning-Interviews",
+  "andrewekhalel/MLQuestions GitHub": "https://github.com/andrewekhalel/MLQuestions",
+  "mlabonne/llm-course (GitHub)": "https://github.com/mlabonne/llm-course",
+
+  "Lena Voita — NLP Course: Language Modeling": "https://lena-voita.github.io/nlp_course/language_modeling.html",
+  "Lena Voita — NLP Course: Seq2seq and Attention": "https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html",
+  "Lena Voita — NLP Course: Text Classification": "https://lena-voita.github.io/nlp_course/text_classification.html",
+  "Lena Voita — NLP Course: Transfer Learning": "https://lena-voita.github.io/nlp_course/transfer_learning.html",
+  "Lena Voita — NLP Course: Word Embeddings": "https://lena-voita.github.io/nlp_course/word_embeddings.html",
+
   "3Blue1Brown — Backpropagation": "https://www.youtube.com/watch?v=Ilg3gGewQ5U",
   "3Blue1Brown — But what is the Fourier Transform? (YouTube)": "https://www.youtube.com/watch?v=spUNpyF58BY",
   "3Blue1Brown — CNNs": "https://www.youtube.com/watch?v=KuXjwB4LzSA",
@@ -2257,44 +2398,116 @@ const TYPE_BADGE = {
   blog:    { label:"✍ Blog",    bg:"#0d1f2d", color:"#58a6ff" },
   docs:    { label:"📄 Docs",    bg:"#1a1f2e", color:"#a5d6ff" },
   course:  { label:"🎓 Course",  bg:"#1a1208", color:"#d29922" },
+  book:    { label:"📚 Book",    bg:"#1a1208", color:"#f59e0b" },
 };
 
-const ALL_ITEMS = ROADMAP.flatMap(p => p.items);
+const ALL_ITEMS = ROADMAP.flatMap(p => p.items || []);
 
 function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type }) {
   const [open, setOpen] = useState(false);
+
+  const flavour = !desc ? "explain"
+    : /trap|wrong|mistake|fails|pitfall|careful|gotcha|caveat|warning/i.test(desc) ? "trap"
+    : /key insight|core idea|the key|most important|the intuition/i.test(desc) ? "insight"
+    : /why it matters|why this|why we|motivation|used for/i.test(desc) ? "why"
+    : /interview|examiner|candidate/i.test(desc) ? "interview"
+    : "explain";
+
+  const FLAVOURS = {
+    trap:      { bar:"#f59e0b", bg:"#1a1200", label:"⚠ trap",      color:"#f59e0b" },
+    insight:   { bar:"#3fb950", bg:"#0a1a0d", label:"★ insight",   color:"#3fb950" },
+    why:       { bar:"#a371f7", bg:"#160d24", label:"◆ why",        color:"#a371f7" },
+    interview: { bar:"#06b6d4", bg:"#001a22", label:"✦ interview", color:"#06b6d4" },
+    explain:   { bar:"#30363d", bg:"#0d1117", label:null,           color:"#6e7681" },
+  };
+  const fs = FLAVOURS[flavour] || FLAVOURS.explain;
+
+  const getResourcePill = () => {
+    if (!resource || isLink) return null;
+    const rUrl = RESOURCE_LINKS[resource];
+    const short = resource.length > 28 ? resource.slice(0,26)+"…" : resource;
+    if (rUrl) return (
+      <a href={rUrl} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} title={resource}
+        style={{ fontSize:11, color:"#58a6ff", background:"#0d1f3c", padding:"2px 9px",
+          borderRadius:6, textDecoration:"underline", textUnderlineOffset:"2px",
+          border:"1px solid #1f3a6e", whiteSpace:"nowrap", fontWeight:600 }}>
+        ↗ {short}
+      </a>
+    );
+    return (
+      <span title={resource}
+        style={{ fontSize:11, color:"#6e7681", background:"#21262d", padding:"2px 9px",
+          borderRadius:6, border:"1px solid #30363d" }}>
+        {short}
+      </span>
+    );
+  };
+
+  const pill = getResourcePill();
+
   return (
-    <div style={{ marginBottom:6 }}>
-      <div style={{ display:"flex", alignItems:"flex-start", gap:8, cursor:"pointer" }} onClick={() => setOpen(o=>!o)}>
-        <div onClick={e=>{e.stopPropagation(); onChange();}} style={{ flexShrink:0, width:16, height:16, borderRadius:3, marginTop:3, border:`1.5px solid ${checked?"#238636":C.border}`, background:checked?"#238636":"transparent", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center", transition:"all 0.15s" }}>
-          {checked && <span style={{ color:"#fff", fontSize:10, fontWeight:800, lineHeight:1 }}>✓</span>}
+    <div style={{ marginBottom:10 }}>
+      {/* Row 1: checkbox · label · expand */}
+      <div style={{ display:"flex", alignItems:"flex-start", gap:10, cursor:"pointer" }}
+        onClick={() => setOpen(o=>!o)}>
+        <div onClick={e=>{e.stopPropagation(); onChange();}}
+          style={{ flexShrink:0, width:17, height:17, borderRadius:4, marginTop:2,
+            border:`1.5px solid ${checked?"#238636":C.border}`,
+            background:checked?"#238636":"transparent",
+            cursor:"pointer", display:"flex", alignItems:"center",
+            justifyContent:"center", transition:"all 0.15s" }}>
+          {checked && <span style={{ color:"#fff", fontSize:10, fontWeight:900, lineHeight:1 }}>✓</span>}
         </div>
-        <div style={{ flex:1 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
-            {isLink && url ? (
-              <a href={url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:13, color:checked?C.dim:C.accent, textDecoration:checked?"line-through":"underline", lineHeight:1.4 }}>{label}</a>
-            ) : (
-              <span style={{ fontSize:13, color:checked?C.dim:C.text, textDecoration:checked?"line-through":"none", lineHeight:1.4 }}>{label}</span>
-            )}
-            {resource && !isLink && (() => {
-            const rUrl = RESOURCE_LINKS[resource];
-            return rUrl
-              ? <a href={rUrl} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:10, color:C.accent, background:C.elevated, padding:"1px 6px", borderRadius:99, flexShrink:0, textDecoration:"none", border:`1px solid ${C.border}`, whiteSpace:"nowrap" }}>↗ {resource}</a>
-              : <span style={{ fontSize:10, color:C.dim, background:C.elevated, padding:"1px 6px", borderRadius:99, flexShrink:0 }}>{resource}</span>;
-          })()}
-            {isLink && type && TYPE_BADGE[type] && <span style={{ fontSize:10, padding:"1px 6px", borderRadius:99, background:TYPE_BADGE[type].bg, color:TYPE_BADGE[type].color, flexShrink:0 }}>{TYPE_BADGE[type].label}</span>}
-            {desc && <span style={{ fontSize:10, color:C.dim, marginLeft:"auto" }}>{open?"▲":"▼"}</span>}
-          </div>
+        <div style={{ flex:1, minWidth:0 }}>
+          {isLink && url
+            ? <a href={url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}
+                style={{ fontSize:13, color:checked?C.dim:C.accent,
+                  textDecoration:checked?"line-through":"underline", lineHeight:1.5, fontWeight:500 }}>
+                {label}
+              </a>
+            : <span style={{ fontSize:13, color:checked?C.dim:C.text,
+                textDecoration:checked?"line-through":"none", lineHeight:1.5, fontWeight:500 }}>
+                {label}
+              </span>
+          }
+        </div>
+        <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0, paddingTop:2 }}>
+          {isLink && type && TYPE_BADGE[type] && (
+            <span style={{ fontSize:10, padding:"2px 8px", borderRadius:6,
+              background:TYPE_BADGE[type].bg, color:TYPE_BADGE[type].color }}>
+              {TYPE_BADGE[type].label}
+            </span>
+          )}
+          {desc && (
+            <span style={{ fontSize:11, color:open?fs.color:C.dim, fontWeight:600,
+              whiteSpace:"nowrap", transition:"color 0.15s" }}>
+              {open?"▲ hide":"▼ expand"}
+            </span>
+          )}
         </div>
       </div>
+
+      {/* Row 2: resource pill below label */}
+      {pill && <div style={{ marginLeft:27, marginTop:5 }}>{pill}</div>}
+
+      {/* Row 3: callout box */}
       {open && desc && (
-        <div style={{ marginLeft:24, marginTop:5, marginBottom:2, fontSize:12, color:C.muted, lineHeight:1.6, background:C.bg, borderLeft:`2px solid ${C.border}`, paddingLeft:10, paddingTop:4, paddingBottom:4, borderRadius:"0 4px 4px 0" }}>
-          {desc}
+        <div style={{ marginLeft:27, marginTop:6, marginBottom:4,
+          borderRadius:"0 8px 8px 0", borderLeft:`3px solid ${fs.bar}`,
+          background:fs.bg, padding:"10px 14px" }}>
+          {fs.label && (
+            <div style={{ fontSize:10, fontWeight:700, color:fs.color,
+              letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>
+              {fs.label}
+            </div>
+          )}
+          <div style={{ fontSize:12.5, color:"#c9d1d9", lineHeight:1.75 }}>{desc}</div>
         </div>
       )}
     </div>
   );
 }
+
 
 function ExtraItem({ item, checked, onChange }) {
   const [open, setOpen] = useState(false);
@@ -2315,10 +2528,73 @@ function ExtraItem({ item, checked, onChange }) {
         </div>
       </div>
       {open && item.desc && (
-        <div style={{ marginLeft:24, marginTop:5, fontSize:12, color:C.muted, lineHeight:1.6, background:C.bg, borderLeft:`2px solid #5a2d9a`, paddingLeft:10, paddingTop:4, paddingBottom:4, borderRadius:"0 4px 4px 0" }}>
+        <div style={{ marginLeft:24, marginTop:4, fontSize:12.5, color:"#c9d1d9", lineHeight:1.75, background:"#160d24", borderLeft:"3px solid #a371f7", paddingLeft:12, paddingTop:8, paddingBottom:8, borderRadius:"0 8px 8px 0" }}>
           {item.desc}
         </div>
       )}
+    </div>
+  );
+}
+
+
+function DrillRow({ unitId, drillId, text, desc, checked, onCheck, answer, onAnswerChange, confidence, onConfidenceChange }) {
+  const [showAnswer, setShowAnswer] = useState(false);
+  const confLabels = ["—","✓ Got it","✓✓ Solid","✓✓✓ Nailed it"];
+  const confColors = [C.dim,"#f59e0b","#3fb950","#06b6d4"];
+  return (
+    <div style={{marginBottom:14,background:checked?"#0d150d":C.elevated,borderRadius:9,border:`1px solid ${checked?"#238636":C.border}`,overflow:"hidden",transition:"background 0.2s"}}>
+      {/* Header row */}
+      <div style={{display:"flex",alignItems:"flex-start",gap:10,padding:"11px 14px"}}>
+        <div onClick={onCheck} style={{flexShrink:0,width:17,height:17,borderRadius:4,marginTop:2,
+          border:`1.5px solid ${checked?"#238636":C.border}`,background:checked?"#238636":"transparent",
+          cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",transition:"all 0.15s"}}>
+          {checked && <span style={{color:"#fff",fontSize:10,fontWeight:800,lineHeight:1}}>✓</span>}
+        </div>
+        <span style={{flex:1,fontSize:13,fontWeight:600,color:checked?C.dim:C.text,textDecoration:checked?"line-through":"none",lineHeight:1.45}}>{text}</span>
+      </div>
+      {/* Answer textarea */}
+      <div style={{padding:"0 14px 12px"}}>
+        <div style={{fontSize:10,color:"#f59e0b",fontWeight:700,letterSpacing:0.4,textTransform:"uppercase",marginBottom:5}}>Your Answer</div>
+        <textarea
+          value={answer}
+          onChange={e=>onAnswerChange(e.target.value)}
+          placeholder="Write your answer here (100–150 words). Focus on: naming the constraint, citing a tradeoff, giving a concrete example or number."
+          style={{width:"100%",minHeight:90,padding:"9px 11px",borderRadius:7,
+            border:`1px solid ${answer.length>20?"#f59e0b44":C.border}`,
+            fontSize:12,fontFamily:"inherit",resize:"vertical",outline:"none",
+            color:C.text,lineHeight:1.6,boxSizing:"border-box",
+            background:"#0d1117",transition:"border-color 0.2s"}}
+        />
+        <div style={{display:"flex",alignItems:"center",gap:6,marginTop:7,flexWrap:"wrap"}}>
+          {/* Confidence rating */}
+          <span style={{fontSize:10,color:C.dim,marginRight:2}}>Self-score:</span>
+          {[1,2,3].map(v=>(
+            <button key={v} onClick={()=>onConfidenceChange(confidence===v?0:v)}
+              style={{padding:"3px 10px",borderRadius:5,border:`1px solid ${confidence>=v?confColors[v]:C.border}`,
+                background:confidence>=v?confColors[v]+"22":"transparent",
+                color:confidence>=v?confColors[v]:C.dim,fontSize:11,fontWeight:700,cursor:"pointer",transition:"all 0.15s"}}>
+              {"★".repeat(v)}
+            </button>
+          ))}
+          <span style={{fontSize:10,color:confColors[confidence],marginLeft:2,fontWeight:600}}>{confLabels[confidence]}</span>
+          {/* Show answer toggle */}
+          <button onClick={()=>setShowAnswer(a=>!a)}
+            style={{marginLeft:"auto",padding:"4px 12px",borderRadius:6,
+              border:`1px solid ${showAnswer?"#06b6d4":C.border}`,
+              background:showAnswer?"#06b6d422":"transparent",
+              color:showAnswer?"#06b6d4":C.dim,fontSize:11,fontWeight:700,cursor:"pointer",transition:"all 0.15s"}}>
+            {showAnswer?"▲ Hide Answer":"▼ Model Answer"}
+          </button>
+        </div>
+        {/* Model answer reveal */}
+        {showAnswer && desc && (
+          <div style={{marginTop:9,padding:"10px 12px",background:"#0a1929",borderRadius:7,
+            borderLeft:"3px solid #06b6d4",fontSize:12,color:"#a8d5ea",lineHeight:1.7}}>
+            <div style={{fontSize:10,color:"#06b6d4",fontWeight:700,letterSpacing:0.4,textTransform:"uppercase",marginBottom:5}}>Model Answer</div>
+            {desc}
+          </div>
+        )}
+      </div>
     </div>
   );
 }
@@ -2336,19 +2612,31 @@ export default function App() {
   const [loaded, setLoaded] = useState(false);
   const [rFilter, setRFilter] = useState("all");
   const [openBuild, setOpenBuild] = useState({});
+  const [drillAnswers, setDrillAnswers] = useState({});
+  const [drillConf, setDrillConf] = useState({});
 
   useEffect(() => {
     (async () => {
       try {
-        const p = await store.get("p"); const c = await store.get("c"); const n = await store.get("n");
+        const p = await store.get("p"); const c = await store.get("c"); const n = await store.get("n"); const da = await store.get("da"); const dc = await store.get("dc");
         if (p) setProgress(JSON.parse(p.value));
         if (c) setChecks(JSON.parse(c.value));
         if (n) setNotes(JSON.parse(n.value));
+        if (da) setDrillAnswers(JSON.parse(da.value));
+        if (dc) setDrillConf(JSON.parse(dc.value));
       } catch {}
       setLoaded(true);
     })();
   }, []);
 
+  const saveDrill = async (key, text) => {
+    const na = {...drillAnswers,[key]:text}; setDrillAnswers(na);
+    try { await store.set("da",JSON.stringify(na)); } catch {}
+  };
+  const saveDrillConf = async (key, val) => {
+    const nc2 = {...drillConf,[key]:val}; setDrillConf(nc2);
+    try { await store.set("dc",JSON.stringify(nc2)); } catch {}
+  };
   const persist = async (np,nc,nn) => {
     try { await store.set("p",JSON.stringify(np)); await store.set("c",JSON.stringify(nc)); await store.set("n",JSON.stringify(nn)); } catch {}
   };
@@ -2434,7 +2722,7 @@ export default function App() {
               <div key={phase.phase} style={{marginBottom:16,paddingLeft:2}}>
                 <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
                   <div style={{display:"flex",alignItems:"center",gap:7,minWidth:0}}>
-                    <div style={{width:7,height:7,borderRadius:"50%",background:phase.color,flexShrink:0}}/>
+                    <div style={{width:3,height:16,borderRadius:2,background:phase.color,flexShrink:0}}/>
                     <span style={{fontSize:11,fontWeight:600,color:C.muted,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{phase.phase}</span>
                   </div>
                   <span style={{fontSize:10,color:C.dim,flexShrink:0,marginLeft:4}}>{phDone}/{phase.items.length}</span>
@@ -2465,13 +2753,21 @@ export default function App() {
           const phOpen = expandedPhases[phase.phase];
           return (
             <div key={phase.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
-              <div onClick={()=>togglePhase(phase.phase)} style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"10px 16px",background:C.surface,cursor:"pointer",borderBottom:phOpen?`1px solid ${C.border}`:"none"}}>
-                <div style={{display:"flex",alignItems:"center",gap:8}}>
-                  <div style={{width:8,height:8,borderRadius:"50%",background:phase.color}}/>
-                  <span style={{fontWeight:700,fontSize:17,color:C.text}}>{phase.phase}</span>
-                  <span style={{fontSize:12,color:phDone===phase.items.length?C.green:C.dim,background:phDone===phase.items.length?"#0d1f0f":C.elevated,padding:"2px 8px",borderRadius:99,border:`1px solid ${phDone===phase.items.length?"#238636":C.border2}`}}>{phDone}/{phase.items.length}</span>
+              <div onClick={()=>togglePhase(phase.phase)} style={{cursor:"pointer",borderBottom:phOpen?`1px solid ${C.border}`:"none",background:C.surface}}>
+                {/* Colour accent bar */}
+                <div style={{height:3,background:`linear-gradient(90deg, ${phase.color}, ${phase.color}44)`,opacity:phOpen?1:0.5,transition:"opacity 0.2s"}}/>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px 10px"}}>
+                  <div style={{flex:1,minWidth:0}}>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:phase.summary&&phOpen?4:0}}>
+                      <span style={{fontWeight:800,fontSize:16,color:C.text,letterSpacing:-0.3}}>{phase.phase}</span>
+                      <span style={{fontSize:11,color:phDone===phase.items.length?C.green:C.dim,background:phDone===phase.items.length?"#0d1f0f":C.elevated,padding:"1px 8px",borderRadius:99,border:`1px solid ${phDone===phase.items.length?"#238636":C.border2}`,fontWeight:600,flexShrink:0}}>{phDone}/{phase.items.length}</span>
+                    </div>
+                    {phase.summary && phOpen && (
+                      <div style={{fontSize:12,color:C.muted,lineHeight:1.5,maxWidth:600,marginTop:2}}>{phase.summary}</div>
+                    )}
+                  </div>
+                  <span style={{color:C.dim,fontSize:11,marginLeft:12,flexShrink:0}}>{phOpen?"▲":"▼"}</span>
                 </div>
-                <span style={{color:C.dim,fontSize:11}}>{phOpen?"▲":"▼"}</span>
               </div>
 
               {phOpen && phase.items.map((item,idx)=>{
@@ -2484,8 +2780,8 @@ export default function App() {
                 const hasNote = notes[item.id];
 
                 const SECS = [
-                  {key:"theory",label:"Theory",emoji:"📖",stats:tC,color:"#6366f1"},
-                  {key:"resources",label:"Resources",emoji:"🔗",stats:rC,color:C.accent},
+                  {key:"theory",label:"Study",emoji:"📖",stats:tC,color:"#6366f1"},
+                  {key:"resources",label:"Links",emoji:"🔗",stats:rC,color:C.accent},
                   {key:"implementation",label:"Build",emoji:"⚙️",stats:iC,color:C.yellow},
                   {key:"extraReading",label:"Extra",emoji:"✨",stats:eC,color:"#a371f7"},
                 ];
@@ -2500,15 +2796,16 @@ export default function App() {
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
                           <div style={{flex:1}}>
-                            <div style={{display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
-                              <span style={{fontSize:12,fontWeight:700,color:phase.color,letterSpacing:0.3,textTransform:"uppercase"}}>{item.week}</span>
-                              <span style={{fontSize:11,color:C.border}}>|</span>
-                              <span style={{fontSize:12,color:C.dim}}>{item.duration}</span>
+                            <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:3}}>
+                              <span style={{fontSize:10,fontWeight:800,color:phase.color,letterSpacing:1,textTransform:"uppercase",padding:"1px 7px",background:phase.color+"14",borderRadius:4,border:`1px solid ${phase.color}30`}}>{item.week}</span>
+                              <span style={{fontSize:10,color:C.dim,fontWeight:500}}>{item.duration}</span>
                             </div>
-                            <div style={{fontSize:17,fontWeight:600,color:status==="done"?C.muted:C.text,marginTop:3,textDecoration:status==="done"?"line-through":"none",lineHeight:1.3}}>{item.title}</div>
-                            <div style={{display:"flex",gap:5,marginTop:6,flexWrap:"wrap"}}>
-                              {(item.tags||[]).map(t=><span key={t} style={{fontSize:11,color:C.muted,background:C.bg,padding:"2px 8px",borderRadius:4,border:`1px solid ${C.border2}`,letterSpacing:0.2}}>{t}</span>)}
-                            </div>
+                            <div style={{fontSize:16,fontWeight:700,color:status==="done"?C.muted:C.text,textDecoration:status==="done"?"line-through":"none",lineHeight:1.35,letterSpacing:-0.2}}>{item.title}</div>
+                            {(item.tags||[]).length > 0 && (
+                              <div style={{display:"flex",gap:4,marginTop:5,flexWrap:"wrap"}}>
+                                {(item.tags||[]).map(t=><span key={t} style={{fontSize:10,color:C.dim,background:C.bg,padding:"1px 7px",borderRadius:3,border:`1px solid ${C.border2}`,letterSpacing:0.1}}>{t}</span>)}
+                              </div>
+                            )}
                           </div>
                           <div style={{display:"flex",gap:4,flexShrink:0,marginTop:2}} onClick={e=>e.stopPropagation()}>
                             <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} title="Add note" style={{width:28,height:28,borderRadius:6,border:`1px solid ${hasNote?"#1f6feb":C.border}`,background:hasNote?"#0d1f42":"transparent",color:hasNote?C.accent:C.dim,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
@@ -2523,10 +2820,12 @@ export default function App() {
                         {SECS.map(sec=>{
                           const active = curSec===sec.key;
                           return (
-                            <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"7px 20px",borderRadius:7,border:`1.5px solid ${active?sec.color:C.border}`,background:active?sec.color+"1a":"transparent",color:active?sec.color:C.muted,fontSize:14,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:7,transition:"all 0.15s",letterSpacing:0.2,boxShadow:active?`0 0 0 1px ${sec.color}22`:"none"}}>
-                              <span style={{fontSize:15}}>{sec.emoji}</span>
-                              <span>{sec.label}</span>
-                              {sec.stats && sec.stats.total>0 && <span style={{background:active?sec.color+"28":C.elevated,color:active?sec.color:C.dim,borderRadius:5,padding:"1px 7px",fontSize:11,fontWeight:700,minWidth:30,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>}
+                            <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"6px 16px",borderRadius:6,border:`1.5px solid ${active?sec.color:C.border2}`,background:active?sec.color+"18":"transparent",color:active?sec.color:C.dim,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:6,transition:"all 0.15s",letterSpacing:0.3}}>
+                              <span>{sec.emoji}</span>
+                              <span style={{textTransform:"uppercase",fontSize:11,letterSpacing:0.5}}>{sec.label}</span>
+                              {sec.stats && sec.stats.total>0 && (
+                                <span style={{background:active?sec.color+"30":C.elevated,color:active?sec.color:C.dim,borderRadius:4,padding:"0 6px",fontSize:10,fontWeight:800,minWidth:24,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>
+                              )}
                             </button>
                           );
                         })}
@@ -2535,19 +2834,58 @@ export default function App() {
 
                     {/* Section content */}
                     {isOpen && curSec && (
-                      <div style={{margin:"12px 16px 14px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`,padding:"14px 16px"}}>
-                        {curSec==="theory" && (item.theory||[]).map(c=>(
-                          <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
-                        ))}
-                        {curSec==="resources" && (item.resources||[]).map(r=>(
-                          <CheckRow key={r.id} checked={!!checks[`${item.id}__resources__${r.id}`]} onChange={()=>toggleCheck(item.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
-                        ))}
-                        {curSec==="implementation" && (item.implementation||[]).map(i=>(
-                          <CheckRow key={i.id} checked={!!checks[`${item.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(item.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
-                        ))}
+                      <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,padding:"18px 20px 16px"}}>
+                        {curSec==="theory" && (
+                          <div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#6366f1,#a371f7)",flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Concepts</div>
+                                <div style={{fontSize:11,color:C.dim}}>Click ▼ expand to reveal — try to answer before reading</div>
+                              </div>
+                            </div>
+                            {(item.theory||[]).map(c=>(
+                              <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
+                            ))}
+                          </div>
+                        )}
+                        {curSec==="resources" && (
+                          <div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.accent},#1f6feb)`,flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:C.accent,fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Resources</div>
+                                <div style={{fontSize:11,color:C.dim}}>Primary learning materials for this topic</div>
+                              </div>
+                            </div>
+                            {(item.resources||[]).map(r=>(
+                              <CheckRow key={r.id} checked={!!checks[`${item.id}__resources__${r.id}`]} onChange={()=>toggleCheck(item.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
+                            ))}
+                          </div>
+                        )}
+                        {curSec==="implementation" && (
+                          <div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.yellow},#b45309)`,flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:C.yellow,fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Build Tasks</div>
+                                <div style={{fontSize:11,color:C.dim}}>Hands-on projects — understanding only solidifies through building</div>
+                              </div>
+                            </div>
+                            {(item.implementation||[]).map(i=>(
+                              <CheckRow key={i.id} checked={!!checks[`${item.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(item.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
+                            ))}
+                          </div>
+                        )}
                         {curSec==="extraReading" && (
                           <>
-                            <div style={{fontSize:11,fontWeight:700,color:"#a371f7",letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>✨ Optional Extra Reading</div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:"#a371f7",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
+                                <div style={{fontSize:11,color:"#6e7681"}}>Optional — for going deeper beyond the curriculum</div>
+                              </div>
+                            </div>
                             {(item.extraReading||[]).map(e=>(
                               <ExtraItem key={e.id} item={e} checked={!!checks[`${item.id}__extra__${e.id}`]} onChange={()=>toggleCheck(item.id,"extra",e.id)}/>
                             ))}
@@ -2805,11 +3143,12 @@ export default function App() {
                                 {mp && <div style={{fontSize:14,color:mp.color,opacity:0.65,marginBottom:2}}>{mp.name} · Step {b.megaProject.step}: {mp.steps[b.megaProject.step-1]}</div>}
                                 <div style={{fontSize:14,color:C.dim,display:"flex",alignItems:"center",gap:6,flexWrap:"wrap"}}>
                                   <span>{b.itemTitle}</span>
-                                  {b.resource && (() => {
+                                  {(() => {
+                                    if (!b.resource) return null;
                                     const rUrl = RESOURCE_LINKS[b.resource];
-                                    return rUrl
-                                      ? <a href={rUrl} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} style={{fontSize:12,color:C.accent,background:C.elevated,padding:"1px 7px",borderRadius:99,textDecoration:"none",border:`1px solid ${C.border}`}}>↗ {b.resource}</a>
-                                      : <span style={{fontSize:12,color:C.dim,background:C.elevated,padding:"1px 7px",borderRadius:99}}>{b.resource}</span>;
+                                    const bShort = b.resource.length > 28 ? b.resource.slice(0,26)+"…" : b.resource;
+                                    if (rUrl) return <a href={rUrl} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} title={b.resource} style={{fontSize:11,color:"#58a6ff",background:"#0d1f3c",padding:"2px 9px",borderRadius:6,textDecoration:"underline",textUnderlineOffset:"2px",border:"1px solid #1f3a6e",fontWeight:600}}>↗ {bShort}</a>;
+                                    return <span title={b.resource} style={{fontSize:11,color:C.dim,background:C.elevated,padding:"2px 9px",borderRadius:6,border:`1px solid ${C.border}`}}>{bShort}</span>;
                                   })()}
                                 </div>
                               </div>
@@ -2894,19 +3233,41 @@ export default function App() {
 
                     {/* Section content */}
                     {isOpen && curSec && (
-                      <div style={{margin:"12px 16px 14px",background:C.surface,borderRadius:8,border:`1px solid ${C.border}`,padding:"14px 16px"}}>
+                      <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,padding:"18px 20px 16px"}}>
                         {curSec==="theory" && (unit.theory||[]).map(c=>(
                           <CheckRow key={c.id} checked={!!checks[`${unit.id}__theory__${c.id}`]} onChange={()=>toggleCheck(unit.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
                         ))}
                         {curSec==="resources" && (unit.resources||[]).map(r=>(
                           <CheckRow key={r.id} checked={!!checks[`${unit.id}__resources__${r.id}`]} onChange={()=>toggleCheck(unit.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
                         ))}
-                        {curSec==="implementation" && (unit.implementation||[]).map(i=>(
-                          <CheckRow key={i.id} checked={!!checks[`${unit.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(unit.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
-                        ))}
+                        {curSec==="implementation" && (
+                          <div>
+                            <div style={{fontSize:11,color:"#f59e0b",fontWeight:700,letterSpacing:0.5,textTransform:"uppercase",marginBottom:12,display:"flex",alignItems:"center",gap:6}}>
+                              ✍️ Written Drills
+                              <span style={{fontSize:10,color:C.dim,fontWeight:400,textTransform:"none",letterSpacing:0}}>— write your answer, then reveal the model answer</span>
+                            </div>
+                            {(unit.implementation||[]).map(i=>{
+                              const aKey = `${unit.id}__d__${i.id}`;
+                              const cKey = `${unit.id}__dc__${i.id}`;
+                              const ans = drillAnswers[aKey]||"";
+                              const conf = drillConf[cKey]||0;
+                              const isDone = !!checks[`${unit.id}__implementation__${i.id}`];
+                              return <DrillRow key={i.id} unitId={unit.id} drillId={i.id} text={i.text} desc={i.desc}
+                                checked={isDone} onCheck={()=>toggleCheck(unit.id,"implementation",i.id)}
+                                answer={ans} onAnswerChange={v=>saveDrill(aKey,v)}
+                                confidence={conf} onConfidenceChange={v=>saveDrillConf(cKey,v)}/>;
+                            })}
+                          </div>
+                        )}
                         {curSec==="extraReading" && (
                           <>
-                            <div style={{fontSize:11,fontWeight:700,color:"#a371f7",letterSpacing:0.5,textTransform:"uppercase",marginBottom:10}}>✨ Optional Extra Reading</div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:"#a371f7",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
+                                <div style={{fontSize:11,color:"#6e7681"}}>Optional — for going deeper beyond the curriculum</div>
+                              </div>
+                            </div>
                             {(unit.extraReading||[]).map(e=>(
                               <ExtraItem key={e.id} item={e} checked={!!checks[`${unit.id}__extra__${e.id}`]} onChange={()=>toggleCheck(unit.id,"extra",e.id)}/>
                             ))}
