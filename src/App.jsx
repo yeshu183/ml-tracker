@@ -4,42 +4,38 @@ import { useState, useEffect } from "react";
 const store = {
   get: async (key) => {
     try { if (window.storage) return await window.storage.get(key); } catch {}
-    try {
-      const v = localStorage.getItem("mlt4_" + key);
-      return v ? { value: v } : null;
-    } catch {}
-    return null;
+    const v = localStorage.getItem("mlt4_" + key);
+    return v ? { value: v } : null;
   },
   set: async (key, val) => {
     try { if (window.storage) { await window.storage.set(key, val); return; } } catch {}
-    try { localStorage.setItem("mlt4_" + key, val); } catch {}
+    localStorage.setItem("mlt4_" + key, val);
   }
 };
 
-// ─── Dark mode palette (inspired by Lena Voita's #92bf32 warmth) ───
+// ─── Dark mode palette ───
 const C = {
-  bg:       "#0c1116",
-  surface:  "#141920",
-  elevated: "#1e242c",
-  border:   "#2d3440",
-  border2:  "#1e242c",
-  text:     "#e8eef4",
-  muted:    "#8d9bab",
-  dim:      "#5e6d7e",
+  bg:       "#0d1117",
+  surface:  "#161b22",
+  elevated: "#21262d",
+  border:   "#30363d",
+  border2:  "#21262d",
+  text:     "#e6edf3",
+  muted:    "#8b949e",
+  dim:      "#6e7681",
   accent:   "#58a6ff",
-  green:    "#7fb32d",   // Lena #7fb32d — warm yellow-green, not cold GitHub green
-  lena:     "#92bf32",   // Lena primary brand colour
-  yellow:   "#c99a1a",
+  green:    "#3fb950",
+  yellow:   "#d29922",
   purple:   "#a371f7",
   teal:     "#39d353",
-  red:      "#b01277",   // Lena decoder magenta — warmer than pure red
-  pink:     "#e05c9a",   // lighter variant for text on red bg
+  red:      "#f85149",
 };
 
 const ROADMAP = [
   {
-    phase: "Math Foundations",
+    phase: "Mathematical Foundations",
     color: "#f59e0b",
+    summary: "The mathematical language of ML — every loss function, optimiser, and probability model is built on these foundations. Study these in parallel with the ML track, not before it. The goal is fluency, not mastery before you start.",
     items: [
       {
         id:"mf1", week:"Pre-Foundation", title:"Linear Algebra for ML", duration:"2–3 weeks",
@@ -54,6 +50,10 @@ const ROADMAP = [
           { id:"t7", text:"Positive semi-definite (PSD) matrices — covariance, Hessian, and kernel matrices", desc:"PSD matrices are symmetric matrices with non-negative eigenvalues. Every covariance matrix is PSD. Every valid kernel matrix is PSD. The Hessian is PSD at a minimum. This property appears in optimisation theory, Gaussian processes, and model convergence proofs.", resource:"Mathematics for ML — Chapter 2: Linear Algebra" },
           { id:"t8", text:"Matrix calculus — gradients of matrix and vector expressions", desc:"How do you differentiate L = (Xw - y)ᵀ(Xw - y) with respect to w? Matrix calculus gives you the rules. These are used in every paper that derives update rules. The Matrix Cookbook is the reference — but understanding the derivations is the goal.", resource:"Mathematics for ML — Chapter 5: Vector Calculus" },
           { id:"t9", text:"Norms and distances — L1, L2, Frobenius, spectral, nuclear", desc:"L2 regularisation penalises the Frobenius norm of weights. LoRA constrains the nuclear norm. Spectral normalisation bounds the largest singular value. Each norm has a different geometric meaning and different effect on the optimisation landscape.", resource:"Mathematics for ML — Chapter 2: Linear Algebra" },
+        
+          { id:"t10", text:"Building geometric intuition — the learning method that makes everything else stick",
+            desc:"The single most important meta-skill for mastering ML mathematics. Every abstract concept has a geometric story in 2D or 3D. Before reading a proof, ask: what does this look like if my data was 2D? Projection: point flying perpendicularly onto a line. Eigenvectors: arrows that stretch but don't rotate. SVD: rotate, scale axes, rotate back. Attention: weighted average of value vectors, weights from key-query similarity. For every new concept: (1) Draw it in 2D or 3D before touching any formula. (2) Implement a small simulation in NumPy and visualise it with matplotlib. (3) Check your intuition by deriving the result algebraically and verifying they match. This is not extra work — it is the fastest path. Concepts with geometric pictures are retained; formulas without geometry are forgotten within weeks. The 3Blue1Brown library of visualisations was built on exactly this insight. Every time you encounter a confusing piece of notation, ask yourself: what transformation is this describing?",
+            resource:"3Blue1Brown — Essence of Linear Algebra (YouTube)" },
         ],
         resources:[
           { id:"r1", text:"3Blue1Brown — Essence of Linear Algebra (YouTube)", url:"https://www.youtube.com/playlist?list=PLZHQObOWTQDPD3MizzM2xVFitgF8hE_ab", type:"youtube" },
@@ -77,7 +77,7 @@ const ROADMAP = [
         ]
       },
       {
-        id:"mf2", week:"Pre-Foundation", title:"Probability, Statistics & Calculus for ML", duration:"2–3 weeks",
+        id:"mf2", week:"Pre-Foundation", title:"Probability & Information Theory", duration:"2–3 weeks",
         tags:["probability","statistics","calculus","MLE","optimization","information-theory"],
         theory:[
           { id:"t1", text:"Probability fundamentals — sample spaces, distributions, expectation, variance", desc:"Loss functions are expected values of prediction error. Batch norm uses running mean and variance. Every part of ML is probability. You need this language to read papers and reason about uncertainty in model outputs.", resource:"Probability for ML — Goodfellow Appendix" },
@@ -108,15 +108,10 @@ const ROADMAP = [
           { id:"e1", topic:"Chris Olah — Visual Information Theory — the best intro to entropy and KL divergence", desc:"A beautifully illustrated essay that builds intuition for entropy, cross-entropy, and KL divergence from scratch using geometric and coding-theory perspectives. Reading this once makes information theory permanently clear.", url:"https://colah.github.io/posts/2015-09-Visual-Information/" },
           { id:"e2", topic:"Lilian Weng — Blog (lilianweng.github.io) — the best ML research blog", desc:"Lilian Weng (OpenAI) writes exceptionally clear, research-grade posts on every major ML topic. Bookmark it and return whenever you encounter a concept you want to understand deeply.", url:"https://lilianweng.github.io/" },
           { id:"e3", topic:"MIT 6.041 — Probabilistic Systems Analysis OCW, free problem sets", desc:"MIT's probability course with 25 problem sets and full solutions. If you want deeper probability beyond ML-specific coverage, these are the canonical rigorous exercises. Problem sets 1–5 are directly relevant to ML foundations.", url:"https://ocw.mit.edu/courses/6-041sc-probabilistic-systems-analysis-and-applied-probability-fall-2013/" },
-        ]
+        
+          { id:"e4", topic:"Information Geometry — the Fisher metric and natural gradient intuition", url:"https://arxiv.org/abs/1301.3666", desc:"The Fisher information matrix is the Riemannian metric on the statistical manifold — it tells you how far apart two distributions are locally. Natural gradient descent uses this geometry. Amari's original natural gradient paper (1998) is readable. For a modern ML perspective: James Martens' 'New Insights on the Natural Gradient Method' (2020) connects it directly to K-FAC and second-order optimisation." },
+          ]
       },
-    ]
-  },
-  {
-    phase: "Deep Math",
-    color: "#f97316",
-    summary: "Advanced mathematics for the Scientific ML track and rigorous paper reading — multivariable calculus, differential equations, Fourier analysis, and transform methods. Essential if you pursue neural operators or physics-informed ML; valuable revision for anyone who wants to read mathematical ML papers with full comprehension.",
-    items: [
       {
         id: "mf3", week: "Weeks 4–7", title: "Multivariable Calculus", duration: "3–4 weeks",
         tags: ["calculus","gradients","integration","vector-calculus"],
@@ -185,141 +180,216 @@ const ROADMAP = [
           { id:"e3", topic:"MIT 18.03 Lecture Notes — Haynes Miller (very clean, free PDF)", desc:"Miller's lecture notes for 18.03 are cleaner and more modern than Kreyszig for the ODE sections. Free PDF. Particularly good on linear systems and phase portraits.", url:"https://ocw.mit.edu/courses/18-03sc-differential-equations-fall-2011/pages/unit-i-first-order-differential-equations/" },
         ],
       },
+      {
+        id:"num1", week:"Pre-Foundation", title:"Numerical Methods & Computational Linear Algebra",
+        duration:"1–2 weeks",
+        tags:["numerical","conditioning","floating-point","QR","iterative-solvers","auto-diff"],
+        theory:[
+          { id:"t1", text:"Floating point arithmetic — why 0.1 + 0.2 ≠ 0.3 and why it matters for ML",
+            desc:"IEEE 754 double precision: 1 sign bit, 11 exponent bits, 52 mantissa bits. Machine epsilon ε_mach ≈ 2.2e-16 — smallest number where 1 + ε ≠ 1. Catastrophic cancellation: subtracting nearly equal numbers destroys significant digits. Example: log(1+x) for small x is numerically unstable; use log1p(x) instead. Absolute error vs relative error — relative error matters for ML. Mixed precision: fp16 has ε_mach ≈ 9.8e-4 and overflow at 65504 — why loss scaling is required. bfloat16 has same exponent range as fp32 but less mantissa precision — better for training. Practical rule: if you're computing a difference of large numbers, numerical instability is likely — reformulate to avoid it.",
+            resource:"Mathematics for ML Book" },
+          { id:"t2", text:"Matrix conditioning — why (XᵀX)⁻¹ is often a bad idea",
+            desc:"Condition number κ(A) = ||A|| · ||A⁻¹|| = σ_max/σ_min (ratio of largest to smallest singular value). A well-conditioned matrix has κ close to 1; ill-conditioned matrices amplify errors. Key result: if you solve Ax = b, the relative error in x is bounded by κ(A) times the relative error in b. For normal equations (XᵀX)β = Xᵀy: κ(XᵀX) = κ(X)² — squaring the condition number doubles numerical precision requirements. This is why you should use QR decomposition (X = QR, then Rβ = Qᵀy) or SVD to solve least squares — they work with κ(X), not κ(X)². Rule: never invert a matrix explicitly (np.linalg.inv). Use np.linalg.solve or scipy.linalg.lstsq instead.",
+            resource:"Mathematics for ML Book" },
+          { id:"t3", text:"QR decomposition — the numerically stable way to solve least squares",
+            desc:"Any matrix X (n×p, n≥p) can be factored as X = QR where Q is orthogonal (QᵀQ = I) and R is upper triangular. Algorithms: Gram-Schmidt (unstable), Householder reflections (stable), Givens rotations (stable, for sparse). For least squares: XᵀXβ = Xᵀy becomes Rβ = Qᵀy — solve by back-substitution. Numerically stable because Q preserves vector norms exactly. Cost: O(np²) vs O(p³) for normal equations — same order but better numerical behaviour. QR with column pivoting handles rank-deficient X. Thin QR (economy QR): only the first p columns of Q are needed — saves memory.",
+            resource:"Mathematics for ML Book" },
+          { id:"t4", text:"Automatic differentiation — forward mode, reverse mode, and the difference",
+            desc:"Automatic differentiation is NOT numerical differentiation (finite differences) and NOT symbolic differentiation (computer algebra). It is exact differentiation by systematically applying the chain rule to elementary operations. Forward mode AD: compute (f, ∂f/∂x_i) simultaneously in one forward pass — efficient when input dimension << output dimension. Reverse mode AD (backpropagation): compute ∂L/∂x_i for all i in one backward pass — efficient when output dimension << input dimension (i.e., scalar loss → all weights). PyTorch's autograd is reverse mode. The computation graph stores intermediate values during forward pass; backward pass accumulates gradients. Memory cost: O(depth) for naive backprop; gradient checkpointing trades memory for compute by recomputing activations.",
+            resource:"Karpathy — micrograd (YouTube)" },
+          { id:"t5", text:"Iterative solvers — conjugate gradient and when to use them over direct methods",
+            desc:"Direct methods (LU, QR, Cholesky): compute exact solution, O(n³), store O(n²). Iterative methods: approximate solution, often O(n·k) where k << n iterations needed. Conjugate gradient (CG): for symmetric positive definite A, solves Ax = b in at most n iterations, in practice k << n. Requires only matrix-vector products — works with implicit matrices. Preconditioning: solve M⁻¹Ax = M⁻¹b where M ≈ A is easy to invert — dramatically reduces iterations. When to use iterative: sparse A (most entries zero), large n (> 10,000), or when A is only available as a linear operator. In ML: conjugate gradient appears in natural gradient descent (solve Fisher·v = g), kernel regression (solve Kα = y), and second-order optimisation (Newton CG).",
+            resource:"Mathematics for ML Book" },
+          { id:"t6", text:"Numerical differentiation pitfalls — when finite differences fail and auto-diff wins",
+            desc:"Finite difference approximation: ∂f/∂x ≈ (f(x+h) - f(x-h))/(2h). Error analysis: truncation error O(h²) decreases as h shrinks; rounding error O(ε_mach/h) increases as h shrinks. Optimal h ≈ ε_mach^{1/3} ≈ 1e-5 for double precision — this gives error ≈ 1e-10, but only for 1 gradient component at a time. For a model with n parameters, finite differences requires n+1 forward passes; auto-diff requires 1 forward + 1 backward pass regardless of n. Gradient check as a debugging tool: compute a few gradient components via finite differences and compare to autograd — relative error > 1e-4 indicates a bug in your backward pass.",
+            resource:"Karpathy — micrograd (YouTube)" },
+        ],
+        resources:[
+          { id:"r1", text:"Numerical Linear Algebra — Trefethen & Bau (the standard graduate text)", url:"https://people.maths.ox.ac.uk/trefethen/text.html", type:"paper" },
+          { id:"r2", text:"Fast.ai — Numerical Stability and Floating Point (practical blog)", url:"https://www.fast.ai/posts/2018-07-02-adam-math.html", type:"blog" },
+          { id:"r3", text:"Karpathy — micrograd: build autograd from scratch (YouTube)", url:"https://www.youtube.com/watch?v=VMj-3S1tku0", type:"youtube" },
+          { id:"r4", text:"CS231n — Backprop Notes (numerical gradient check section)", url:"https://cs231n.github.io/optimization-2/", type:"docs" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement gradient check — compare autograd to finite differences on a small neural net", desc:"Build a 2-layer MLP in NumPy. Compute gradients with your manual backprop. Compute the same gradients with central finite differences for 5 random weight entries. Compute relative error: |grad_autograd - grad_fd| / max(|grad_autograd|, |grad_fd|). If > 1e-4, find the bug. This is the standard sanity check for any new backward pass implementation." },
+          { id:"i2", text:"Demonstrate condition number — OLS via normal equations vs QR on ill-conditioned data", desc:"Create X with high multicollinearity (e.g., two features that are 99.9% correlated). Solve OLS using: (1) normal equations with np.linalg.inv (bad), (2) np.linalg.solve (better), (3) np.linalg.lstsq (QR-based, best). Compare the condition numbers and the stability of the coefficient estimates. Add tiny random noise to y and observe how much the coefficients change with each method." },
+          { id:"i3", text:"Build micrograd — a scalar-valued autograd engine from scratch in ~150 lines", desc:"Follow Karpathy's micrograd: implement a Value class with forward computation and backward gradient accumulation. Support +, *, tanh, exp. Build a small MLP using only your Value class. Train on XOR. This single exercise makes automatic differentiation permanently clear and takes about 3 hours." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Numerical Linear Algebra — Trefethen & Bau (free through most university libraries)", url:"https://people.maths.ox.ac.uk/trefethen/text.html", desc:"The graduate standard for numerical methods. Chapters 1-7 (matrix factorizations, conditioning, stability) are directly relevant to ML. If you only read one: Chapter 12 on QR factorisation and Chapter 13 on conditioning. The writing is exceptionally clear for a technical text." },
+        ]
+      },
     ]
   },
   {
-    phase: "Statistics for Data Science",
+    phase: "Statistical Foundations",
     color: "#0ea5e9",
-    summary: "Graduate-level statistics for data scientists — hypothesis testing, regression theory, GLMs, resampling, and model diagnostics. Builds on the probability & distributions coverage in Math Foundations (mf2). Skip topics you already know cold.",
+    summary: "Graduate-level statistics for data science — the layer that separates engineers who can implement from scientists who can reason. Covers inferential theory, regression, experimental design, and multivariate methods at the depth expected in applied scientist roles.",
     items: [
       {
-        id: "stat1", week: "Stats Week 1–2", title: "Statistical Inference & Hypothesis Testing", duration: "2 weeks",
-        tags: ["hypothesis-testing","confidence-intervals","p-values","bootstrap","non-parametric","power-analysis"],
-        theory: [
-          { id:"t1", text:"Point estimation — unbiasedness, consistency, efficiency, and the MVUE",
-            desc:"A point estimator maps data to a single parameter guess. Unbiased: E[θ̂] = θ. Consistent: θ̂ →ᵖ θ as n→∞. Efficient: achieves the Cramér–Rao lower bound (= 1 / Fisher information). The MVUE (Minimum Variance Unbiased Estimator) is the best possible unbiased estimator. Why it matters: understanding these properties tells you when the sample mean, MLE, or method-of-moments gives you a 'good' estimator — and when it doesn't.",
-            resource:"Casella & Berger — Statistical Inference" },
-          { id:"t2", text:"Confidence intervals — construction, interpretation, and the most common misconception",
-            desc:"A 95% CI does NOT mean 'the parameter lies here with 95% probability' — the parameter is fixed, the interval is random. Correct interpretation: if you repeated the experiment many times, 95% of the constructed intervals would contain the true parameter. Construction: for means with known σ: x̄ ± z_{α/2} σ/√n. Unknown σ: t-distribution with n−1 degrees of freedom. Width ∝ 1/√n — doubling precision requires 4× the data. This underpins all ML confidence intervals and A/B test significance bands.",
-            resource:"Penn State STAT 415 (free online)" },
-          { id:"t3", text:"Null hypothesis significance testing — the full 5-step framework, not just p < 0.05",
-            desc:"(1) Define H₀ and H₁. (2) Choose test statistic and its null distribution. (3) Set α (Type I error rate, typically 0.05). (4) Compute p-value = P(test statistic ≥ observed | H₀ true). (5) Reject H₀ if p < α. Critical concepts: Type I error (false positive, rate = α), Type II error (false negative, rate = β), power = 1−β. The p-value is NOT the probability that H₀ is true — this is the single most common statistical error in data science.",
-            resource:"StatQuest — Hypothesis Testing" },
-          { id:"t4", text:"t-tests, chi-squared, and ANOVA — taxonomy of when to use each",
-            desc:"z-test: known σ or large n (>30). One-sample t-test: compare a mean to a fixed value (unknown σ). Two-sample independent t-test: compare two group means. Paired t-test: pre/post on the same subjects — more powerful because between-subject variance cancels. Chi-squared test of independence: association between two categorical variables (contingency table). One-way ANOVA: test whether ≥3 group means differ using the F-statistic (between-group variance / within-group variance). Post-hoc Tukey HSD identifies which pairs differ after a significant ANOVA.",
-            resource:"StatQuest — Hypothesis Testing" },
-          { id:"t5", text:"Power analysis and sample size — designing studies before collecting data",
-            desc:"Power (1−β) = P(reject H₀ | H₁ true). Four linked quantities: α, β, effect size (Cohen's d = (μ₁−μ₂)/σ), and n. Fix any three and the fourth is determined. Typical setup: α=0.05, power=0.80, effect size from a pilot → solve for n. Underpowered studies produce noisy results — if you detect an effect, its magnitude is inflated (winner's curse). In ML: power analysis determines how many labelled examples are needed before a detectable improvement is possible. Python: `statsmodels.stats.power`.",
-            resource:"Penn State STAT 415 (free online)" },
-          { id:"t6", text:"Multiple testing corrections — Bonferroni, Benjamini–Hochberg FDR, and when they matter",
-            desc:"Running 100 tests at α=0.05 expects 5 false positives even when H₀ is everywhere true. Bonferroni: use α/m per test (very conservative — inflates Type II errors). Benjamini–Hochberg (BH/FDR): controls the expected proportion of false discoveries among all rejections. Less conservative than Bonferroni, preferred when m is large. In data science: whenever you test many features, model variants, or multiple A/B metrics simultaneously, you MUST apply corrections. Ignoring this is how spurious discoveries get shipped to production.",
-            resource:"ISL — Chapter 13: Multiple Testing (free PDF)" },
-          { id:"t7", text:"Non-parametric tests — when distributional assumptions fail",
-            desc:"Mann–Whitney U: non-parametric alternative to the independent t-test (tests stochastic dominance). Wilcoxon signed-rank: non-parametric paired t-test. Kruskal–Wallis: non-parametric ANOVA. Spearman rank correlation: monotone (not just linear) associations. When to prefer non-parametric: outliers present, ordinal data, skewed distributions, small n where CLT has not kicked in. Trade-off: lower power than parametric tests when distributional assumptions are actually met.",
-            resource:"StatQuest — Hypothesis Testing" },
-          { id:"t8", text:"Bootstrap resampling — a universal confidence interval machine",
-            desc:"Resample your data with replacement B times (B=1000–10000). Compute the statistic on each bootstrap sample. The distribution of these B values approximates the sampling distribution of the statistic. Percentile bootstrap CI: [2.5th, 97.5th percentile]. Why it's powerful: works for ANY statistic (median, AUC, correlation, model accuracy) — no need to derive an analytical sampling distribution. BCa (bias-corrected and accelerated) bootstrap is more accurate for skewed statistics. In ML: this is how you put confidence intervals on test-set AUC.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
-          { id:"t9", text:"Fisher information and the Cramér–Rao bound — fundamental limits on estimation precision",
-            desc:"Fisher information I(θ) = E[(∂/∂θ log f(X;θ))²] measures how much data tell you about θ. Cramér–Rao lower bound: Var(θ̂) ≥ 1/I(θ) for any unbiased estimator. MLE achieves this bound asymptotically — it is asymptotically efficient. In ML: the Fisher information matrix appears in natural gradient descent, second-order optimisation, and Laplace approximations for Bayesian inference. Understanding this connects MLE to information geometry.",
-            resource:"Casella & Berger — Statistical Inference" },
-          { id:"t10", text:"Effect sizes — quantifying practical significance beyond p-values",
-            desc:"A tiny effect can be highly statistically significant with huge n; a large effect can be non-significant with tiny n. Effect size measures magnitude independently of sample size. Cohen's d = (μ₁−μ₂)/σ: small=0.2, medium=0.5, large=0.8. For proportions: odds ratio, relative risk, number needed to treat. For ANOVA: η² = SS_between/SS_total. In ML product experiments: a 0.001 AUC improvement may be statistically significant on 10M samples but practically irrelevant. Always report effect size alongside p-value.",
-            resource:"Nature Methods — Points of Significance" },
+        id:"stat1", week:"Stat Week 1–2", title:"Statistical Inference & Estimation Theory",
+        duration:"2 weeks",
+        tags:["inference","MLE","MAP","Fisher-information","exponential-family","bootstrap"],
+        theory:[
+          { id:"t1", text:"Exponential family — the unified framework for distributions in ML",
+            desc:"The exponential family p(x|η) = h(x) exp(η·T(x) - A(η)) unifies Gaussian, Bernoulli, Poisson, Gamma, Beta, Dirichlet, and multinomial distributions. Key properties: T(x) is the sufficient statistic (all information about η is in T(x)); A(η) is the log-partition function; ∇A(η) = E[T(x)] (gradient gives mean); ∇²A(η) = Var[T(x)] (Hessian gives variance). Why it matters: GLMs, natural gradient descent, variational inference, and topic models all operate in exponential family space. The Fisher information matrix equals ∇²A(η).",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t2", text:"Fisher information and the Cramér-Rao lower bound",
+            desc:"The Fisher information I(θ) = E[(∂ log p(x|θ)/∂θ)²] measures how much information data carries about a parameter. The Cramér-Rao bound states Var(θ̂) ≥ 1/I(θ) for any unbiased estimator — no estimator can do better than this. Efficient estimators (MLEs in regular families) achieve this bound asymptotically. Why it matters: natural gradient uses the Fisher information matrix to rescale gradient steps to account for parameter geometry. Fisher information is also the second derivative of KL divergence — it measures local curvature of the statistical manifold.",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t3", text:"Bias-variance decomposition — the formal theory",
+            desc:"For an estimator θ̂: MSE(θ̂) = Bias(θ̂)² + Var(θ̂). Bias = E[θ̂] - θ (systematic error). Variance = E[(θ̂ - E[θ̂])²] (random error). Irreducible error is aleatoric noise in the data. This is not just a conceptual metaphor — it is a mathematical identity. For linear regression: bias = 0 for OLS (Gauss-Markov), variance = σ²(XᵀX)⁻¹. Ridge regression introduces bias (shrinks towards 0) but reduces variance — this is the formal justification for regularisation.",
+            resource:"ESL Book" },
+          { id:"t4", text:"Method of moments, MLE asymptotics, and interval estimation",
+            desc:"Method of moments: equate sample moments to population moments and solve for parameters. Simpler than MLE but less efficient. MLE asymptotics: under regularity conditions, √n(θ̂_MLE - θ) →ᵈ N(0, I(θ)⁻¹) — MLE is consistent and asymptotically normal with variance equal to the Cramér-Rao bound. Confidence intervals: a 95% CI [L,U] satisfies P(L ≤ θ ≤ U) = 0.95. Interpretation: 95% of CIs constructed this way contain θ, not 95% probability that θ is in this interval. Likelihood ratio CI: invert the LRT — all θ where 2(ℓ(θ̂) - ℓ(θ)) ≤ χ²_{1,0.95}.",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t5", text:"Bootstrap — non-parametric uncertainty quantification",
+            desc:"The parametric bootstrap assumes a distributional form; the non-parametric bootstrap does not. Algorithm: resample the data with replacement B=1000 times, compute θ̂* on each bootstrap sample, use the distribution of θ̂* to estimate SE and CIs. Percentile CI: use the 2.5th and 97.5th percentiles of the bootstrap distribution. BCa CI (bias-corrected and accelerated): accounts for bias and skewness — more accurate for small samples. Pairs bootstrap for regression: resample (x_i, y_i) pairs. Residual bootstrap: fix X, resample residuals — assumes homoskedasticity. Why it matters: whenever you fit a model and need uncertainty estimates without closed-form formulas.",
+            resource:"ESL Book" },
+          { id:"t6", text:"Bayesian inference — conjugate priors, credible intervals, and posterior predictive",
+            desc:"Conjugate priors: prior and posterior are in the same family. Beta-Binomial (Beta prior for Bernoulli rate), Normal-Normal (Gaussian prior for Gaussian mean), Dirichlet-Multinomial. Why conjugacy matters: posterior updates in closed form, no MCMC needed. Credible interval: P(θ ∈ [L,U] | data) = 0.95 — this is the intuitive statement confidence intervals are incorrectly given. Highest posterior density (HPD) interval: smallest interval containing 95% of posterior mass. Posterior predictive: P(x̃|data) = ∫ P(x̃|θ) P(θ|data) dθ — integrates out parameter uncertainty for predictions.",
+            resource:"Pattern Recognition — Bishop Ch.1-2" },
         ],
-        resources: [
-          { id:"r1", text:"StatQuest — Hypothesis Testing series (YouTube, best visual intro)", url:"https://www.youtube.com/playlist?list=PLblh5JKOoLUK0FLuzwntyYI10UQFUhsY9", type:"youtube" },
-          { id:"r2", text:"Introduction to Statistical Learning (ISL) — James et al. (free PDF, canonical applied stats textbook)", url:"https://www.statlearning.com/", type:"book" },
-          { id:"r3", text:"Elements of Statistical Learning (ESL) — Hastie et al. (free PDF, graduate-level)", url:"https://hastie.su.domains/ElemStatLearn/", type:"book" },
-          { id:"r4", text:"Penn State STAT 415 — Mathematical Statistics (free online course notes)", url:"https://online.stat.psu.edu/stat415/", type:"course" },
-          { id:"r5", text:"scipy.stats — Python statistical tests reference (docs)", url:"https://docs.scipy.org/doc/scipy/reference/stats.html", type:"docs" },
-          { id:"r6", text:"statsmodels — power analysis and statistical tests in Python (docs)", url:"https://www.statsmodels.org/stable/stats.html", type:"docs" },
+        resources:[
+          { id:"r1", text:"All of Statistics — Larry Wasserman, free PDF (the standard reference)", url:"https://link.springer.com/book/10.1007/978-0-387-21736-9", type:"paper" },
+          { id:"r2", text:"StatQuest — Confidence Intervals, MLE, Bias-Variance (YouTube)", url:"https://www.youtube.com/@statquest", type:"youtube" },
+          { id:"r3", text:"MIT 18.650 — Statistics for Applications (free OCW lecture notes)", url:"https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/", type:"course" },
+          { id:"r4", text:"ESL — Elements of Statistical Learning, Hastie et al., free PDF", url:"https://hastie.su.domains/ElemStatLearn/", type:"paper" },
         ],
-        implementation: [
-          { id:"i1", text:"Full hypothesis test pipeline — t-test, chi-squared, ANOVA, and Mann–Whitney on real datasets",
-            desc:"Use scipy.stats. For each test: (1) check assumptions (normality via Shapiro–Wilk, equal variances via Levene), (2) run the parametric test, (3) run the non-parametric equivalent, (4) compare conclusions. Use UCI datasets — iris for one-way ANOVA across species, adult income for chi-squared on categorical features. Goal: build the muscle memory to always ask 'are my assumptions met?' before running any test." },
-          { id:"i2", text:"Implement bootstrap CI from scratch — compare to scipy's analytical CI on the same data",
-            desc:"Write the bootstrap loop: resample with replacement 5000 times, compute the statistic, take percentile CI. Compare to the analytical t-based CI on the same data. Then compute a bootstrap CI for AUC on a binary classifier — scipy cannot give you this analytically. This is the moment the bootstrap's generality becomes concrete and permanent." },
-          { id:"i3", text:"Power analysis and the winner's curse — demonstrate the consequences of underpowering",
-            desc:"Use statsmodels TTestIndPower to compute required n for α=0.05, power=0.8, a given effect size. Then simulate 1000 experiments at 50% of required n and show that detected effects are systematically inflated. This is the most important simulation in the statistics curriculum for data scientists — it explains why ML benchmark results are often unreproducible." },
-          { id:"i4", text:"Multiple testing correction — FDR on a simulated feature selection scenario",
-            desc:"Generate 100 random features (no signal) plus 10 real features. Run t-tests for each. Apply Bonferroni and Benjamini–Hochberg. Compare how many real features are recovered and how many false positives each allows. Plot q-values vs p-values. Real-world framing: this is what happens when you naively test 500 features in a feature selection step without correction." },
+        implementation:[
+          { id:"i1", text:"Implement MLE for Gaussian, Poisson, and Beta — derive Fisher information for each", desc:"For each distribution: write the log-likelihood, take derivative and set to zero to get MLE formula, compute Fisher information I(θ) = -E[∂²log p/∂θ²], verify that Var(θ̂_MLE) ≈ 1/I(θ) on simulated data. This makes the Cramér-Rao bound concrete." },
+          { id:"i2", text:"Bootstrap CI vs asymptotic CI — compare coverage on heavy-tailed and skewed data", desc:"Simulate data from t(3) (heavy tails) and log-normal (skewed). Compute 95% CIs using: (1) normal approximation, (2) percentile bootstrap, (3) BCa bootstrap. Check empirical coverage (what fraction of CIs contain the true parameter). BCa should be most accurate on non-normal data." },
+          { id:"i3", text:"Conjugate Bayesian update — Beta-Binomial, Normal-Normal in NumPy", desc:"Beta-Binomial: start with Beta(1,1) prior, observe k successes in n trials, compute posterior Beta(1+k, 1+n-k), plot prior→posterior update. Normal-Normal: prior μ ~ N(0, τ²), observe n data points with known σ², compute posterior. Show how credible interval shrinks with more data." },
         ],
-        extraReading: [
-          { id:"e1", topic:"ISL Chapter 13 — Multiple Testing (the clearest treatment of FDR anywhere)", url:"https://www.statlearning.com/", desc:"ISL's chapter on multiple testing covers FWER, FDR, and the Benjamini–Hochberg procedure with unusually clear intuition. Read after the implementation exercise — it clicks much faster once you have seen the simulation." },
-          { id:"e2", topic:"Nature Methods — Points of Significance (compact 2-page articles on each statistical concept)", url:"https://www.nature.com/collections/qghhqm/pointsofsignificance", desc:"Nature's 'Points of Significance' series: beautifully clear 2-page articles on power, multiple testing, regression, and more — each with worked examples. The full series takes 4 hours to read and is worth 10× that. An essential companion to more formal textbooks." },
-          { id:"e3", topic:"Allen Downey — Think Stats (free, data-centric Python statistics)", url:"https://greenteapress.com/wp/think-stats-2e/", desc:"Free Python-first statistics textbook using real datasets for every concept. The resampling and bootstrap chapters are the clearest practitioner-level treatment outside a formal textbook. Good complement to the more rigorous Casella & Berger." },
+        extraReading:[
+          { id:"e1", topic:"All of Statistics — Wasserman (the most concise rigorous stats reference)", url:"https://link.springer.com/book/10.1007/978-0-387-21736-9", desc:"Larry Wasserman's book compresses a PhD-level statistics curriculum into ~450 pages. Chapters 1-9 (probability through regression) are directly relevant. Free through most university library portals. The exercises are hard and worth doing." },
+          { id:"e2", topic:"Probabilistic Theory of Pattern Recognition — Devroye et al.", url:"https://www.szit.bme.hu/~gyorfi/pbook.pdf", desc:"Rigorous theoretical treatment of statistical learning theory. Chapters 1-5 on bias-variance, VC dimension, and uniform convergence. Graduate-level but develops the theoretical foundations that appear in NeurIPS papers." },
         ]
       },
       {
-        id: "stat2", week: "Stats Week 3–4", title: "Regression Theory & Generalized Linear Models", duration: "2 weeks",
-        tags: ["GLM","regression-diagnostics","model-selection","AIC","BIC","poisson","mixed-effects","survival-analysis","WLS"],
-        theory: [
-          { id:"t1", text:"Multiple linear regression — matrix form, Gauss–Markov theorem, and the Frisch–Waugh–Lovell theorem",
-            desc:"Multiple regression: Y = Xβ + ε, OLS: β̂ = (XᵀX)⁻¹Xᵀy. Gauss–Markov: OLS is BLUE (Best Linear Unbiased Estimator) when errors are spherical (homoscedastic, uncorrelated) and E[ε|X]=0. Frisch–Waugh–Lovell theorem: the coefficient on X₁ after controlling for X₂ equals the coefficient from regressing (residuals of X₁ on X₂) against (residuals of Y on X₂). This is the geometric foundation of partial effects and double ML — you already used this result without knowing it by name.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
-          { id:"t2", text:"Regression diagnostics — residual plots, heteroscedasticity, leverage, and Cook's distance",
-            desc:"Five mandatory diagnostic plots: (1) Residuals vs fitted: no pattern = OK; funnel shape = heteroscedasticity; curve = non-linearity. (2) Q-Q plot: residuals on the diagonal = normality holds. (3) Scale-location: upward slope = heteroscedasticity. (4) Residuals vs leverage: high-leverage points have extreme X values and can dominate the fit. Cook's distance = leverage × residual magnitude; D > 4/n flags influential observations. (5) VIF (Variance Inflation Factor): VIF_j = 1/(1−R²_j) where R²_j regresses X_j on all other features. VIF > 10 means problematic multicollinearity. Never interpret regression coefficients without checking diagnostics first.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
-          { id:"t3", text:"Regularised regression — ridge, lasso, and elastic net from the statistical perspective",
-            desc:"You know these as L2/L1 from ML. The statistical view: ridge = Bayesian linear regression with Gaussian prior on β. Lasso = Bayesian with Laplace (double-exponential) prior — the sharp peak at zero induces exact sparsity and variable selection. Ridge shrinks all coefficients toward zero without zeroing any; lasso zeros small coefficients. Key insight: lasso path algorithms (LARS) give ALL solutions along the regularisation path in one pass. Ridge is always better than OLS when features are collinear — this is Stein's result for estimation under squared error loss.",
-            resource:"ESL — Elements of Statistical Learning (free PDF)" },
-          { id:"t4", text:"Model selection — AIC, BIC, adjusted R², and their bias-variance interpretation",
-            desc:"Adding predictors always increases R². Adjusted R² penalises complexity: R²_adj = 1−(1−R²)(n−1)/(n−p−1). AIC = 2k − 2 log L: smaller is better; penalises by 2× number of parameters. BIC = k log(n) − 2 log L: heavier penalty for large n, selects sparser models. AIC minimises prediction error asymptotically; BIC is consistent (identifies the true model as n→∞). Rule: AIC for prediction tasks, BIC for inference/explanation. For deep learning with millions of parameters, these criteria don't scale — use held-out validation loss instead.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
-          { id:"t5", text:"Generalized Linear Models — exponential family, link function, and IRLS fitting",
-            desc:"GLMs extend linear regression to non-Gaussian outcomes via three components: (1) Random: Y follows an exponential family distribution (Gaussian, Bernoulli, Poisson, Gamma…). (2) Systematic: linear predictor η = Xβ. (3) Link function g(μ) = η where μ = E[Y]. Logistic regression: Bernoulli + logit link. Poisson regression: Poisson + log link. Gamma regression: for positive continuous outcomes with variance ∝ mean². All GLMs are fit by IRLS (Iteratively Reweighted Least Squares), which is Newton–Raphson on the log-likelihood — this is why GLM fitting converges quickly.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
-          { id:"t6", text:"Logistic regression from the statistical perspective — odds ratios, deviance, Wald tests, calibration",
-            desc:"Complementing the ML coverage in c2. Coefficient interpretation: e^β_j = the odds ratio for a 1-unit increase in X_j holding others fixed. Wald test: β̂_j/SE(β̂_j) ~ N(0,1) under H₀:β_j=0. Likelihood ratio test: 2(log L_full − log L_reduced) ~ χ²(df) — preferred over Wald. Null deviance vs residual deviance: analogous to total vs unexplained variance. McFadden's pseudo-R² = 1 − log L_model/log L_null. AUC measures discrimination; a reliability diagram (calibration curve) measures whether predicted probabilities match empirical frequencies. A perfectly discriminating model can be entirely miscalibrated — always check both.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
-          { id:"t7", text:"Poisson regression and negative binomial — count data and overdispersion",
-            desc:"For count outcomes (events per unit time/area): Poisson GLM uses log link and assumes Var(Y)=E[Y]. Overdispersion: real count data usually has Var(Y)>E[Y]. Detect it: residual deviance / df >> 1. Fix: Negative Binomial regression adds a free dispersion parameter. Zero-inflated models: for excess zeros (ZIP, ZINB). Applications: website visits, bug counts, customer service tickets, word frequencies in NLP (log-linear models for language), hardware failure rates in predictive maintenance.",
-            resource:"ESL — Elements of Statistical Learning (free PDF)" },
-          { id:"t8", text:"Mixed effects models — fixed effects, random effects, and repeated measurements",
-            desc:"When data is grouped (students within schools, patients over time, users across sessions), OLS violates independence. Linear Mixed Model: Y = Xβ + Zb + ε, with β fixed effects (population-level) and b ~ N(0,D) random effects (group deviations). Fit by REML (Restricted Maximum Likelihood — preferred for variance component estimation). Random intercept: groups differ in baseline. Random slope: the treatment effect varies across groups. Partial pooling between complete pooling (single model) and no pooling (separate models per group) — gives the best MSE. In ML: mixed effects models underlie multi-level A/B testing and longitudinal clinical trials.",
-            resource:"Penn State STAT 504 (free online)" },
-          { id:"t9", text:"Survival analysis — Kaplan–Meier, log-rank test, and Cox proportional hazards",
-            desc:"Survival analysis handles time-to-event outcomes with censoring. Kaplan–Meier: non-parametric estimate of S(t) = P(T>t); handles right censoring naturally. Log-rank test: non-parametric comparison of two survival curves — the most common test in clinical trials. Cox proportional hazards: h(t|X) = h₀(t) exp(Xβ). Semi-parametric: baseline hazard h₀(t) is unspecified, covariate effect is parametric. e^β_j = hazard ratio for 1-unit increase in X_j. Check assumption via Schoenfeld residuals. Applications in DS: customer churn (time to cancellation), loan default (time to default), hardware RUL.",
-            resource:"lifelines — survival analysis in Python (docs)" },
-          { id:"t10", text:"Weighted least squares and robust regression — heteroscedasticity and outlier resistance",
-            desc:"OLS with heteroscedastic errors is unbiased but inefficient. WLS: weight each observation by 1/Var(ε_i) — observations with lower variance get more weight, restoring BLUE. Robust regression (Huber loss, Tukey bisquare): replaces squared loss with one that is quadratic for small residuals and linear or bounded for large ones. Outliers are automatically downweighted. RANSAC: finds the inlier subset iteratively. When to use: anytime your residual-vs-fitted plot shows a funnel shape, or when you have known measurement error that varies across observations.",
-            resource:"ESL — Elements of Statistical Learning (free PDF)" },
-          { id:"t11", text:"Principal components regression and partial least squares — high-dimensional regression",
-            desc:"PCR: run PCA on X first, then regress Y on the first k PCs. Reduces overfitting when p >> n. Limitation: PCA ignores Y — components that explain X may not predict Y. PLS (Partial Least Squares): finds linear combinations of X that maximally co-vary with Y. Better supervised alternative to PCR. Both are statistical antecedents of representation learning. PLS is standard in chemometrics, spectroscopy, and any domain where features are highly collinear and p >> n.",
-            resource:"ISL — Introduction to Statistical Learning (free PDF)" },
+        id:"stat2", week:"Stat Week 2–3", title:"Regression Analysis — OLS, GLMs & Regularisation",
+        duration:"2 weeks",
+        tags:["regression","OLS","GLMs","ridge","lasso","logistic","Gauss-Markov"],
+        theory:[
+          { id:"t1", text:"OLS — Gauss-Markov theorem and the geometry of least squares",
+            desc:"OLS minimises ||y - Xβ||². Closed form: β̂ = (XᵀX)⁻¹Xᵀy — the projection of y onto the column space of X. Gauss-Markov theorem: OLS is BLUE (Best Linear Unbiased Estimator) under homoskedastic, uncorrelated errors with zero mean — no distributional assumption needed. Hat matrix H = X(XᵀX)⁻¹Xᵀ: ŷ = Hy, residuals e = (I-H)y. Residual degrees of freedom = n-p. Standardised residuals for outlier detection. Leverage scores (diagonal of H) identify influential observations — high leverage ≠ outlier but high leverage + large residual = problem.",
+            resource:"ESL Book" },
+          { id:"t2", text:"Regression diagnostics — residual plots, heteroskedasticity, and influence measures",
+            desc:"The four LINE assumptions: Linearity, Independence, Normality of residuals, Equal variance (homoskedasticity). Diagnostic plots: residuals vs fitted (tests linearity and homoskedasticity), QQ plot of residuals (tests normality), scale-location plot (tests homoskedasticity), Cook's distance (measures influence of each observation). Breusch-Pagan test: formal test for heteroskedasticity. Durbin-Watson test: tests for autocorrelation in residuals (critical for time series). Multicollinearity: Variance Inflation Factor (VIF) — VIF > 10 indicates severe multicollinearity, makes coefficient estimates unstable.",
+            resource:"ESL Book" },
+          { id:"t3", text:"Generalised Linear Models — the unified framework for regression",
+            desc:"GLMs extend OLS to non-Gaussian outcomes. Three components: (1) Random component: Y ~ exponential family (Gaussian, Bernoulli, Poisson, Gamma). (2) Systematic component: η = Xβ (linear predictor). (3) Link function: g(μ) = η connecting mean to linear predictor. Key GLMs: Logistic regression (Bernoulli + logit link — log-odds interpretation, odds ratios = exp(β)), Poisson regression (Poisson + log link — for count data, rate ratios), Gamma regression (Gamma + log link — for positive continuous). MLE for GLMs via iteratively reweighted least squares (IRLS). Deviance as the GLM analogue of RSS. Model comparison via likelihood ratio test and AIC.",
+            resource:"ESL Book" },
+          { id:"t4", text:"Ridge and Lasso — regularisation from the statistical and Bayesian perspectives",
+            desc:"Ridge (L2): β̂_ridge = argmin ||y-Xβ||² + λ||β||². Closed form: β̂_ridge = (XᵀX + λI)⁻¹Xᵀy. Bayesian interpretation: Gaussian prior β ~ N(0, σ²/λ · I). Ridge shrinks correlated features together. Effective degrees of freedom = Σ d²_j/(d²_j + λ) where d_j are singular values. Lasso (L1): β̂_lasso = argmin ||y-Xβ||² + λ||β||₁. No closed form — solved via coordinate descent. Bayesian interpretation: Laplace prior. Lasso performs variable selection (sparse solutions). Elastic net: combines L1 and L2 — handles correlated features while doing selection. AIC and BIC for model selection: AIC = 2k - 2ℓ, BIC = k log(n) - 2ℓ.",
+            resource:"ESL Book" },
+          { id:"t5", text:"Logistic regression — full statistical treatment",
+            desc:"Logistic regression: P(y=1|x) = σ(xᵀβ) where σ is the sigmoid. Log-likelihood: ℓ(β) = Σ y_i log σ(xᵀβ) + (1-y_i) log(1-σ(xᵀβ)). No closed form — optimised via Newton-Raphson (= IRLS for Bernoulli GLM) or gradient descent. Coefficients as log-odds ratios: exp(β_j) = multiplicative change in odds for unit change in x_j. Deviance residuals. Hosmer-Lemeshow goodness-of-fit test. Separation problem: when classes are perfectly separable, MLE diverges — requires regularisation or Firth correction. ROC curve as a function of the classification threshold — AUC measures area under ROC.",
+            resource:"Pattern Recognition — Bishop Ch.1-2" },
+          { id:"t6", text:"Model selection — AIC, BIC, cross-validation, and the bias-variance perspective",
+            desc:"AIC = 2k - 2ℓ̂: penalises model complexity, derived from Kullback-Leibler divergence — minimising AIC minimises expected prediction error asymptotically. BIC = k log(n) - 2ℓ̂: larger penalty for n > 7; consistent (selects true model as n → ∞); Bayesian interpretation as log marginal likelihood approximation. Cross-validation: k-fold CV estimates test error directly without distributional assumptions. Leave-one-out CV (LOOCV): unbiased but high variance. LOOCV for linear models is computable in O(n) using the hat matrix: CV = (1/n) Σ (y_i - ŷ_i)²/(1-h_ii)². Mallows Cp for OLS: C_p = RSS_p/σ̂² - n + 2p.",
+            resource:"ESL Book" },
         ],
-        resources: [
-          { id:"r1", text:"ISL — Introduction to Statistical Learning (Chapters 3–7 cover regression through GLMs, free PDF)", url:"https://www.statlearning.com/", type:"book" },
-          { id:"r2", text:"ESL — Elements of Statistical Learning (Hastie et al., graduate-level depth, free PDF)", url:"https://hastie.su.domains/ElemStatLearn/", type:"book" },
-          { id:"r3", text:"StatQuest — Linear Regression and GLMs (YouTube, best visual explanations)", url:"https://www.youtube.com/@statquest/playlists", type:"youtube" },
-          { id:"r4", text:"Penn State STAT 501 — Regression Methods (free online, worked examples)", url:"https://online.stat.psu.edu/stat501/", type:"course" },
-          { id:"r5", text:"Penn State STAT 504 — Discrete Data Analysis (GLMs, Poisson, logistic regression)", url:"https://online.stat.psu.edu/stat504/", type:"course" },
-          { id:"r6", text:"statsmodels — GLMs, mixed models in Python (docs)", url:"https://www.statsmodels.org/stable/index.html", type:"docs" },
-          { id:"r7", text:"lifelines — survival analysis in Python (docs)", url:"https://lifelines.readthedocs.io/", type:"docs" },
+        resources:[
+          { id:"r1", text:"ESL — Elements of Statistical Learning (Hastie, Tibshirani, Friedman), free PDF", url:"https://hastie.su.domains/ElemStatLearn/", type:"paper" },
+          { id:"r2", text:"ISL — Introduction to Statistical Learning (free PDF + R/Python code)", url:"https://www.statlearning.com/", type:"paper" },
+          { id:"r3", text:"StatQuest — Linear Regression, Logistic Regression, Ridge, Lasso (YouTube)", url:"https://www.youtube.com/@statquest", type:"youtube" },
+          { id:"r4", text:"All of Statistics — Wasserman, Chapters 13-15 (free PDF)", url:"https://link.springer.com/book/10.1007/978-0-387-21736-9", type:"paper" },
         ],
-        implementation: [
-          { id:"i1", text:"Full regression diagnostics pipeline — fit multiple regression, generate all 5 diagnostic plots, fix each violation",
-            desc:"Use statsmodels OLS on the California housing dataset. Generate: residuals vs fitted, Q-Q plot, scale-location, leverage/Cook's distance, and VIF for all features. Deliberately introduce heteroscedasticity (skip log-transforming a skewed target) and observe the diagnostic change. Then apply the fix and re-run. This is the mandatory pre-interpretation workflow for any regression model." },
-          { id:"i2", text:"Poisson GLM on count data — test for overdispersion, switch to Negative Binomial, compare AIC",
-            desc:"Use a count dataset (bike sharing hourly counts or NYC 311 complaint counts). Fit Poisson GLM with statsmodels. Check residual deviance / df. If overdispersed (usually will be), fit Negative Binomial and compare AIC. Interpret coefficients as incidence rate ratios (e^β). Compare to OLS on log(Y) — coefficients look similar but have different meanings and standard errors." },
-          { id:"i3", text:"Survival analysis on a churn dataset — Kaplan–Meier, log-rank test, and Cox model",
-            desc:"Use the Telco customer churn dataset (has exact tenure in months). Define: event = churned, time = tenure, censored = still active customer. Plot Kaplan–Meier curves by customer segment (contract type, payment method). Run log-rank tests between segments. Fit Cox proportional hazards with lifelines. Interpret hazard ratios. Check the proportional hazards assumption with Schoenfeld residuals. This is the statistically correct churn model — not a logistic regression snapshot." },
-          { id:"i4", text:"Model selection with AIC/BIC — compare nested GLMs and contrast with L1-penalised regression",
-            desc:"Start with a full logistic regression (15+ features) on a binary classification dataset. Fit nested models via stepwise forward selection and track AIC and BIC at each step. Compare: which features does AIC keep vs BIC? How does the BIC-selected model compare to L1-regularised logistic regression? Plot coefficient paths for both lasso and the stepwise procedure. This shows that AIC/BIC and lasso are doing related but distinct things." },
+        implementation:[
+          { id:"i1", text:"OLS from scratch — implement normal equations, compute hat matrix, residual diagnostics", desc:"Given X and y: compute β̂ = (XᵀX)⁻¹Xᵀy using np.linalg.solve (never np.linalg.inv — numerically unstable). Compute leverage scores (diagonal of H), Cook's distance, standardised residuals. Plot residuals vs fitted, QQ plot. Verify against sklearn.linear_model.LinearRegression." },
+          { id:"i2", text:"Implement ridge and lasso, compare coefficient paths as λ varies", desc:"Use sklearn for lasso (coordinate descent) and implement ridge analytically. Plot regularisation paths (coefficient value vs log λ) for a dataset with correlated features. Show: ridge shrinks correlated coefficients together; lasso sets some to zero. Use cross-validation to select λ." },
+          { id:"i3", text:"Logistic regression — implement Newton-Raphson (IRLS), compare to gradient descent", desc:"Implement IRLS: at each step, compute W = diag(p_i(1-p_i)), then β ← β + (XᵀWX)⁻¹Xᵀ(y-p). Compare convergence speed to SGD. Plot ROC curve, compute AUC. Verify exp(β_j) as odds ratio on a real dataset." },
         ],
-        extraReading: [
-          { id:"e1", topic:"ISL Chapters 3–7 — Linear regression through non-linear methods (free PDF, the gold-standard applied treatment)", url:"https://www.statlearning.com/", desc:"ISL covers linear regression, classification, resampling, model selection, and GLMs at the level of a first-year statistics PhD course. It is the best applied statistics book available free. The R/Python labs are essential — implement every concept." },
-          { id:"e2", topic:"ESL Chapter 4 — Linear Methods for Classification (rigorous GLM derivations)", url:"https://hastie.su.domains/ElemStatLearn/", desc:"ESL covers the exponential family, IRLS derivation, and penalised maximum likelihood in depth. Section 4.4 (LDA vs logistic regression) is one of the clearest comparisons in the literature. Read after ISL for the mathematical underpinning." },
-          { id:"e3", topic:"lifelines documentation — survival analysis tutorial (teaches the statistics while showing the code)", url:"https://lifelines.readthedocs.io/en/latest/Survival%20Analysis%20intro.html", desc:"The lifelines 'Survival Analysis Introduction' page is a self-contained 30-minute tutorial covering censoring, Kaplan–Meier, Cox, and model checking — unusually good documentation that teaches the subject rather than just the API." },
-          { id:"e4", topic:"Gelman & Hill — Data Analysis Using Regression and Multilevel Models (the mixed effects bible)", url:"https://www.amazon.com/Analysis-Regression-Multilevel-Hierarchical-Models/dp/052168689X", desc:"The definitive book on hierarchical regression. Gelman's treatment of partial pooling (random effects) vs no pooling (separate models) vs complete pooling (single model) is the clearest anywhere. Directly applicable to any grouped data: users, stores, hospitals, schools. If you work with panel data or repeated measurements, this book is non-negotiable." },
+        extraReading:[
+          { id:"e1", topic:"ISL — Introduction to Statistical Learning (free, best applied regression textbook)", url:"https://www.statlearning.com/", desc:"The applied companion to ESL. Chapters 3 (linear regression), 4 (classification), 6 (regularisation) are essential. Python labs with sklearn make concepts immediately practical. The 2023 edition has a Deep Learning chapter." },
+          { id:"e2", topic:"Stanford STATS202 — Data Mining and Analysis notes (free)", url:"https://web.stanford.edu/class/stats202/", desc:"Stanford's graduate data mining course. Covers regression, classification, resampling, and tree methods at the level expected in industry research roles." },
         ]
       },
+      {
+        id:"stat3", week:"Stat Week 3–4", title:"Hypothesis Testing & Experimental Design",
+        duration:"1–2 weeks",
+        tags:["hypothesis-testing","p-values","ANOVA","A/B-testing","power","multiple-testing"],
+        theory:[
+          { id:"t1", text:"Hypothesis testing framework — Neyman-Pearson, p-values, and error types",
+            desc:"Neyman-Pearson framework: H₀ null hypothesis vs H₁ alternative. Reject H₀ when test statistic falls in rejection region. Type I error (α): reject H₀ when true — false positive rate, set before experiment. Type II error (β): fail to reject H₀ when false — false negative rate. Power = 1 - β: probability of detecting a true effect. p-value: P(statistic as extreme or more extreme | H₀) — NOT the probability H₀ is true. Common misconception: p < 0.05 does not mean there is a 95% probability the effect is real. p-value depends on sample size — with large n, trivially small effects become significant.",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t2", text:"Common tests — t-test, chi-square, Mann-Whitney, ANOVA, and when to use each",
+            desc:"One-sample t-test: test H₀: μ = μ₀; statistic t = (x̄ - μ₀)/(s/√n); t ~ t_{n-1} under H₀. Two-sample t-test (Welch): assumes unequal variances — always use Welch unless you have strong reason not to. Paired t-test: two measurements per subject, test differences. Chi-square test: independence of categorical variables in a contingency table; test statistic = Σ (O-E)²/E. Mann-Whitney U test: non-parametric alternative to two-sample t-test when normality fails. One-way ANOVA: test equality of means across k groups using F = (between-group variance)/(within-group variance). Two-way ANOVA: two factors plus interaction.",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t3", text:"Multiple testing — Bonferroni, FDR, and the Benjamini-Hochberg procedure",
+            desc:"If you test m hypotheses at α=0.05, expected number of false positives = 0.05m. Family-wise error rate (FWER): probability of at least one false positive. Bonferroni correction: test each at α/m — controls FWER but very conservative (low power). False discovery rate (FDR): expected proportion of rejections that are false positives. Benjamini-Hochberg (BH) procedure: sort p-values p_(1) ≤ ... ≤ p_(m); reject H_(i) if p_(i) ≤ αi/m. BH controls FDR at level α. When to use: FWER control (Bonferroni) for confirmatory tests where any false positive is costly; FDR (BH) for exploratory genomics/ML feature selection where some false positives are tolerable.",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t4", text:"Power analysis and sample size calculation",
+            desc:"Power = P(reject H₀ | H₁ true) = 1 - β. Four quantities are related: effect size, sample size n, significance level α, power 1-β. Fix any three to determine the fourth. Cohen's d: standardised effect size d = (μ₁ - μ₂)/σ. Rules of thumb: d=0.2 small, d=0.5 medium, d=0.8 large. Required sample size for two-sample t-test: n ≈ 2(z_{α/2} + z_β)²/d². Why it matters: if you run an A/B test without power analysis and it comes back negative, you cannot distinguish 'no effect' from 'underpowered'. An underpowered study that fails is uninformative.",
+            resource:"All of Statistics — Wasserman (free PDF)" },
+          { id:"t5", text:"A/B testing in industry — sequential testing, peeking, and CUPED",
+            desc:"Classical A/B testing limitation: you must choose sample size before running. Peeking problem: checking results repeatedly and stopping when p < 0.05 inflates Type I error to ~30% at the fifth look. Sequential testing solutions: sequential probability ratio test (SPRT), always-valid inference (Johari et al. 2017), alpha-spending functions. CUPED (Controlled-experiment Using Pre-Experiment Data): use pre-experiment metric Y_pre as a covariate to reduce variance: Y_adjusted = Y - θ(Y_pre - E[Y_pre]). CUPED typically reduces required sample size by 30-50%. Used at Airbnb, Netflix, Microsoft. Switchback experiments: for two-sided markets where users interact.",
+            resource:"Causal Inference: The Mixtape — Cunningham (free online)" },
+          { id:"t6", text:"Resampling methods — permutation tests and cross-validation theory",
+            desc:"Permutation test: under H₀, labels are exchangeable. Randomly permute labels B times, compute test statistic each time. p-value = fraction of permuted statistics more extreme than observed. Exact (not asymptotic) — works for any statistic, no distributional assumptions. Cross-validation as a model selection criterion: k-fold CV has bias (underestimates test error due to training on less data) and variance (correlated folds). Leave-one-out CV is nearly unbiased but high variance. Nested CV: outer CV estimates test error, inner CV selects hyperparameters — needed to avoid optimistic bias when both selecting and evaluating a model.",
+            resource:"ESL Book" },
+        ],
+        resources:[
+          { id:"r1", text:"All of Statistics — Wasserman, Chapters 10-12 (free PDF)", url:"https://link.springer.com/book/10.1007/978-0-387-21736-9", type:"paper" },
+          { id:"r2", text:"Trustworthy Online Controlled Experiments — Kohavi et al. (A/B testing book)", url:"https://www.amazon.com/Trustworthy-Online-Controlled-Experiments-Practical/dp/1108724264", type:"paper" },
+          { id:"r3", text:"StatQuest — Hypothesis Testing, ANOVA, p-values (YouTube)", url:"https://www.youtube.com/@statquest", type:"youtube" },
+        ],
+        implementation:[
+          { id:"i1", text:"Implement t-test, chi-square, and Mann-Whitney from scratch — verify against scipy.stats", desc:"For each test: write the test statistic formula, compute the null distribution (parametric or permutation), compute the p-value. Compare to scipy.stats. Run on a dataset where normality holds and one where it doesn't — observe when Mann-Whitney and t-test agree vs diverge." },
+          { id:"i2", text:"Simulate the multiple testing problem — show Bonferroni vs BH on 1000 tests", desc:"Simulate m=1000 tests where 90% are truly null and 10% have a real effect. Run all tests, collect p-values. Compare: no correction (many false positives), Bonferroni (controls FWER, low power), BH at q=0.05 (controls FDR, higher power). Plot the number of true positives and false positives for each method." },
+          { id:"i3", text:"Power analysis simulation — run underpowered vs properly powered A/B test", desc:"Simulate an A/B test with true effect d=0.3. Run 1000 replications at n=50 (underpowered) and n=300 (properly powered). Compare: detection rate (power), distribution of p-values, distribution of estimated effect sizes. Show that underpowered studies exaggerate effect sizes when they do detect effects (winner's curse)." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Trustworthy Online Controlled Experiments — Kohavi, Tang, Xu (industry bible for A/B testing)", url:"https://www.amazon.com/Trustworthy-Online-Controlled-Experiments-Practical/dp/1108724264", desc:"Written by the team that built A/B testing at Microsoft, LinkedIn, and AirBnB. Covers the peeking problem, CUPED, network effects, and long-term holdouts. Every applied scientist doing experimentation should read Chapters 1-8." },
+          { id:"e2", topic:"Causal Inference: The Mixtape — Cunningham (free online) — Chapter on RCTs and A/B", url:"https://mixtape.scunning.com/", desc:"Chapter 4 covers potential outcomes and randomised experiments at a mathematically rigorous level, then Chapter 5 covers regression as a tool for estimating causal effects. Directly relevant for industry experimentation roles." },
+        ]
+      },
+      {
+        id:"stat4", week:"Stat Week 4–5", title:"Multivariate Statistics & Dimensionality Reduction",
+        duration:"1–2 weeks",
+        tags:["multivariate","PCA","covariance","Wishart","Mahalanobis","factor-analysis","ICA"],
+        theory:[
+          { id:"t1", text:"Multivariate distributions — Multivariate Gaussian and the Wishart distribution",
+            desc:"Multivariate Gaussian: X ~ N(μ, Σ). PDF: (2π)^{-d/2} |Σ|^{-1/2} exp(-½(x-μ)ᵀΣ⁻¹(x-μ)). Properties: marginals and conditionals are also Gaussian (computed by block matrix operations on Σ). Gaussian graphical models: Σ⁻¹ (precision matrix) encodes conditional independence — Σ⁻¹_{ij}=0 iff X_i ⊥ X_j | rest. Wishart distribution: the sampling distribution of the sample covariance matrix; W_p(Σ, n) is to multivariate analysis what chi-square is to univariate. Mahalanobis distance: d²(x, μ) = (x-μ)ᵀΣ⁻¹(x-μ) — accounts for feature correlation and scale. Used in anomaly detection and Gaussian mixture models.",
+            resource:"ESL Book" },
+          { id:"t2", text:"Principal Component Analysis — the full statistical treatment",
+            desc:"PCA finds orthogonal directions of maximum variance. Derivation via eigendecomposition: Σ = VΛVᵀ, principal components are columns of V, variances are eigenvalues. Computational: SVD of centred data matrix X = UDVᵀ — PCs are rows of Vᵀ, scores are UD. Proportion of variance explained = λ_k/Σλ_j. Scree plot to choose k. Rotation: Varimax rotation maximises the variance of squared loadings — produces more interpretable components by pushing loadings toward 0 or 1. Connection to factor analysis: FA assumes X = Lf + ε where f are latent factors; L are loadings; ε is idiosyncratic noise. Unlike PCA, FA is a generative model.",
+            resource:"ESL Book" },
+          { id:"t3", text:"Factor analysis and ICA — latent variable models for multivariate data",
+            desc:"Factor Analysis: X = μ + Lf + ε, f ~ N(0,I), ε ~ N(0,Ψ) diagonal. Fitted by MLE via EM algorithm. L (factor loadings) interpretable as shared variance structure. Number of factors chosen by likelihood ratio test or BIC. Confirmatory FA (CFA) vs Exploratory FA (EFA). Independent Component Analysis (ICA): assumes sources are non-Gaussian and independent. Useful when factors are truly independent signals (e.g., separating mixed audio signals, fMRI source separation). FastICA algorithm maximises non-Gaussianity of projections using negentropy. Key difference from PCA: PCA finds orthogonal uncorrelated directions; ICA finds statistically independent directions (stronger condition, requires non-Gaussianity).",
+            resource:"ESL Book" },
+          { id:"t4", text:"Linear Discriminant Analysis — the statistical classification baseline",
+            desc:"LDA assumes X|Y=k ~ N(μ_k, Σ) — shared covariance across classes. Decision boundary is linear: δ_k(x) = xᵀΣ⁻¹μ_k - ½μ_kᵀΣ⁻¹μ_k + log π_k. As a dimensionality reduction method: project onto the subspace spanned by class means (within Σ), maximising between-class to within-class variance ratio (Fisher's criterion). QDA: allows class-specific covariances Σ_k — quadratic decision boundary, higher variance. Regularised DA: Σ̂_reg = (1-γ)Σ̂_pooled + γI. Assumptions: multivariate normality, equal covariance (LDA), independence. Works surprisingly well even when normality fails — linear boundary is a strong prior.",
+            resource:"ESL Book" },
+          { id:"t5", text:"Sparse methods — LASSO in high dimensions, the Dantzig selector, compressed sensing",
+            desc:"High-dimensional regime: p >> n. OLS is ill-posed. LASSO in high dimensions: Theorem (Candès-Tao 2007): if the true β has s non-zero entries and X satisfies the restricted isometry property (RIP), LASSO with λ = σ√(2 log p/n) recovers β with ℓ₂ error ≤ Cσ√(s log p/n). This is the theoretical justification for sparsity-inducing penalties. SLOPE: controls FDR in variable selection. Group LASSO: induces structured sparsity when features are grouped. The bias-variance tradeoff in high dimensions: regularisation is not optional — it is necessary for consistency.",
+            resource:"ESL Book" },
+          { id:"t6", text:"Non-parametric methods — kernel density estimation, KNN, and the curse of dimensionality",
+            desc:"Kernel density estimation (KDE): f̂(x) = (1/nh) Σ K((x-x_i)/h). Bandwidth h controls smoothness. Optimal h (MISE-minimising) = O(n^{-1/5}) for Gaussian kernel — slow convergence compared to parametric methods. Curse of dimensionality: volume of a d-ball grows exponentially while data density stays fixed — in d=10, you need 10^d times more data to maintain density. Nearest-neighbour deteriorates in high dimensions: all points become equidistant. Fix: dimensionality reduction, manifold assumptions, or parametric models. Distance concentration: in high dimensions, max/min distance ratio → 1 — distances become uninformative. This is why cosine similarity (angle-based) often outperforms Euclidean distance in high-d embedding spaces.",
+            resource:"ESL Book" },
+        ],
+        resources:[
+          { id:"r1", text:"ESL — Elements of Statistical Learning, Chapters 3–4, 6, 14 (free PDF)", url:"https://hastie.su.domains/ElemStatLearn/", type:"paper" },
+          { id:"r2", text:"ISL — Introduction to Statistical Learning, Chapter 10 (free PDF)", url:"https://www.statlearning.com/", type:"paper" },
+          { id:"r3", text:"StatQuest — PCA, LDA, Factor Analysis (YouTube)", url:"https://www.youtube.com/@statquest", type:"youtube" },
+          { id:"r4", text:"Pattern Recognition and ML — Bishop, Chapters 9–12 (free PDF)", url:"https://www.microsoft.com/en-us/research/uploads/prod/2006/01/Bishop-Pattern-Recognition-and-Machine-Learning-2006.pdf", type:"paper" },
+        ],
+        implementation:[
+          { id:"i1", text:"PCA from scratch — eigendecomposition vs SVD, visualise on MNIST or faces dataset", desc:"Implement PCA via (1) eigendecomposition of sample covariance, (2) SVD of centred data matrix. Verify they give identical results. Apply to MNIST: plot proportion of variance explained, reconstruct images from k=10,50,100 components. Compute reconstruction error vs k." },
+          { id:"i2", text:"Mahalanobis anomaly detection — compare to Euclidean distance on correlated features", desc:"Generate bivariate Gaussian data with high correlation (ρ=0.9). Inject 10 outliers. Show that Euclidean distance misses outliers aligned with the correlation structure, while Mahalanobis distance catches them. Implement Minimum Covariance Determinant (MCD) for robust covariance estimation." },
+          { id:"i3", text:"High-dimensional experiment — demonstrate curse of dimensionality empirically", desc:"For d = 2, 5, 10, 20, 50, 100: generate n=1000 points uniform in [-1,1]^d. Compute the ratio (max pairwise distance)/(min pairwise distance). Plot vs d. Show that this ratio converges to 1 as d grows — distances become meaningless. Also show KNN test accuracy on a classification task degrades with d." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"ESL Chapters 3, 4, 14 — the definitive reference for multivariate stats in ML", url:"https://hastie.su.domains/ElemStatLearn/", desc:"Chapters 3 (linear regression), 4 (LDA), 14 (unsupervised methods) are directly relevant. The theoretical treatment is at a level that prepares you to read NeurIPS/ICML papers on supervised learning methods." },
+          { id:"e2", topic:"High-Dimensional Statistics — Martin Wainwright (free Chapter 1)", url:"https://www.cambridge.org/core/books/highdimensional-statistics/8A91ECEEC38F46DAB53E9FF8757C7A4E", desc:"PhD-level treatment of LASSO theory, concentration inequalities, and the mathematics of high-dimensional regression. Chapters 1-3 give the theoretical foundation for why sparse methods work in high dimensions." },
+        ]
+      }
     ]
   },
   {
     phase: "Foundation",
-    color: "#6366f1",
+    color: "#7c3aed",
     items: [{
       id: "w0", week: "Week 0", title: "NumPy & PyTorch Foundations", duration: "1 week",
       tags: ["numpy","pytorch","setup"],
@@ -393,6 +463,42 @@ const ROADMAP = [
           { id:"e3", topic:"Pre-commit hooks — automated code quality checks before every commit", desc:"Pre-commit runs black (formatting), ruff (linting), and mypy (type checking) automatically before every git commit. Catches style issues before they reach PR review. Standard setup in most production ML codebases.", url:"https://pre-commit.com/" },
         ]
       },
+      {
+        id:"dsa1", week:"Week 0", title:"Coding Interviews & DSA for ML Engineers",
+        duration:"4–6 weeks",
+        tags:["leetcode","DSA","arrays","trees","graphs","dynamic-programming","system-design"],
+        theory:[
+          { id:"t1", text:"Time and space complexity — Big-O analysis for ML engineers",
+            desc:"Big-O describes asymptotic growth. O(1) < O(log n) < O(n) < O(n log n) < O(n²) < O(2ⁿ). For ML contexts: training is O(n·p·epochs), inference is O(p) per sample, nearest-neighbour search is O(n·d) naive vs O(d log n) with KD-trees. Common interview traps: nested loops are O(n²) even if they look like less, hash map lookups are O(1) amortised not worst case, Python list append is O(1) amortised. Space complexity matters for GPU memory: a transformer with L layers, D dimensions, and batch size B uses O(L·B·D) activation memory during forward pass.",
+            resource:"CS231n NumPy Tutorial" },
+          { id:"t2", text:"Arrays, hashmaps, and two-pointer patterns — the foundation of 60% of interview problems",
+            desc:"Sliding window: maintain a window [l, r] and expand/shrink while tracking a condition. O(n) time for problems that look O(n²). Pattern: 'find subarray with sum = k', 'longest substring without repeating characters'. Two pointers: for sorted arrays or linked lists. Pattern: 'two sum', 'remove duplicates', 'container with most water'. HashMap frequency counting: O(n) time for 'top k elements', 'group anagrams', 'find duplicates'. For ML interviews: these patterns appear in feature engineering (sliding window statistics), sequence processing (tokenisation), and batching implementations.",
+            resource:"CS231n NumPy Tutorial" },
+          { id:"t3", text:"Trees and graphs — BFS, DFS, and the patterns that cover 80% of tree/graph problems",
+            desc:"Binary tree traversals: inorder (left, root, right), preorder (root, left, right), postorder (left, right, root). Use recursion for most tree problems — the recursive structure mirrors the tree structure. BFS: use a queue, processes nodes level-by-level, finds shortest path in unweighted graphs. DFS: use recursion or explicit stack, explores deep before wide. For most tree problems: think about what information needs to be passed up (return values) vs down (function parameters). Graph representations: adjacency list O(V+E) space — standard. Matrix: O(V²) space, O(1) edge lookup. Common patterns: cycle detection (DFS with visited set), topological sort (DFS post-order), connected components (Union-Find).",
+            resource:"CS231n NumPy Tutorial" },
+          { id:"t4", text:"Dynamic programming — recognising the pattern and implementing it cleanly",
+            desc:"DP = recursion + memoisation (top-down) or tabulation (bottom-up). The two key questions: (1) What is the state? (what information do you need to define a subproblem). (2) What is the recurrence? (how does the answer to a larger problem depend on smaller ones). Common patterns: 0/1 knapsack (include/exclude), longest common subsequence (2D DP table), coin change (unbounded knapsack), edit distance (2D table). For ML interviews: DP comes up in sequence alignment (NLP), optimal BSTs, and dynamic programming for planning in RL. Fibonacci is the hello-world, but be ready for 2D DP problems.",
+            resource:"CS231n NumPy Tutorial" },
+          { id:"t5", text:"ML-specific coding patterns — what applied scientist interviews actually test",
+            desc:"Applied scientist coding interviews differ from SWE interviews: they test whether you can implement ML algorithms cleanly. Common problems: (1) Implement k-means from scratch — focus on numpy vectorisation, not just correctness. (2) Implement a decision tree split criterion — information gain or Gini impurity. (3) Batch matrix multiplication — reshape and bmm, avoid Python loops. (4) Implement softmax numerically stably — subtract max before exp to prevent overflow. (5) Implement beam search — a priority queue problem. (6) Implement cosine similarity efficiently for a batch. The pattern: every ML algorithm you've studied is a potential coding problem — implement them from scratch in NumPy without looking at sklearn.",
+            resource:"Deep-ML — Statistics and probability coding problems" },
+        ],
+        resources:[
+          { id:"r1", text:"LeetCode — start with NeetCode 150 (curated problem list for interviews)", url:"https://neetcode.io/", type:"docs" },
+          { id:"r2", text:"Deep-ML — ML algorithm coding problems (LeetCode-style for ML)", url:"https://www.deep-ml.com/", type:"docs" },
+          { id:"r3", text:"NeetCode — YouTube algorithmic patterns (clear explanations)", url:"https://www.youtube.com/@NeetCode", type:"youtube" },
+          { id:"r4", text:"Grokking Algorithms — visual intro to algorithmic thinking (book)", url:"https://www.manning.com/books/grokking-algorithms", type:"paper" },
+        ],
+        implementation:[
+          { id:"i1", text:"Complete NeetCode Blind 75 — one problem per day for 75 days", desc:"The Blind 75 is the curated set that covers all core patterns: arrays (15), binary search (7), dynamic programming (14), trees (11), graphs (6), etc. Do each problem: (1) attempt without looking, (2) if stuck after 25 min read the hint only, (3) after solving write the time/space complexity, (4) review NeetCode's video explanation. Track your solve time — interview target is 20-30 min for medium problems." },
+          { id:"i2", text:"Implement 10 core ML algorithms from scratch in NumPy — no sklearn", desc:"List: (1) k-means, (2) PCA, (3) logistic regression with gradient descent, (4) decision tree with information gain, (5) k-nearest neighbours, (6) linear regression with normal equations, (7) naive Bayes, (8) softmax classifier, (9) beam search, (10) mini-batch SGD with momentum. Each should work on a real dataset and match sklearn output within floating point tolerance. This kills two birds: DSA practice + ML fundamentals review." },
+          { id:"i3", text:"Mock interview — timed solve on LeetCode medium, then explain your solution out loud", desc:"The hardest part of coding interviews is explaining while coding. Practice: set a 30-minute timer, solve a LeetCode medium you haven't seen, then immediately record yourself explaining the solution. Common failure modes: silence during thinking (think out loud), optimising too early (state brute force first), not testing edge cases (null, single element, negative numbers). Do this 3× per week for 4 weeks." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Deep-ML — ML algorithm coding problems (the LeetCode for ML engineers)", url:"https://www.deep-ml.com/", desc:"Problems range from implementing gradient descent to building transformers from scratch. If you can solve the hard problems here, you are prepared for any applied scientist coding screen. The problems directly mirror what companies like Google, Meta, and Anthropic ask." },
+        ]
+      },
 
       {
         id:"mlops1", week:"Throughout", title:"Practical MLOps — Experiment Tracking, Versioning & Model Registry",
@@ -459,7 +565,7 @@ const ROADMAP = [
 
   {
     phase: "ML Fundamentals",
-    color: "#3b82f6",
+    color: "#1d6fe8",
     icon: "🤖",
     summary: "Classical machine learning — the algorithms every ML engineer must be able to derive, implement, and explain. These are the foundation beneath every neural network abstraction.",
     items: [
@@ -655,7 +761,7 @@ const ROADMAP = [
   ,
   {
     phase: "DL Fundamentals",
-    color: "#8b5cf6",
+    color: "#7c3aed",
     icon: "🧠",
     summary: "Deep learning from first principles through transformers. Build each component from scratch before using the framework abstractions. Every topic connects back to gradient flow.",
     items: [
@@ -679,7 +785,9 @@ const ROADMAP = [
           { id:"i1", text:"Build micrograd — implement Value class with +, *, tanh, backward()", desc:"Karpathy's micrograd exercise. Implement scalar autograd from scratch. Every person who does this stops being confused about backpropagation permanently." },
           { id:"i2", text:"Implement a 2-layer MLP in NumPy — no autograd, manual gradients", desc:"Forward pass, cross-entropy loss, backward pass by hand, SGD update. If your MLP can learn XOR, you understand backprop." },
           { id:"i3", text:"Experiment: Xavier vs He vs random init — plot gradient norms per layer", desc:"Train a 10-layer network with each init. Plot the gradient norms at each layer after 1 step. See vanishing/exploding gradients directly." },
-        ],
+        
+          { id:"i4", text:"Loss not decreasing — systematic debugging checklist for neural networks", desc:"The canonical checklist (in order): (1) Overfit on a single batch first — if loss doesn't reach near-zero on 1 sample, the architecture or loss function is wrong. (2) Check the loss value at initialisation — for cross-entropy on K classes, initial loss should be ≈ log(K). If it's wildly different, check your normalisation or loss implementation. (3) Gradient check — compare analytical gradient to finite difference approximation: (f(θ+ε) - f(θ-ε))/(2ε). Relative error > 1e-4 means a bug. (4) Check gradient flow — log gradient norms per layer; if any layer has norm < 1e-6 or > 1e4, check activations and initialisations. (5) Visualise your data and labels — data pipeline bugs (wrong normalisation, label mismatch) cause 30% of 'the model isn't learning' bugs. (6) Reduce learning rate by 10× — if loss suddenly improves, you had instability." },
+          ],
         extraReading: [
           { id:"e1", topic:"Yes You Should Understand Backprop — Karpathy (blog)", url:"https://karpathy.medium.com/yes-you-should-understand-backprop-e2f06eab496b", desc:"Karpathy's argument for why understanding backprop matters even when autograd exists. Motivating and practically useful — read before starting the micrograd implementation." },
         ]
@@ -741,7 +849,7 @@ const ROADMAP = [
   ,
   {
     phase: "NLP Fundamentals",
-    color: "#14b8a6",
+    color: "#10b981",
     icon: "💬",
     summary: "Language as data — from raw text to transformers. Builds directly on the DL Fundamentals mechanics. This phase follows the natural progression: text representations → language modelling → sequence models → attention → transformers for language.",
     items: [
@@ -838,6 +946,9 @@ const ROADMAP = [
           { id:"t3", text:"LSTM — forget gate, input gate, output gate, and cell state", desc:"LSTMs solve vanishing gradients with a cell state (highway) and learned gates that control information flow. Forget gate: what to remove. Input gate: what to add. Output gate: what to expose. The cell state allows gradients to flow through time without multiplication.", resource:"Illustrated LSTM — Jay Alammar" },
           { id:"t4", text:"GRU — simplified LSTM with fewer parameters", desc:"GRU merges cell state and hidden state, uses reset and update gates instead of 3 LSTM gates. Fewer parameters, faster training, comparable performance on most tasks. When in doubt: try GRU first, switch to LSTM if it underperforms.", resource:"GRU Paper" },
           { id:"t5", text:"Seq2seq and the encoder-decoder pattern", desc:"Encoder compresses entire input sequence into a context vector. Decoder generates output sequence from context. The bottleneck problem (fixed-size context vector) is exactly what attention mechanisms solve — leading directly to the transformer.", resource:"Attention Is All You Need Paper" },
+        
+          { id:"t6", text:"Language modelling fundamentals — n-grams, perplexity, and neural LMs",
+            desc:"Before neural networks, language models were n-gram models: estimate P(word|context) by counting. Unigram: P(w). Bigram: P(w|w_prev). N-gram models suffer from sparsity (most n-grams never seen) — fixed with smoothing (Laplace, Kneser-Ney). Perplexity: the standard LM evaluation metric = exp(average NLL per token). Lower is better. Neural LMs replaced n-grams because they generalise: words with similar contexts get similar representations. The sequence: count-based n-grams → neural n-gram LMs (Bengio 2003) → RNN LMs (share weights across positions) → LSTM LMs → transformer LMs (GPT). Understanding n-grams makes the improvement story concrete: each step fixes a specific failure mode of the previous approach.", resource:"Lena Voita — NLP Course: Language Modeling (free)" },
         ],
         resources: [
           { id:"r1", text:"Illustrated LSTM — Jay Alammar (blog)", url:"https://colah.github.io/posts/2015-08-Understanding-LSTMs/", type:"blog" },
@@ -872,6 +983,8 @@ const ROADMAP = [
           { id:"r3", text:"Andrej Karpathy — Let's build GPT from scratch (YouTube)", url:"https://www.youtube.com/watch?v=kCc8FmEb1nY", type:"youtube" },
         
           { id:"r4", text:"Lena Voita — NLP Course: Seq2seq and Attention (interactive, free)", url:"https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html", type:"blog" },
+        
+          { id:"r5", text:"Lena Voita — NLP Course: Seq2seq and Attention (interactive visualisations)", url:"https://lena-voita.github.io/nlp_course/seq2seq_and_attention.html", type:"blog" },
         ],
         implementation: [
           { id:"i1", text:"Implement scaled dot-product attention from scratch in NumPy", desc:"Q @ K.T / sqrt(d_k), softmax, @ V. Test with causal mask for decoder. This is the single most important implementation in modern DL." },
@@ -890,6 +1003,14 @@ const ROADMAP = [
           { id:"t3", text:"BERT vs GPT — encoder vs decoder, bidirectional vs causal", desc:"BERT: bidirectional encoder, masked language modelling, good for classification/NER/QA. GPT: causal decoder, next-token prediction, good for generation. The masking difference is the entire architectural split between encoder and decoder models.", resource:"BERT and GPT Papers" },
           { id:"t4", text:"Tokenisation — BPE, WordPiece, SentencePiece", desc:"Byte Pair Encoding: starts with characters, merges frequent pairs iteratively. WordPiece: similar but merges to maximise language model likelihood. Both encode OOV words as subword sequences, preventing unknown tokens. Vocabulary size is a hyperparameter (32k–100k).", resource:"Karpathy — Let's Build GPT" },
           { id:"t5", text:"Scaling laws — why bigger models are predictably better", desc:"Chinchilla scaling laws: loss is a power law in model size AND data size. The original GPT-3 was undertrained — Chinchilla showed 70B parameters trained on 1.4T tokens beats 280B on 300B tokens. This changed how every lab trains large models.", resource:"Chinchilla Scaling Laws Paper" },
+        
+          { id:"t6", text:"Generation strategies — temperature, top-k, top-p, and beam search",
+            desc:"How you sample from a language model is as important as the model itself. Temperature: divide logits by T before softmax. T<1 sharpens the distribution (more deterministic), T>1 flattens it (more random). T=0 is greedy (always pick the top token). Top-k sampling: at each step, keep only the k highest-probability tokens, resample. Prevents very low-probability tokens but k is fixed regardless of distribution shape. Top-p (nucleus) sampling: keep the smallest set of tokens whose cumulative probability exceeds p. Adapts to distribution shape — uses more tokens when distribution is flat, fewer when peaked. Best default for generation quality. Beam search: maintain k (beam width) partial sequences in parallel, expand each, keep top k. Finds higher-probability sequences than greedy but tends to produce repetitive, safe text. Used in machine translation. For open-ended generation: nucleus sampling (p=0.9–0.95) beats beam search empirically.", resource:"Lena Voita — NLP Course: Language Modeling (free)" },
+          { id:"t7", text:"Language model evaluation — perplexity and its limits",
+            desc:"Perplexity = exp(average negative log-likelihood per token) = exp(H(p,q)) where H is cross-entropy. Lower perplexity = model assigns higher probability to the test text = better model. Perplexity of 50 means the model is as uncertain as if choosing uniformly from 50 words at each step. Comparison rules: perplexity is only comparable across models with the same tokeniser and vocabulary. BERT (masked LM) cannot be compared directly to GPT (causal LM) via perplexity. Perplexity does not correlate well with downstream task performance — a model can have low perplexity and produce toxic or incoherent text. Alternatives: BLEU (for translation), ROUGE (for summarisation), BERTScore (embedding-based overlap), human evaluation (expensive), LLM-as-judge (scalable).", resource:"Lena Voita — NLP Course: Language Modeling (free)" },
+        
+          { id:"t6", text:"Generation strategies — temperature, top-k, top-p, beam search",
+            desc:"These control HOW the model samples from its probability distribution at inference time. Temperature: divide logits by T before softmax. T < 1 = sharper distribution (more greedy, repetitive). T > 1 = flatter distribution (more random, creative). T=0 = always pick the top token. Top-k: at each step, only sample from the k most likely tokens — prevents very unlikely tokens. Top-p (nucleus sampling): sample from the smallest set of tokens whose cumulative probability >= p. Adapts the cutoff to the distribution shape — better than fixed k. Beam search: maintain the k most probable partial sequences at each step, choose globally best sequence. More coherent but tends to produce generic outputs. Repetition penalty: discourage repeating the same tokens by down-weighting their logits. Production defaults: temperature=0.7, top_p=0.9 for creative tasks; temperature=0 for structured outputs (JSON, code).", resource:"Lena Voita — NLP Course: Language Modeling" },
         ],
         resources: [
           { id:"r1", text:"Karpathy — Let's build GPT from scratch (YouTube, 2h)", url:"https://www.youtube.com/watch?v=kCc8FmEb1nY", type:"youtube" },
@@ -918,7 +1039,7 @@ const ROADMAP = [
 ,
   {
     phase: "GenAI Engineer Prep — Marvell",
-    color: "#22c55e",
+    color: "#0ea877",
     items: [
       {
         id:"g1", week:"Prep Week 1", title:"LLMs in Production: The Mental Model", duration:"1 week",
@@ -929,21 +1050,17 @@ const ROADMAP = [
           { id:"t3", text:"Prompt engineering — system prompts, few-shot, chain-of-thought", desc:"These three techniques account for the majority of performance improvements you can get without changing the model; mastering them is essential for any production LLM system.", resource:"Prompt Engineering Guide" },
           { id:"t4", text:"RAG — retrieval-augmented generation, the problem it solves", desc:"LLMs have a knowledge cutoff and can't access proprietary data; RAG retrieves relevant context at inference time and adds it to the prompt, solving both problems.", resource:"Chip Huyen — LLM Engineering" },
           { id:"t5", text:"Base vs instruction-tuned vs fine-tuned — when to use each", desc:"Base models predict next tokens, instruction-tuned models follow instructions, fine-tuned models specialise in a domain; knowing which to use determines your approach.", resource:"Karpathy — Intro to LLMs" },
-          { id:"t6", text:"Structured outputs — reliable JSON, Pydantic schemas, and constrained decoding", desc:"Getting an LLM to produce consistently parseable output is one of the highest-value production skills and a direct Marvell use case (datasheet parsing, component spec extraction, BOM analysis). Three approaches by reliability: (1) Prompt-level: JSON instructions + few-shot examples. Fragile — models add prose, miss fields, use wrong types. (2) Native function calling / structured outputs: pass a JSON Schema to the API, the model fills in the fields. Supported natively by all frontier APIs (OpenAI, Anthropic, Gemini). Most reliable for well-defined schemas. (3) Constrained decoding: libraries like Outlines or Instructor intercept generation token-by-token and enforce a grammar, guaranteeing valid JSON even with local models. Pydantic models are the standard way to define schemas in Python — define a class, Instructor or structured outputs generate valid instances. Always add .model_validate(strict=False) for partial-failure tolerance on messy real-world inputs.", resource:"Pydantic Docs" },
         ],
         resources: [
           { id:"r1", text:"Andrej Karpathy — Intro to LLMs (YouTube)", url:"https://www.youtube.com/watch?v=zjkBMFhNj_g", type:"youtube" },
           { id:"r2", text:"Chip Huyen — LLM Engineering in Production (blog)", url:"https://huyenchip.com/2023/04/11/llm-engineering.html", type:"blog" },
           { id:"r3", text:"Prompt Engineering Guide (docs)", url:"https://www.promptingguide.ai/", type:"docs" },
-          { id:"r4", text:"Instructor — Pydantic-based structured LLM outputs (docs)", url:"https://python.useinstructor.com/", type:"docs" },
-          { id:"r5", text:"Outlines — guaranteed structured generation via constrained decoding (docs)", url:"https://dottxt-ai.github.io/outlines/", type:"docs" },
         ],
         implementation: [
           { id:"i1", text:"Call OpenAI/Anthropic API — build chat with system prompts", desc:"Getting your first API call working and experimenting with system prompts is the fastest way to develop production intuition." },
           { id:"i2", text:"Implement chain-of-thought prompting — compare to direct", desc:"Asking the model to think step by step dramatically improves performance on reasoning tasks; experiencing this difference makes the technique memorable." },
           { id:"i3", text:"Build a minimal RAG pipeline — chunk, embed, retrieve", desc:"A simple RAG pipeline in ~50 lines shows you the core mechanics; every production RAG system is an elaboration of this." },
           { id:"i4", text:"Experiment with few-shot examples — observe quality change", desc:"Adding 3-5 examples to your prompt and comparing outputs quantifies the improvement and builds intuition for when few-shot is worth the token cost." },
-          { id:"i5", text:"Build a Pydantic-validated structured extraction pipeline — parse 5 technical documents to JSON", desc:"Define a Pydantic schema for a structured entity (e.g. a component spec with fields: name, voltage_range, current_max, package_type, operating_temp). Use Instructor (pip install instructor) or OpenAI's structured outputs mode to extract fields from raw technical text — datasheet paragraphs, spec tables, or README files. Handle missing/ambiguous fields with Optional fields and .model_validate(strict=False). Compare: raw JSON prompt vs function calling vs Instructor. This pipeline pattern is directly applicable to Marvell datasheet and BOM parsing workflows." },
         ],
         extraReading: [
           { id:"e1", topic:"Constitutional AI and RLHF — how instruction-following is trained", desc:"Understanding how Anthropic's Constitutional AI and OpenAI's RLHF approach train instruction-following gives you insight into model behaviour and its limits.", url:"https://arxiv.org/abs/2212.08073" },
@@ -1036,7 +1153,9 @@ const ROADMAP = [
           { id:"i3", text:"Fine-tune a small model with LoRA using HuggingFace PEFT", desc:"Fine-tuning a 7B model with LoRA on a consumer GPU shows you that fine-tuning is accessible and demystifies the process." },
           { id:"i4", text:"Build a cost tracker — log token usage and cost per query", desc:"Adding cost tracking to your agent reveals which operations are expensive and gives you data for optimisation decisions." },
           { id:"i5", text:"Containerise your agent app with Docker", desc:"Packaging your application in a Docker container is the first step toward reproducible, deployable production systems." },
-        ],
+        
+          { id:"i6", text:"GPU profiling and debugging workflow — torch.profiler, memory, and bottleneck analysis", desc:"The systematic workflow: (1) Check GPU utilisation with nvidia-smi — if < 80%, you're CPU-bound or data-loading. (2) Use torch.profiler to identify the slowest ops: profile 3 warmup + 5 active steps, visualise in TensorBoard. (3) Memory: torch.cuda.memory_summary() shows allocation vs reserved. If OOM, reduce batch size or enable gradient checkpointing. (4) Is it memory-bandwidth or compute bound? Use Roofline model: if FLOP/byte < hardware ratio, you're memory-bound (fix: increase batch size, use larger matrix ops). (5) torch.compile() — try it first, it often gives 20-40% speedup for free. (6) Mixed precision (torch.autocast): reduces memory and often speeds up by 2×, watch for loss scaling issues with fp16." },
+          ],
         extraReading: [
           { id:"e1", topic:"PagedAttention — why vLLM is faster than naive serving", desc:"vLLM manages KV cache memory like virtual memory in an OS, eliminating the memory fragmentation that makes naive LLM serving inefficient.", url:"https://vllm.ai/blog/2023/06/20/vllm.html" },
           { id:"e2", topic:"Continuous batching vs static batching for LLM throughput", desc:"Static batching wastes GPU compute waiting for the longest sequence; continuous batching adds new requests as slots free up, dramatically improving throughput.", url:"https://www.anyscale.com/blog/continuous-batching-llm-inference" },
@@ -1080,7 +1199,7 @@ const ROADMAP = [
   },
   {
     phase: "Marvell Engineering Track",
-    color: "#38bdf8",
+    color: "#0ea5e9",
     items: [
       {
         id:"mv3", week:"Priority 1", title:"GenAI Agent Systems & Production Engineering", duration:"4–6 weeks",
@@ -1202,8 +1321,64 @@ const ROADMAP = [
   },
   {
     phase: "Road Ahead",
-    color: "#a855f7",
+    color: "#9333ea",
     items: [
+      {
+        id:"ra1", week:"Months 4–6", title:"Modern Architectures (BERT, GPT, ViT, Diffusion)", duration:"3 months",
+        tags:["research","architectures"],
+        theory:[
+          { id:"t1", text:"BERT — bidirectional attention, masked language modelling", desc:"BERT's key innovation is bidirectional context; by masking tokens and predicting them from both directions, it learns richer representations than unidirectional models.", resource:"Jay Alammar — Illustrated BERT" },
+          { id:"t2", text:"GPT series — autoregressive LM, emergent capabilities at scale", desc:"Each GPT version demonstrated that scaling parameters and data produces emergent capabilities that weren't explicitly trained; understanding this informs how you think about model behaviour.", resource:"BERT Paper" },
+          { id:"t3", text:"Vision Transformer (ViT) — patches as tokens", desc:"ViT splits images into fixed-size patches and treats them like word tokens; this showed that Transformers can match or beat CNNs on vision without any inductive biases.", resource:"ViT Paper" },
+          { id:"t4", text:"Diffusion models — denoising as generation", desc:"Diffusion models learn to reverse a noise-addition process; at inference, they start from pure noise and iteratively denoise to produce images, audio, or other data.", resource:"ViT Paper" },
+        ],
+        resources:[
+          { id:"r1", text:"BERT Paper — Devlin et al. 2018 (paper)", url:"https://arxiv.org/abs/1810.04805", type:"paper" },
+          { id:"r2", text:"ViT Paper — Dosovitskiy et al. 2020 (paper)", url:"https://arxiv.org/abs/2010.11929", type:"paper" },
+          { id:"r3", text:"Jay Alammar — Illustrated BERT (blog)", url:"https://jalammar.github.io/illustrated-bert/", type:"blog" },
+        
+          { id:"r4", text:"Lena Voita — NLP Course For You: Transfer Learning (ELMo, BERT, GPT, probing)", url:"https://lena-voita.github.io/nlp_course/transfer_learning.html", type:"blog" },
+        ],
+        implementation:[
+          { id:"i1", text:"Fine-tune BERT on a classification task with HuggingFace Transformers", desc:"HuggingFace makes fine-tuning BERT accessible in ~20 lines; doing it yourself teaches you the fine-tuning workflow you'll use constantly." },
+          { id:"i2", text:"Implement a minimal ViT patch embedding from scratch", desc:"The patch embedding layer is the only architecturally novel part of ViT; implementing it clarifies how images become sequences." },
+          { id:"i3", text:"Run Stable Diffusion locally and trace the inference code", desc:"Following the denoising loop through the actual code — UNet, VAE, scheduler — demystifies what's happening at inference time." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Masked autoencoders (MAE) — BERT-style pretraining for vision", desc:"MAE masks 75% of image patches and reconstructs them, learning strong visual representations without labels — a breakthrough in self-supervised vision.", url:"https://arxiv.org/abs/2111.06377" },
+          { id:"e2", topic:"CLIP — contrastive learning across vision and language", desc:"CLIP trains an image encoder and text encoder to agree on matching pairs; the resulting representations enable zero-shot classification and power most modern image-text systems.", url:"https://arxiv.org/abs/2103.00020" },
+          { id:"e3", topic:"DINO / DINOv2 — self-supervised vision without labels", desc:"DINO's self-distillation produces visual features with emergent segmentation properties, showing that strong vision representations can be learned without any human labels.", url:"https://arxiv.org/abs/2304.07193" },
+        ]
+      },
+      {
+        id:"ra2", week:"Months 6–9", title:"LLMs Deep Dive (RLHF, LoRA, Flash Attention)", duration:"3 months",
+        tags:["alignment","fine-tuning"],
+        theory:[
+          { id:"t1", text:"RLHF — reward modelling and PPO for alignment", desc:"RLHF trains a reward model from human preferences, then uses PPO to fine-tune the LLM to maximise that reward; this is how ChatGPT was made to follow instructions helpfully.", resource:"InstructGPT Paper" },
+          { id:"t2", text:"DPO — direct preference optimisation without RL", desc:"DPO achieves RLHF-like alignment by directly optimising a contrastive objective on preferred/rejected response pairs, eliminating the need for a separate reward model or RL training.", resource:"InstructGPT Paper" },
+          { id:"t3", text:"Flash Attention — IO-aware attention without materialising NxN matrix", desc:"Flash Attention reorders attention computation to minimise HBM reads/writes, achieving 2-4x speedup and making longer context windows feasible.", resource:"Flash Attention Paper" },
+          { id:"t4", text:"Chinchilla scaling laws — optimal compute allocation", desc:"The Chinchilla paper overturned prior scaling wisdom by showing that compute-optimal training requires far more data relative to model size than previously used.", resource:"Flash Attention Paper" },
+        ],
+        resources:[
+          { id:"r1", text:"InstructGPT Paper — Ouyang et al. 2022 (paper)", url:"https://arxiv.org/abs/2203.02155", type:"paper" },
+          { id:"r2", text:"Flash Attention Paper — Dao et al. 2022 (paper)", url:"https://arxiv.org/abs/2205.14135", type:"paper" },
+          { id:"r3", text:"LoRA Paper — Hu et al. 2021 (paper)", url:"https://arxiv.org/abs/2106.09685", type:"paper" },
+        ],
+        implementation:[
+          { id:"i1", text:"Fine-tune LLaMA or Mistral with LoRA using HuggingFace PEFT", desc:"Fine-tuning a 7B parameter model in under an hour on a single GPU demonstrates that the barrier to specialised models is now low." },
+          { id:"i2", text:"Run DPO fine-tuning on a small preference dataset", desc:"Implementing DPO gives you a hands-on understanding of preference learning without the complexity of PPO." },
+          { id:"i3", text:"Benchmark Flash Attention vs standard attention — measure speedup", desc:"Measuring the actual wall-clock speedup on different sequence lengths makes the IO-awareness argument concrete." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"Reward hacking and Goodhart's Law in RLHF", desc:"Optimising a learned reward model too aggressively causes the model to find outputs that score highly on the reward model but are not actually preferred by humans.", url:"https://arxiv.org/abs/2209.13345" },
+          { id:"e2", topic:"Constitutional AI — using AI feedback instead of human labelling", desc:"Anthropic's Constitutional AI approach uses the model itself to critique and revise its own outputs, reducing the need for expensive human feedback.", url:"https://arxiv.org/abs/2212.08073" },
+          { id:"e3", topic:"Mixture of Experts architecture — Mistral MoE, GPT-4 speculation", desc:"MoE replaces dense FFN layers with a router that activates only a subset of expert networks per token, dramatically increasing model capacity without proportional compute costs.", url:"https://arxiv.org/abs/2401.04088" },
+        
+          { id:"e4", topic:"Transformer Circuits Thread — Anthropic (mechanistic interpretability, free)", url:"https://transformer-circuits.pub/", desc:"The research programme that opened mechanistic interpretability as a field. Key papers: A Mathematical Framework for Transformer Circuits (circuits in 1-2 layer models), In-Context Learning and Induction Heads. Read the introductory post first, then the induction heads paper. Relevant for research scientist roles at AI safety labs and interpretability research positions." },
+          { id:"e5", topic:"Neel Nanda — Getting Started in Transformer Interpretability (blog + Colab)", url:"https://www.neelnanda.io/mechanistic-interpretability/getting-started", desc:"Practical onramp: what induction heads are, how to find circuits with activation patching, TransformerLens library. Follow along with the provided Colab notebooks. After this you can read current mechanistic interpretability papers with genuine comprehension." },
+        ]
+      },
+
       {
         id:"ft1", week:"After Month 6", title:"Hands-on LLM Fine-tuning — SFT, LoRA, QLoRA & DPO",
         duration:"3 weeks",
@@ -1313,7 +1488,14 @@ const ROADMAP = [
           { id:"t1", text:"Adam — momentum + adaptive per-parameter learning rates", desc:"Adam maintains a momentum estimate m_t and a second-moment estimate v_t per parameter. The adaptive learning rate η/√v̂_t automatically scales updates — larger for sparse parameters, smaller for frequent ones. Bias correction prevents the initial steps from being too small.", resource:"Adam paper — Kingma & Ba 2015" },
           { id:"t2", text:"Saddle points vs local minima — why local minima are rare in high dimensions", desc:"In high dimensions, a critical point requires all eigenvalues of the Hessian to be positive simultaneously. The probability of this is exponentially small — most critical points are saddle points. SGD noise naturally escapes them.", resource:"Dauphin et al. 2014" },
           { id:"t3", text:"Loss landscape geometry — why ResNets are smoother than plain nets", desc:"Li et al. visualised loss surfaces in 2D filter directions. ResNets have smooth, convex-looking landscapes; plain networks without skip connections have chaotic surfaces with many barriers. This geometrically explains why residual connections help optimization, not just gradient flow.", resource:"Li et al. 2018" },
-          { id:"t4", text:"Batch normalisation — loss landscape smoothing, not covariate shift", desc:"The original BatchNorm paper claimed it fixes internal covariate shift — Santurkar et al. showed this is false. The real benefit is loss landscape smoothing: BN makes the loss more Lipschitz and gradients more predictable, enabling higher learning rates.", resource:"Santurkar et al. 2018" },
+          { id:"t4", text:"Batch normalisation — loss landscape smoothing, not covariate shift", desc:"The original BatchNorm paper claimed it reduces internal covariate shift (distribution of layer inputs changing during training). Santurkar et al. 2018 showed this is not what actually happens — BN's real benefit is smoothing the loss landscape, making gradients more predictable. Mechanics: for a mini-batch, compute batch mean μ_B and variance σ²_B, normalise to zero mean unit variance, then scale and shift via learned parameters γ and β. Key subtleties: (1) during inference, use running statistics (not batch stats) accumulated during training. (2) BN behaves differently with batch size 1 or very small batches — use Layer Norm, Group Norm, or Instance Norm instead. (3) BN before or after activation? Original paper: before. Most modern practice: after or omitted entirely in favour of careful initialisation.",
+            resource:"CS231n — Backprop Notes" },
+          { id:"t9", text:"Lagrangian duality — strong/weak duality and the KKT conditions in full",
+            desc:"Lagrangian: L(x,λ,ν) = f(x) + Σλ_i g_i(x) + Σν_i h_i(x) where g_i ≤ 0 are inequality constraints and h_i = 0 are equality constraints. Dual function: g(λ,ν) = inf_x L(x,λ,ν) — always concave regardless of f. Weak duality: g(λ,ν) ≤ p* always. Strong duality (Slater's condition): if the primal is convex and strictly feasible (∃x: g_i(x) < 0), then p* = d* — strong duality holds. KKT conditions for optimality: stationarity (∇_x L = 0), primal feasibility (g_i ≤ 0), dual feasibility (λ_i ≥ 0), complementary slackness (λ_i g_i(x*) = 0). Why it matters: SVMs use strong duality to derive the kernel trick — the dual SVM is a QP in α space, and complementary slackness shows only support vectors matter. LASSO can be written as a constrained problem and duality gives the Lagrange path.",
+            resource:"CS229 Stanford — Linear Algebra review notes, free PDF (docs)" },
+          { id:"t10", text:"Proximal gradient methods — the unified framework for composite optimisation",
+            desc:"Many ML objectives have the form f(x) = g(x) + h(x) where g is smooth (differentiable, Lipschitz gradient) and h is convex but not smooth (L1 norm, indicator function of a constraint set). Proximal gradient: x_{t+1} = prox_{αh}(x_t - α∇g(x_t)) where prox_h(v) = argmin_x ½||x-v||² + h(x). For h = L1: prox is soft-thresholding S_α(v) = sign(v) max(|v|-α, 0) — this is why LASSO has a closed-form update. For h = indicator of a convex set: prox is Euclidean projection. ISTA (Iterative Shrinkage-Thresholding Algorithm): O(1/k) convergence. FISTA adds momentum: O(1/k²) convergence — optimal for first-order smooth+non-smooth. ADMM (Alternating Direction Method of Multipliers): consensus optimisation, used in distributed ML. Why this matters: Adam is not proximal gradient but understanding proximal methods explains why decoupled weight decay (AdamW) is theoretically cleaner than L2 regularisation in Adam.",
+            resource:"CS229 Stanford — Linear Algebra review notes, free PDF (docs)" },
           { id:"t5", text:"Implicit bias of SGD — minimum norm solutions and flat minima", desc:"SGD doesn't just find any minimum — it has a preference for flat minima (low Hessian trace), which generalise better. For linear models, gradient descent finds the minimum-norm solution. For deep networks, SAM explicitly seeks flat minima.", resource:"Foret et al. 2021 — SAM" },
           { id:"t6", text:"Double descent — why overparameterised models still generalise", desc:"Classical bias-variance says test error rises after overfitting. Double descent shows a second descent: once the model is large enough to perfectly interpolate training data, adding more parameters reduces test error again. This fundamentally contradicts classical learning theory.", resource:"Nakkiran et al. 2021" },
           { id:"t7", text:"Neural Tangent Kernel — infinite-width networks as kernel machines", desc:"In the infinite-width limit, a neural network at initialisation is equivalent to a kernel machine with the NTK kernel. Under gradient descent the kernel stays approximately constant — giving exact training dynamics analytically. A rare rigorous theoretical handle on deep networks.", resource:"Jacot et al. 2018" },
@@ -1480,7 +1662,7 @@ const ROADMAP = [
           { id:"t4", text:"Claude — Constitutional AI, harmlessness-helpfulness balance, long context", desc:"Anthropic uses Constitutional AI: the model critiques and revises its own outputs to follow a set of principles. Claude 3 extended context to 200K tokens. A fundamentally different alignment approach from RLHF — preference learning through self-critique rather than human labellers.", resource:"Anthropic Constitutional AI Paper" },
           { id:"t5", text:"Gemini — native multimodality and mixture-of-experts at scale", desc:"Gemini was designed multimodal from scratch, processing interleaved image, audio, video, and text natively. Gemini Ultra uses sparse MoE, activating only a subset of the model per token — dramatically increasing model capacity without proportional compute cost.", resource:"Gemini Technical Report 2023" },
           { id:"t6", text:"DeepSeek — MoE efficiency, RL for reasoning, open weights", desc:"DeepSeek-V3 uses Multi-head Latent Attention (MLA) to compress the KV cache and fine-grained MoE routing — achieving GPT-4 level performance at dramatically lower inference cost. DeepSeek-R1 uses GRPO for reasoning without supervised chain-of-thought data.", resource:"DeepSeek-V3 Technical Report 2024" },
-          { id:"t7", text:"Tokenisation revisited — how vocabulary choice shapes multilingual, code, and arithmetic ability", desc:"You built the foundational understanding of BPE/WordPiece/SentencePiece in c10. At the frontier level the decisions become critical: GPT-4's vocabulary handles code and multilingual text very differently from Llama-3's. A model with too few tokens for a language will over-segment words, bloating context and degrading fluency. CS336 Assignment 1 implements BPE from scratch — the concrete goal for this item. Key insight: tokenisation is where model capability and efficiency are silently determined before training begins.", resource:"Stanford CS336 — Lecture 1" },
+          { id:"t7", text:"Tokenisation — BPE, WordPiece, SentencePiece, and why it matters", desc:"All text is converted to integers before an LLM sees it. BPE merges frequent byte pairs iteratively. The tokeniser choice affects multilingual performance, code quality, arithmetic ability, and context efficiency. CS336 implements BPE from scratch.", resource:"Stanford CS336 — Lecture 1" },
           { id:"t8", text:"Reasoning models — chain-of-thought, o1/o3, RL-trained extended thinking", desc:"OpenAI o1 uses RL to train extended chain-of-thought reasoning at test time. The model generates a long internal reasoning trace before producing the final answer. A fundamentally different compute profile from standard generation — more tokens, same model.", resource:"OpenAI o1 System Card 2024" },
           { id:"t9", text:"Scaling laws and compute-optimal training — Chinchilla revisited", desc:"The Chinchilla result (20 tokens per parameter) was derived for a specific training budget. For inference-heavy deployments, a smaller model trained on more data is optimal — Llama's strategy. This tradeoff is how you choose the right model for a given deployment constraint.", resource:"Chinchilla — Hoffmann et al. 2022" },
         ],
@@ -1503,11 +1685,36 @@ const ROADMAP = [
           { id:"e3", topic:"Mixture of Experts deep dive — sparse routing and expert capacity", desc:"MoE models activate only a subset of expert FFN layers per token. Understanding routing, load balancing loss, and expert capacity is increasingly essential as MoE becomes the dominant architecture.", url:"https://arxiv.org/abs/2401.04088" },
         ]
       },
+      {
+        id:"ra3", week:"Month 9+", title:"Specialisation & Research", duration:"ongoing",
+        tags:["research","agents","multimodal"],
+        theory:[
+          { id:"t1", text:"Pick your lane — research, applied, multimodal, or agents", resource:"alirezadir/Machine-Learning-Interviews", desc:"Depth beats breadth at this stage; picking one direction and going deep for 6 months will put you in the top 5% of practitioners in that area." },
+          { id:"t2", text:"Read papers weekly — trace lineage with Connected Papers", resource:"How to Read a Paper — Keshav 2007", desc:"Reading one paper per week and tracing its connections builds the mental map of the field that separates people who follow the frontier from people who shape it." },
+          { id:"t3", text:"Contribute to open-source — HuggingFace, LangChain, others", resource:"HuggingFace — Open Science Guide", desc:"Open-source contributions build your reputation, force you to write production-quality code, and put you in contact with the best practitioners in the field." },
+        ],
+        resources:[
+          { id:"r1", text:"Semantic Scholar (research discovery)", url:"https://www.semanticscholar.org/", type:"docs" },
+          { id:"r2", text:"Connected Papers (paper lineage visualisation)", url:"https://www.connectedpapers.com/", type:"docs" },
+          { id:"r3", text:"Arxiv Sanity Preserver (paper filtering)", url:"https://arxiv-sanity-lite.com/", type:"docs" },
+        ],
+        implementation:[
+          { id:"i1", text:"Start a self-directed project with a real dataset and real problem", desc:"A project driven by genuine curiosity — not a tutorial — is where intuition forms fastest; the struggle is the curriculum." },
+          { id:"i2", text:"Write up your findings — GitHub README or blog post", desc:"Writing forces you to understand what you actually learned; the act of explaining it reveals gaps you didn't know you had." },
+        ],
+        extraReading:[
+          { id:"e1", topic:"How to read a research paper efficiently", desc:"Most people read papers wrong — understanding how to skim for contribution before reading deeply saves enormous time over a research career.", url:"https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf" },
+          { id:"e2", topic:"Open problems in interpretability and mechanistic understanding", desc:"Interpretability research tries to understand what computations actually happen inside LLMs; it's one of the most intellectually rich areas in AI and entirely open.", url:"https://transformer-circuits.pub/" },
+          { id:"e3", topic:"GNN primer — message passing, GCN, GAT, expressivity limits", desc:"Graph Neural Networks extend deep learning to relational data (molecules, social graphs, chip netlists). The key ideas: message passing aggregation, spectral vs spatial formulations, and the WL expressivity ceiling. Relevant if you touch any graph-structured data at Marvell.", url:"https://distill.pub/2021/gnn-intro/" },
+          { id:"e4", topic:"GIN — achieving maximum 1-WL expressivity with sum aggregation", desc:"Xu et al. proved that mean/max aggregation is strictly less expressive than sum aggregation for graph isomorphism. GIN uses injective MLP+sum to reach the 1-WL ceiling — the theoretical foundation for understanding what GNNs can and can't distinguish.", url:"https://arxiv.org/abs/1810.00826" },
+          { id:"e5", topic:"Graph Transformers — full attention over nodes with structural positional encodings", desc:"Graph Transformers apply self-attention across all node pairs (not just edges), using Laplacian eigenvectors or shortest-path distances as positional encodings. Relevant for large-scale chip design and EDA workflows.", url:"https://arxiv.org/abs/2106.05234" },
+        ]
+      },
     ]
   },
   {
     phase: "Scientific ML",
-    color: "#06b6d4",
+    color: "#10b981",
     items: [
       {
         id:"sci1", week:"Parallel Track", title:"Neural Operators & Scientific Deep Learning", duration:"2–3 months",
@@ -1671,7 +1878,10 @@ const ROADMAP = [
         extraReading: [
           { id:"e1", topic:"Probabilistic ML: An Introduction — Kevin Murphy 2022 (free PDF, the best format)", url:"https://probml.github.io/pml-book/", desc:"2,000-page textbook, but each chapter is self-contained. Read in order: Ch. 2 (probability review), Ch. 9 (linear discriminant analysis), Ch. 17 (Bayesian linear regression), Ch. 18 (Gaussian processes). The PDF is free and the notation is clean. Best format: read with a notebook open — implement every model as you go." },
           { id:"e2", topic:"Conformal Prediction for Reliable ML — Angelopoulos & Bates (accessible tutorial, free)", url:"https://arxiv.org/abs/2107.07511", desc:"The most practical entry point into uncertainty quantification with formal guarantees. 50-page tutorial, not a textbook. Covers split conformal prediction, RAPS for classification, CQR for regression. Applicable to any trained model — no retraining needed." },
-        ]
+        
+          { id:"e3", topic:"Natural Gradient Descent — why Fisher information replaces the identity matrix", url:"https://arxiv.org/abs/1301.3666", desc:"Amari's natural gradient: instead of stepping in parameter space (gradient descent), step in the space of distributions using the Fisher information matrix as the metric. This is why K-FAC and Shampoo outperform Adam at large scale. James Martens' 2020 survey 'New Insights and Perspectives on the Natural Gradient Method' is the most accessible rigorous treatment." },
+          { id:"e4", topic:"Information Geometry and Its Applications — Amari (Chapter 1-2 overview)", url:"https://link.springer.com/book/10.1007/978-4-431-55978-8", desc:"The statistical manifold view: probability distributions are points on a curved manifold; the Fisher information matrix is its Riemannian metric; KL divergence is the geodesic distance. This framework unifies natural gradient, expectation propagation, and variational inference. Read Chapter 1 for the geometric intuition before the formalism." },
+          ]
       },
 
       {
@@ -1710,6 +1920,13 @@ const ROADMAP = [
           { id:"t6", text:"HuggingFace Hub — open science, model cards, and community visibility", desc:"Publishing code and models on HuggingFace dramatically increases citation and visibility. Papers with models on Hub get adopted faster. A detailed model card (training data, evaluation, limitations, usage) is the standard for responsible publishing and community trust.", resource:"HuggingFace — Open Science Guide" },
           { id:"t7", text:"From engineer to applied scientist — the internal transfer path", desc:"The most reliable path without a PhD: produce production impact in your engineering role, simultaneously build a research track record (workshop papers, Kaggle, open-source), then transfer internally. Internal transfer is dramatically easier than external recruiting because you have earned trust and context.", resource:"David Fan — Breaking into ML Research Without PhD" },
           { id:"t8", text:"Kaggle and competitions — building verifiable ML skills and visibility", desc:"Kaggle competitions provide labelled data, a leaderboard, and a community. A top-10% finish on a featured competition is a concrete, verifiable signal. Solo medals demonstrate capability; team medals demonstrate collaboration. The winning solution write-ups are among the best practical ML education available.", resource:"Kaggle Learn + Competition Discussions" },
+        
+          { id:"t9", text:"How to write a research paper — structure, contribution, and the one-sentence test",
+            desc:"Simon Peyton Jones' rule: state the paper's contribution in one sentence before writing anything else. If you can't, you don't understand what you're contributing. Structure: (1) Abstract: 4 sentences — problem, why hard, your approach, result. (2) Introduction: expand the abstract, state contributions as a bulleted list, be specific. (3) Related work: after the method, not before — readers need to understand your approach to appreciate how it differs. (4) Method: every variable defined, every assumption stated, every figure explained. (5) Experiments: one primary metric, ablation for every design choice, error bars always. (6) Conclusion: don't repeat the abstract. The key insight: you will not know what the paper is about until you've written a draft — writing IS thinking. Write early and often.",
+            resource:"Simon Peyton Jones — How to Write a Great Research Paper" },
+          { id:"t10", text:"Responding to reviewers and rebuttal writing — how the process actually works",
+            desc:"Peer review at NeurIPS/ICML/ICLR: 3-4 reviewers score 1-10, area chair aggregates, meta-reviewer decides. Acceptance rates: NeurIPS ~25%, ICLR ~30%. Rebuttal is 1-2 pages, strictly limited. Effective rebuttals: (1) Never be defensive — thank the reviewer, acknowledge the point, then show the additional evidence. (2) Run the exact experiment the reviewer asked for if you can. (3) Quote the specific claim you're addressing. (4) Be concrete — 'we ran this on dataset X and accuracy improved from 82.3% to 84.1%' beats 'our method handles this case'. (5) Prioritise reviewers who are borderline — a weak accept reviewer is more valuable to persuade than a strong reject. Knowing this process helps you structure papers to pre-empt common objections.",
+            resource:"Simon Peyton Jones — How to Write a Great Research Paper" },
         ],
         resources:[
           { id:"r1", text:"How to Read a Paper — Keshav 2007 (paper)", url:"https://web.stanford.edu/class/ee384m/Handouts/HowtoReadPaper.pdf", type:"paper" },
@@ -1750,7 +1967,7 @@ const ROADMAP = [
   ,
   {
     phase: "Interview Mastery",
-    color: "#f43f5e",
+    color: "#06b6d4",
     icon: "🎯",
     summary: "Two-layer interview competency: technical depth you build in every other phase, plus applied ML judgment interviewers actually filter on. Five units cover data judgment, model debugging, experimentation, production system design, and communication. Run these parallel to the rest of the roadmap.",
     items: [
@@ -2178,9 +2395,9 @@ const ROADMAP = [
 ];
 
 const STATUS = {
-  not_started: { bg:"#171d26", border:"#2d3440", icon:"○", color:C.dim },
-  in_progress: { bg:"#271f08", border:"#8a5c00", icon:"◑", color:C.yellow },
-  done:        { bg:"#0d1a09", border:`${C.lena}60`, icon:"●", color:C.lena },
+  not_started: { bg:"#1c2128", border:"#30363d", icon:"○", color:C.dim },
+  in_progress: { bg:"#2d2208", border:"#9e6a03", icon:"◑", color:C.yellow },
+  done: { bg:"#0d1f0f", border:"#238636", icon:"●", color:C.green },
 };
 
 const MEGA_PROJECTS = {
@@ -2224,13 +2441,23 @@ const MEGA_PROJECTS = {
 };
 
 const RESOURCE_LINKS = {
+  "Numerical Linear Algebra — Trefethen & Bau": "https://people.maths.ox.ac.uk/trefethen/text.html",
+  "NeetCode — DSA patterns for coding interviews": "https://neetcode.io/",
+  "NeetCode YouTube — algorithmic patterns": "https://www.youtube.com/@NeetCode",
+  "Deep-ML — ML algorithm coding problems": "https://www.deep-ml.com/",
+  "Natural Gradient — Amari 2013": "https://arxiv.org/abs/1301.3666",
+
+  "All of Statistics — Wasserman (free PDF)": "https://link.springer.com/book/10.1007/978-0-387-21736-9",
+  "ISL — Introduction to Statistical Learning (free PDF)": "https://www.statlearning.com/",
+  "MIT 18.650 — Statistics for Applications (free OCW)": "https://ocw.mit.edu/courses/18-650-statistics-for-applications-fall-2016/",
+  "Trustworthy Online Controlled Experiments — Kohavi et al.": "https://www.amazon.com/Trustworthy-Online-Controlled-Experiments-Practical/dp/1108724264",
+
   "CS229 — Supervised Learning Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes1.pdf",
   "CS229 — Classification Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes1.pdf",
   "CS229 — SVM Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes3.pdf",
   "CS229 — Learning Theory Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes4.pdf",
   "CS229 — Regularisation Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes5.pdf",
   "CS229 — Debugging ML Notes (PDF)": "https://cs229.stanford.edu/notes2022fall/cs229-notes-advice.pdf",
-  "CS231n — Backprop Notes": "https://cs231n.github.io/optimization-2/",
   "CS231n — Neural Networks Part 1": "https://cs231n.github.io/neural-networks-1/",
   "CS231n — Neural Networks Part 2": "https://cs231n.github.io/neural-networks-2/",
   "CS231n — Neural Networks Part 3": "https://cs231n.github.io/neural-networks-3/",
@@ -2293,7 +2520,6 @@ const RESOURCE_LINKS = {
   "Judea Pearl — The Book of Why": "https://www.basicbooks.com/titles/judea-pearl/the-book-of-why/9780465097609/",
   "LLaVA Paper — Liu et al. 2023 (free)": "https://arxiv.org/abs/2304.08485",
   "Lena Voita — NLP Course: Language Modeling (free)": "https://lena-voita.github.io/nlp_course/language_modeling.html",
-  "Lena Voita — NLP Course: Language Modeling": "https://lena-voita.github.io/nlp_course/language_modeling.html",
   "Lilian Weng — Hallucination in Language Models": "https://lilianweng.github.io/posts/2024-07-07-hallucination/",
   "LoRA Paper — Hu et al. 2021": "https://arxiv.org/abs/2106.09685",
   "Lyft Engineering Blog": "https://eng.lyft.com/",
@@ -2530,12 +2756,11 @@ const TYPE_BADGE = {
   blog:    { label:"✍ Blog",    bg:"#0d1f2d", color:"#58a6ff" },
   docs:    { label:"📄 Docs",    bg:"#1a1f2e", color:"#a5d6ff" },
   course:  { label:"🎓 Course",  bg:"#1a1208", color:"#d29922" },
-  book:    { label:"📚 Book",    bg:"#1a1208", color:"#f59e0b" },
 };
 
-const ALL_ITEMS = ROADMAP.flatMap(p => p.items || []);
+const ALL_ITEMS = ROADMAP.flatMap(p => p.items);
 
-function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type, isTheory }) {
+function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type }) {
   const [open, setOpen] = useState(false);
 
   const flavour = !desc ? "explain"
@@ -2546,11 +2771,11 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type,
     : "explain";
 
   const FLAVOURS = {
-    trap:      { bar:"#f59e0b", bg:"#1a1200", label:"⚠ Trap",           color:"#f59e0b" },
-    insight:   { bar:"#3fb950", bg:"#0a1a0d", label:"★ Key Insight",    color:"#3fb950" },
-    why:       { bar:"#a371f7", bg:"#160d24", label:"◆ Why It Matters",  color:"#a371f7" },
-    interview: { bar:"#06b6d4", bg:"#001a22", label:"✦ Interview",       color:"#06b6d4" },
-    explain:   { bar:"#58a6ff", bg:"#0d1117", label:null,                color:"#8b949e" },
+    trap:      { bar:"#f59e0b", bg:"#1a1200", label:"⚠ trap",      color:"#f59e0b" },
+    insight:   { bar:"#3fb950", bg:"#0a1a0d", label:"★ insight",   color:"#3fb950" },
+    why:       { bar:"#a371f7", bg:"#160d24", label:"◆ why",        color:"#a371f7" },
+    interview: { bar:"#06b6d4", bg:"#001a22", label:"✦ interview", color:"#06b6d4" },
+    explain:   { bar:"#30363d", bg:"#0d1117", label:null,           color:"#6e7681" },
   };
   const fs = FLAVOURS[flavour] || FLAVOURS.explain;
 
@@ -2578,43 +2803,31 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type,
   const pill = getResourcePill();
 
   return (
-    <div style={{ marginBottom:12 }}>
-      {/* Row 1: checkbox · label · controls */}
-      <div style={{ display:"flex", alignItems:"flex-start", gap:10, cursor: desc ? "pointer" : "default" }}
-        onClick={() => desc && setOpen(o=>!o)}>
+    <div style={{ marginBottom:10 }}>
+      {/* Row 1: checkbox · label · expand */}
+      <div style={{ display:"flex", alignItems:"flex-start", gap:10, cursor:"pointer" }}
+        onClick={() => setOpen(o=>!o)}>
         <div onClick={e=>{e.stopPropagation(); onChange();}}
           style={{ flexShrink:0, width:17, height:17, borderRadius:4, marginTop:2,
-            border:`1.5px solid ${checked?C.lena:C.border}`,
-            background:checked?C.lena:"transparent",
+            border:`1.5px solid ${checked?"#238636":C.border}`,
+            background:checked?"#238636":"transparent",
             cursor:"pointer", display:"flex", alignItems:"center",
             justifyContent:"center", transition:"all 0.15s" }}>
-          {checked && <span style={{ color:"#0c1116", fontSize:10, fontWeight:900, lineHeight:1 }}>✓</span>}
+          {checked && <span style={{ color:"#fff", fontSize:10, fontWeight:900, lineHeight:1 }}>✓</span>}
         </div>
-
         <div style={{ flex:1, minWidth:0 }}>
           {isLink && url
             ? <a href={url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()}
-                style={{ fontSize:14, color:checked?C.dim:C.accent,
+                style={{ fontSize:13, color:checked?C.dim:C.accent,
                   textDecoration:checked?"line-through":"underline", lineHeight:1.5, fontWeight:500 }}>
                 {label}
               </a>
-            : <span style={{ fontSize:14, color:checked?C.dim:C.text,
+            : <span style={{ fontSize:13, color:checked?C.dim:C.text,
                 textDecoration:checked?"line-through":"none", lineHeight:1.5, fontWeight:500 }}>
                 {label}
               </span>
           }
-          {/* Inline flavour badge — visible when collapsed, only for non-link items with a named flavour */}
-          {!open && desc && !isLink && fs.label && (
-            <div style={{ marginTop:5, display:"inline-flex", alignItems:"center", gap:5,
-              padding:"2px 8px 2px 6px", borderRadius:6,
-              background:`${fs.bar}18`, border:`1px solid ${fs.bar}30`,
-              fontSize:10, fontWeight:700, color:fs.color, letterSpacing:0.3 }}>
-              <div style={{ width:5, height:5, borderRadius:"50%", background:fs.bar, flexShrink:0 }}/>
-              {fs.label}
-            </div>
-          )}
         </div>
-
         <div style={{ display:"flex", alignItems:"center", gap:6, flexShrink:0, paddingTop:2 }}>
           {isLink && type && TYPE_BADGE[type] && (
             <span style={{ fontSize:10, padding:"2px 8px", borderRadius:6,
@@ -2623,121 +2836,59 @@ function CheckRow({ checked, onChange, label, desc, resource, isLink, url, type,
             </span>
           )}
           {desc && (
-            isTheory && !open
-              ? <span className="reveal-btn" style={{ fontSize:11, padding:"3px 12px", borderRadius:7,
-                  background:"#6366f114", color:"#818cf8",
-                  border:"1px solid #6366f128", fontWeight:700,
-                  cursor:"pointer", whiteSpace:"nowrap", letterSpacing:0.2 }}>
-                  Reveal ⇨
-                </span>
-              : <span style={{ fontSize:11, color:open?fs.color:C.dim, fontWeight:600,
-                  whiteSpace:"nowrap", transition:"color 0.15s" }}>
-                  {open?"▲ hide":"▼"}
-                </span>
+            <span style={{ fontSize:11, color:open?fs.color:C.dim, fontWeight:600,
+              whiteSpace:"nowrap", transition:"color 0.15s" }}>
+              {open?"▲ hide":"▼ expand"}
+            </span>
           )}
         </div>
       </div>
 
-      {/* Resource pill */}
-      {pill && <div style={{ marginLeft:27, marginTop:6 }}>{pill}</div>}
+      {/* Row 2: resource pill below label */}
+      {pill && <div style={{ marginLeft:27, marginTop:5 }}>{pill}</div>}
 
-      {/* Full-width callout — Lena-style, 1.9 line-height, 14px radius */}
+      {/* Row 3: callout box */}
       {open && desc && (
-        <div className="callout-box" style={{ marginTop:12, marginBottom:6, borderRadius:14,
-          borderLeft:`4px solid ${fs.bar}`,
-          background:fs.bg, padding:"16px 20px",
-          boxShadow:`inset 0 0 0 1px ${fs.bar}20` }}>
+        <div style={{ marginLeft:27, marginTop:6, marginBottom:4,
+          borderRadius:"0 8px 8px 0", borderLeft:`3px solid ${fs.bar}`,
+          background:fs.bg, padding:"10px 14px" }}>
           {fs.label && (
-            <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:12 }}>
-              <div style={{ width:8, height:8, borderRadius:"50%", background:fs.bar, flexShrink:0 }}/>
-              <span style={{ fontSize:11, fontWeight:800, color:fs.color,
-                textTransform:"uppercase", letterSpacing:1 }}>
-                {fs.label}
-              </span>
-              <div style={{ flex:1, height:1, background:`${fs.bar}28` }}/>
+            <div style={{ fontSize:10, fontWeight:700, color:fs.color,
+              letterSpacing:0.8, textTransform:"uppercase", marginBottom:6 }}>
+              {fs.label}
             </div>
           )}
-          <div style={{ fontSize:13.5, color:"#d0d9e4", lineHeight:1.9 }}>{desc}</div>
+          <div style={{ fontSize:12.5, color:"#c9d1d9", lineHeight:1.75 }}>{desc}</div>
         </div>
       )}
     </div>
   );
 }
 
-
-// ── Extra reading depth classifier ──────────────────────────────────────────
-function classifyExtraDepth(item) {
-  const url = (item.url||"").toLowerCase();
-  const topic = (item.topic||"").toLowerCase();
-  if (/arxiv\.org|springer|nature\.com|openreview|papers\.nips\.cc|jmlr\.org|cambridge\.org|proceedings\.ml/.test(url)
-      || /paper|survey|chapter|textbook|book$/.test(topic)) return "deep";
-  if (/youtube\.com|colah\.github|distill\.pub|3blue1brown|illustrated|visual|intro |overview|primer/.test(url+topic)) return "surface";
-  return "deeper";
-}
-
-const DEPTH_TIERS = [
-  { key:"surface", label:"Quick Read",   emoji:"👁",  color:"#58a6ff", bg:"#0d1f3c33", border:"#1f3a6e",
-    sub:"Visual explainers, intros, and blog posts" },
-  { key:"deeper",  label:"Going Deeper", emoji:"🔬", color:"#3fb950", bg:"#0a1a0d33", border:"#1a3a1a",
-    sub:"In-depth writeups and substantial guides" },
-  { key:"deep",    label:"Deep Dive",    emoji:"📄",  color:"#a371f7", bg:"#160d2433", border:"#3d1a6e",
-    sub:"Papers, textbooks, and primary sources" },
-];
 
 function ExtraItem({ item, checked, onChange }) {
   const [open, setOpen] = useState(false);
   return (
-    <div className="extra-item" style={{ marginBottom:7, padding:"2px 4px" }}>
+    <div style={{ marginBottom:7 }}>
       <div style={{ display:"flex", alignItems:"flex-start", gap:8, cursor:"pointer" }} onClick={() => setOpen(o=>!o)}>
-        <div onClick={e=>{e.stopPropagation(); onChange();}} style={{ flexShrink:0, width:16, height:16, borderRadius:3, marginTop:3, border:`1.5px solid ${checked?"#9333ea":"#2d3440"}`, background:checked?"#9333ea":"transparent", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
+        <div onClick={e=>{e.stopPropagation(); onChange();}} style={{ flexShrink:0, width:16, height:16, borderRadius:3, marginTop:3, border:`1.5px solid ${checked?"#9333ea":"#30363d"}`, background:checked?"#9333ea":"transparent", cursor:"pointer", display:"flex", alignItems:"center", justifyContent:"center" }}>
           {checked && <span style={{ color:"#fff", fontSize:10, fontWeight:800, lineHeight:1 }}>✓</span>}
         </div>
         <div style={{ flex:1 }}>
           <div style={{ display:"flex", alignItems:"center", gap:6, flexWrap:"wrap" }}>
-            <span style={{ fontSize:13, color:checked?"#5e6d7e":"#c9a5ff", textDecoration:checked?"line-through":"none" }}>{item.topic}</span>
+            <span style={{ fontSize:13, color:checked?C.dim:"#c9a5ff", textDecoration:checked?"line-through":"none" }}>{item.topic}</span>
             {item.url && (
               <a href={item.url} target="_blank" rel="noreferrer" onClick={e=>e.stopPropagation()} style={{ fontSize:10, color:"#a371f7", textDecoration:"underline" }}>↗ read</a>
             )}
-            <span style={{ fontSize:10, color:"#5e6d7e", marginLeft:"auto" }}>{open?"▲":"▼"}</span>
+            <span style={{ fontSize:10, color:C.dim, marginLeft:"auto" }}>{open?"▲":"▼"}</span>
           </div>
         </div>
       </div>
       {open && item.desc && (
-        <div style={{ marginLeft:24, marginTop:6, fontSize:13, color:"#d0d9e4", lineHeight:1.85, background:"#160d24", borderLeft:"3px solid #a371f7", paddingLeft:14, paddingTop:10, paddingBottom:10, borderRadius:"0 10px 10px 0" }}>
+        <div style={{ marginLeft:24, marginTop:4, fontSize:12.5, color:"#c9d1d9", lineHeight:1.75, background:"#160d24", borderLeft:"3px solid #a371f7", paddingLeft:12, paddingTop:8, paddingBottom:8, borderRadius:"0 8px 8px 0" }}>
           {item.desc}
         </div>
       )}
-    </div>
-  );
-}
-
-// Tiered extra reading renderer — used in both roadmap and interview views
-function TieredExtraReading({ items, itemId, checks, toggleCheck }) {
-  const grouped = DEPTH_TIERS
-    .map(t => ({ ...t, items: items.filter(e => classifyExtraDepth(e) === t.key) }))
-    .filter(t => t.items.length > 0);
-  return (
-    <div>
-      {grouped.map((tier, ti) => (
-        <div key={tier.key} style={{ marginBottom: ti < grouped.length-1 ? 22 : 0 }}>
-          <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:8 }}>
-            <span style={{ fontSize:15 }}>{tier.emoji}</span>
-            <span style={{ fontSize:11, fontWeight:800, color:tier.color,
-              textTransform:"uppercase", letterSpacing:0.8 }}>{tier.label}</span>
-            <span style={{ fontSize:11, color:C.dim }}>⇨ {tier.sub}</span>
-            <span style={{ marginLeft:"auto", fontSize:11, color:tier.color, fontWeight:700,
-              background:`${tier.color}15`, padding:"1px 9px", borderRadius:99 }}>
-              {tier.items.filter(e=>checks[`${itemId}__extra__${e.id}`]).length}/{tier.items.length}
-            </span>
-          </div>
-          <div className="lena-hr" style={{background:`linear-gradient(90deg,${tier.color}40,transparent)`,marginBottom:10}}/>
-          {tier.items.map(e => (
-            <ExtraItem key={e.id} item={e}
-              checked={!!checks[`${itemId}__extra__${e.id}`]}
-              onChange={() => toggleCheck(itemId,"extra",e.id)}/>
-          ))}
-        </div>
-      ))}
     </div>
   );
 }
@@ -2820,8 +2971,6 @@ export default function App() {
   const [openBuild, setOpenBuild] = useState({});
   const [drillAnswers, setDrillAnswers] = useState({});
   const [drillConf, setDrillConf] = useState({});
-  const [hoveredPhase, setHoveredPhase] = useState(null);
-  const [expandedMega, setExpandedMega] = useState({A:true,B:false,C:false});
 
   useEffect(() => {
     (async () => {
@@ -2879,150 +3028,76 @@ export default function App() {
   if (!loaded) return <div style={{display:"flex",alignItems:"center",justifyContent:"center",height:"100vh",background:C.bg,color:C.muted,fontFamily:"monospace"}}>Loading...</div>;
 
   return (
-    <div style={{fontFamily:"'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",background:C.bg,height:"100vh",color:C.text,display:"flex",overflow:"hidden"}}>
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap');
-        @keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
-        @keyframes fadeSlideIn{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:translateY(0)}}
-        * { box-sizing: border-box; }
-
-        /* Phase cards — overview */
-        .phase-card { transition: all 0.18s ease; cursor:pointer; }
-        .phase-card:hover { border-color: var(--phase-color) !important; transform: translateY(-3px); box-shadow: 0 10px 30px rgba(0,0,0,0.35), 0 0 0 1px var(--phase-color-alpha, rgba(0,0,0,0.1)); }
-
-        /* Sidebar nav buttons */
-        .nav-btn { transition: all 0.13s ease; }
-        .nav-btn:hover { background: #92bf3212 !important; color: #92bf32 !important; }
-
-        /* Reveal button */
-        .reveal-btn { transition: all 0.13s ease; }
-        .reveal-btn:hover { background: #6366f128 !important; border-color: #818cf880 !important; color: #a5b4fc !important; }
-
-        /* Status cycle button */
-        .status-btn { transition: all 0.15s ease; }
-        .status-btn:hover { transform: scale(1.1); }
-
-        /* CheckRow — full callout animation */
-        .callout-box { animation: fadeSlideIn 0.18s ease; }
-
-        /* Tag chips */
-        .tag-chip { transition: background 0.12s; }
-        .tag-chip:hover { background: #92bf3215 !important; border-color: #92bf3240 !important; color: #92bf32 !important; }
-
-        /* Lena-style thick HR divider */
-        .lena-hr { height: 3px; border: none; border-radius: 99px; margin: 0; }
-
-        /* Section tab buttons */
-        .sec-tab { transition: all 0.14s ease; }
-        .sec-tab:hover { background: rgba(255,255,255,0.04) !important; }
-
-        /* Extra reading items */
-        .extra-item { transition: background 0.12s; border-radius: 8px; }
-        .extra-item:hover { background: #92bf3208 !important; }
-
-        /* Scrollbar */
-        ::-webkit-scrollbar { width: 6px; }
-        ::-webkit-scrollbar-track { background: transparent; }
-        ::-webkit-scrollbar-thumb { background: #2d3440; border-radius: 99px; }
-        ::-webkit-scrollbar-thumb:hover { background: #92bf3260; }
-      `}</style>
+    <div style={{fontFamily:"-apple-system,BlinkMacSystemFont,'Segoe UI',Helvetica,Arial,sans-serif",background:C.bg,height:"100vh",color:C.text,display:"flex",overflow:"hidden"}}>
+      <style>{`@keyframes spin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}`}</style>
 
       {/* ── Sidebar ── */}
-      <div style={{width:272,flexShrink:0,borderRight:`1px solid ${C.border}`,background:C.surface,height:"100vh",overflowY:"auto",display:"flex",flexDirection:"column",padding:"22px 16px"}}>
+      <div style={{width:270,flexShrink:0,borderRight:`1px solid ${C.border}`,background:C.surface,height:"100vh",overflowY:"auto",display:"flex",flexDirection:"column",padding:"24px 18px"}}>
 
-        {/* Title */}
-        <div style={{marginBottom:22}}>
-          <div style={{fontSize:16,fontWeight:800,color:C.text,letterSpacing:-0.5,lineHeight:1.2}}>
-            ML/AI Mastery
-          </div>
-          <div style={{marginTop:4,display:"flex",alignItems:"center",gap:5}}>
-            <span style={{fontSize:10,color:C.lena,fontWeight:700,letterSpacing:0.8,textTransform:"uppercase"}}>For You</span>
-            <span style={{fontSize:10,color:C.dim}}>· MTech → Marvell → Research</span>
-          </div>
-          {/* Lena-style thick HR */}
-          <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena},${C.lena}44)`,marginTop:10}}/>
+        <div style={{marginBottom:26}}>
+          <div style={{fontSize:17,fontWeight:800,color:C.text,letterSpacing:-0.4}}>ML/AI Mastery</div>
+          <div style={{fontSize:11,color:C.dim,marginTop:3,lineHeight:1.4}}>MTech → Marvell GenAI → Research</div>
         </div>
 
-        {/* Progress widget */}
-        <div style={{marginBottom:22,padding:"14px 14px 12px",background:C.elevated,borderRadius:14,border:`1px solid ${C.border}`}}>
-          <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:8}}>
-            <span style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.8}}>Progress</span>
-            <span style={{fontSize:18,fontWeight:800,color:C.lena,letterSpacing:-0.5}}>{pct}<span style={{fontSize:11,fontWeight:600,color:C.dim}}>%</span></span>
+        <div style={{marginBottom:24,padding:"14px",background:C.elevated,borderRadius:10,border:`1px solid ${C.border}`}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:7}}>
+            <span style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.6}}>Progress</span>
+            <span style={{fontSize:14,fontWeight:800,color:C.text}}>{pct}%</span>
           </div>
-          <div style={{background:C.bg,borderRadius:99,height:6,marginBottom:10,overflow:"hidden"}}>
-            <div style={{background:`linear-gradient(90deg,${C.lena},#b8e05a)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.6s cubic-bezier(0.4,0,0.2,1)"}}/>
+          <div style={{background:C.bg,borderRadius:99,height:5,marginBottom:9}}>
+            <div style={{background:`linear-gradient(90deg,${C.accent},#39d353)`,width:`${pct}%`,height:"100%",borderRadius:99,transition:"width 0.5s"}}/>
           </div>
-          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:3}}>
-            {[
-              {val:done,   label:"Done",   color:C.green},
-              {val:inProg, label:"Active", color:C.yellow},
-              {val:total-done-inProg, label:"Left", color:C.dim},
-            ].map(({val,label,color})=>(
-              <div key={label} style={{textAlign:"center",padding:"6px 2px",background:C.bg,borderRadius:8}}>
-                <div style={{fontSize:15,fontWeight:800,color,lineHeight:1}}>{val}</div>
-                <div style={{fontSize:9,color:C.dim,marginTop:2,letterSpacing:0.3,textTransform:"uppercase"}}>{label}</div>
-              </div>
-            ))}
+          <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:2}}>
+            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
+              <div style={{fontSize:16,fontWeight:800,color:C.green}}>{done}</div>
+              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Done</div>
+            </div>
+            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
+              <div style={{fontSize:16,fontWeight:800,color:C.yellow}}>{inProg}</div>
+              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Active</div>
+            </div>
+            <div style={{textAlign:"center",padding:"6px 4px",background:C.bg,borderRadius:6}}>
+              <div style={{fontSize:16,fontWeight:800,color:C.muted}}>{total-done-inProg}</div>
+              <div style={{fontSize:9,color:C.dim,marginTop:1}}>Left</div>
+            </div>
           </div>
         </div>
 
-        {/* Nav */}
-        <div style={{marginBottom:18}}>
-          <div style={{fontSize:9,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:5,paddingLeft:4}}>Views</div>
-          {[["overview","🗺","Overview"],["roadmap","📋","Roadmap"],["resources","🔗","Resources"],["build","⚙️","Build"],["interview","🎯","Interview"],["stats","📊","Stats"]].map(([v,ico,label])=>{
-            const active = view===v;
-            return (
-              <button key={v} className="nav-btn" onClick={()=>setView(v)} style={{
-                width:"100%",display:"flex",alignItems:"center",gap:8,
-                padding:"7px 10px",borderRadius:9,border:"none",cursor:"pointer",
-                fontSize:12,fontWeight:active?700:500,
-                background:active?`${C.lena}18`:"transparent",
-                color:active?C.lena:C.muted,
-                textAlign:"left",marginBottom:1,
-              }}>
-                <span style={{fontSize:13,width:16,textAlign:"center"}}>{ico}</span>
-                {label}
-                {active && <div style={{marginLeft:"auto",width:4,height:4,borderRadius:"50%",background:C.lena}}/>}
-              </button>
-            );
-          })}
+        <div style={{marginBottom:20}}>
+          <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:6,paddingLeft:2}}>Views</div>
+          {[["roadmap","📋  Roadmap"],["resources","🔗  Resources"],["build","⚙️  Build"],["interview","🎯  Interview"],["stats","📊  Stats"]].map(([v,l])=>(
+            <button key={v} onClick={()=>setView(v)} style={{width:"100%",display:"flex",alignItems:"center",padding:"8px 10px",borderRadius:7,border:"none",cursor:"pointer",fontSize:13,fontWeight:600,background:view===v?"#0d1f42":"transparent",color:view===v?C.accent:C.muted,textAlign:"left",marginBottom:2,transition:"all 0.15s"}}>{l}</button>
+          ))}
         </div>
 
-        {/* Phase list with • bullets */}
         <div style={{flex:1}}>
-          <div style={{fontSize:9,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:1,marginBottom:8,paddingLeft:4}}>Phases</div>
+          <div style={{fontSize:10,color:C.dim,fontWeight:700,textTransform:"uppercase",letterSpacing:0.7,marginBottom:10,paddingLeft:2}}>Phases</div>
           {ROADMAP.map(phase=>{
             const phDone=phase.items.filter(i=>progress[i.id]==="done").length;
             const phPct=Math.round((phDone/phase.items.length)*100);
-            const complete = phDone===phase.items.length;
             return (
-              <div key={phase.phase} style={{marginBottom:13,paddingLeft:4,cursor:"pointer"}}
-                onClick={()=>{setView("roadmap");setExpandedPhases(p=>({...p,[phase.phase]:true}));}}>
-                <div style={{display:"flex",alignItems:"center",gap:0,marginBottom:4}}>
-                  {/* Lena-style • bullet */}
-                  <span style={{fontSize:14,color:complete?C.lena:phase.color,marginRight:9,lineHeight:1}}>•</span>
-                  <span style={{fontSize:11,fontWeight:600,color:complete?C.lena:C.muted,lineHeight:1.3,
-                    overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>
-                    {phase.phase}
-                  </span>
-                  <span style={{fontSize:9,color:complete?C.lena:C.dim,flexShrink:0,marginLeft:4,fontWeight:complete?700:400}}>
-                    {phDone}/{phase.items.length}
-                  </span>
+              <div key={phase.phase} style={{marginBottom:16,paddingLeft:2}}>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",marginBottom:5}}>
+                  <div style={{display:"flex",alignItems:"center",gap:7,minWidth:0}}>
+                    <div style={{width:3,height:16,borderRadius:2,background:phase.color,flexShrink:0}}/>
+                    <span style={{fontSize:11,fontWeight:600,color:C.muted,lineHeight:1.3,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}}>{phase.phase}</span>
+                  </div>
+                  <span style={{fontSize:10,color:C.dim,flexShrink:0,marginLeft:4}}>{phDone}/{phase.items.length}</span>
                 </div>
-                <div style={{background:C.elevated,borderRadius:99,height:2,marginLeft:23}}>
-                  <div style={{background:complete?C.lena:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s",opacity:complete?1:0.7}}/>
+                <div style={{background:C.elevated,borderRadius:99,height:3,marginLeft:14}}>
+                  <div style={{background:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s",opacity:0.75}}/>
                 </div>
               </div>
             );
           })}
         </div>
 
-        <div style={{paddingTop:14,borderTop:`1px solid ${C.border}`}}>
+        <div style={{paddingTop:16,borderTop:`1px solid ${C.border}`}}>
           <button onClick={async()=>{
             if(!confirm("Reset all progress, checks, and notes?")) return;
             setProgress({}); setChecks({}); setNotes({});
             try{await store.set("p","{}"); await store.set("c","{}"); await store.set("n","{}");} catch{}
-          }} style={{fontSize:10,color:C.dim,background:"transparent",border:`1px solid ${C.border}`,borderRadius:8,padding:"6px 10px",cursor:"pointer",width:"100%",letterSpacing:0.3}}>Reset Everything</button>
+          }} style={{fontSize:11,color:C.dim,background:"transparent",border:`1px solid ${C.border}`,borderRadius:6,padding:"6px 10px",cursor:"pointer",width:"100%"}}>Reset Everything</button>
         </div>
       </div>
 
@@ -3030,189 +3105,25 @@ export default function App() {
       <div style={{flex:1,overflowY:"auto",height:"100vh"}}>
       <div style={{maxWidth:860,margin:"0 auto",padding:"24px 32px"}}>
 
-        {/* ── OVERVIEW VIEW ── */}
-        {view==="overview" && (
-          <div>
-            {/* Page header */}
-            <div style={{marginBottom:24}}>
-              <div style={{fontSize:26,fontWeight:800,color:C.text,letterSpacing:-0.6,marginBottom:5}}>Your Learning Map</div>
-              <div style={{fontSize:13,color:C.dim}}>{ROADMAP.length} phases · {total} concepts · <span style={{color:C.lena,fontWeight:700}}>{pct}%</span> complete</div>
-              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena}70,transparent)`,marginTop:14}}/>
-            </div>
-
-            {/* ── A: Resume banner — active items first ── */}
-            {(() => {
-              const activeItems = ALL_ITEMS.filter(i=>progress[i.id]==="in_progress");
-              if (!activeItems.length) return null;
-              return (
-                <div style={{marginBottom:28,padding:"18px 20px",borderRadius:14,
-                  background:`linear-gradient(135deg,${C.lena}12,${C.lena}06)`,
-                  border:`1px solid ${C.lena}35`}}>
-                  <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:14}}>
-                    <div style={{width:8,height:8,borderRadius:"50%",background:C.lena,
-                      boxShadow:`0 0 8px ${C.lena}80`}}/>
-                    <span style={{fontSize:11,fontWeight:800,color:C.lena,textTransform:"uppercase",
-                      letterSpacing:1}}>Continue where you left off</span>
-                  </div>
-                  <div style={{display:"grid",gridTemplateColumns:`repeat(${Math.min(activeItems.length,3)},1fr)`,gap:10}}>
-                    {activeItems.slice(0,3).map(item=>{
-                      const phase = ROADMAP.find(p=>p.items.some(i=>i.id===item.id));
-                      const tC=getC(item,"theory"),rC=getC(item,"resources"),iC=getC(item,"implementation");
-                      const done = tC.checked+rC.checked+iC.checked;
-                      const total = tC.total+rC.total+iC.total;
-                      const pctItem = total>0?Math.round((done/total)*100):0;
-                      return (
-                        <div key={item.id} style={{background:C.surface,borderRadius:10,padding:"12px 14px",
-                          border:`1px solid ${phase?.color||C.border}30`,cursor:"pointer"}}
-                          onClick={()=>{setView("roadmap");
-                            setExpandedPhases(p=>({...p,[phase?.phase]:true}));
-                            setExpanded(e=>({...e,[item.id]:true}));}}>
-                          <div style={{fontSize:9,fontWeight:800,color:phase?.color,textTransform:"uppercase",
-                            letterSpacing:0.8,marginBottom:4}}>{phase?.phase}</div>
-                          <div style={{fontSize:13,fontWeight:700,color:C.text,lineHeight:1.35,marginBottom:8}}>
-                            {item.title}
-                          </div>
-                          <div style={{background:C.elevated,borderRadius:99,height:3,marginBottom:5}}>
-                            <div style={{height:"100%",width:`${pctItem}%`,background:C.lena,
-                              borderRadius:99,transition:"width 0.4s"}}/>
-                          </div>
-                          <div style={{fontSize:10,color:C.lena,fontWeight:700}}>{done}/{total} tasks · {pctItem}%</div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  {activeItems.length>3 && (
-                    <div style={{fontSize:11,color:C.dim,marginTop:10}}>
-                      +{activeItems.length-3} more active concepts
-                    </div>
-                  )}
-                </div>
-              );
-            })()}
-
-            {/* ── Phase grid ── */}
-            <div style={{display:"grid",gridTemplateColumns:"repeat(2,1fr)",gap:14}}>
-              {ROADMAP.map(phase=>{
-                const phDone = phase.items.filter(i=>progress[i.id]==="done").length;
-                const phInProg = phase.items.filter(i=>progress[i.id]==="in_progress").length;
-                const phPct = Math.round((phDone/phase.items.length)*100);
-                const complete = phDone===phase.items.length;
-                const totalChecks = phase.items.reduce((sum,item)=>
-                  sum+["theory","resources","implementation"].reduce((s,sec)=>
-                    s+(item[sec]||[]).filter(c=>checks[`${item.id}__${sec}__${c.id}`]).length,0),0);
-                const totalPossible = phase.items.reduce((sum,item)=>
-                  sum+["theory","resources","implementation"].reduce((s,sec)=>s+(item[sec]||[]).length,0),0);
-                return (
-                  <div key={phase.phase} className="phase-card"
-                    style={{"--phase-color":phase.color,
-                      background:C.surface, borderRadius:14, overflow:"hidden",
-                      border:`1px solid ${complete?`${C.lena}40`:C.border}`, cursor:"pointer"}}
-                    onClick={()=>{ setView("roadmap"); setExpandedPhases(p=>({...p,[phase.phase]:true})); }}>
-
-                    {/* Header */}
-                    <div style={{background:`linear-gradient(135deg,${complete?C.lena:phase.color}1e,${complete?C.lena:phase.color}06)`,
-                      borderBottom:`1px solid ${complete?C.lena:phase.color}28`,
-                      padding:"16px 20px 13px", position:"relative", overflow:"hidden"}}>
-                      <div style={{position:"absolute",right:-20,top:-20,width:80,height:80,
-                        borderRadius:"50%",background:`${complete?C.lena:phase.color}10`,pointerEvents:"none"}}/>
-                      <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
-                        <div style={{fontSize:16,fontWeight:800,color:complete?C.lena:C.text,letterSpacing:-0.3,lineHeight:1.25,flex:1}}>
-                          {phase.phase}
-                        </div>
-                        {complete && <span style={{fontSize:10,color:C.lena,fontWeight:800,
-                          background:`${C.lena}18`,padding:"2px 8px",borderRadius:99,
-                          letterSpacing:0.5,flexShrink:0,marginTop:2}}>DONE ✓</span>}
-                      </div>
-                      <div style={{display:"flex",alignItems:"center",gap:8,marginTop:6}}>
-                        <span style={{fontSize:11,color:complete?C.lena:phase.color,fontWeight:700}}>
-                          {phDone}/{phase.items.length} concepts
-                        </span>
-                        {phInProg>0 && <span style={{fontSize:10,color:C.yellow}}>· {phInProg} active</span>}
-                        <span style={{fontSize:10,color:C.dim,marginLeft:"auto"}}>
-                          {totalChecks}/{totalPossible} tasks
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Progress bar */}
-                    <div style={{height:4,background:C.elevated}}>
-                      <div style={{height:"100%",width:`${phPct}%`,
-                        background:complete?`linear-gradient(90deg,${C.lena},#b8e05a)`:phase.color,
-                        transition:"width 0.5s cubic-bezier(0.4,0,0.2,1)"}}/>
-                    </div>
-
-                    {/* Summary */}
-                    {phase.summary && (
-                      <div style={{padding:"10px 20px 4px",fontSize:11,color:C.muted,lineHeight:1.65}}>
-                        {phase.summary.length>120 ? phase.summary.slice(0,120)+"…" : phase.summary}
-                      </div>
-                    )}
-
-                    {/* Concept list */}
-                    <div style={{padding:"6px 20px 14px"}}>
-                      {phase.items.slice(0,5).map((item,i)=>{
-                        const st = progress[item.id]||"not_started";
-                        const dotColor = st==="done"?C.lena:st==="in_progress"?C.yellow:"transparent";
-                        const dotBorder = st==="not_started"?`1.5px solid ${C.border}`:"none";
-                        return (
-                          <div key={item.id} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",
-                            borderBottom:i<Math.min(4,phase.items.length-1)?`1px solid ${C.border2}`:"none"}}>
-                            <div style={{width:7,height:7,borderRadius:"50%",flexShrink:0,
-                              background:dotColor,border:dotBorder,
-                              boxShadow:st==="in_progress"?`0 0 5px ${C.yellow}60`:"none"}}/>
-                            <span style={{fontSize:12,color:st==="done"?C.dim:C.muted,
-                              textDecoration:st==="done"?"line-through":"none",
-                              overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap",flex:1}}>
-                              {item.title}
-                            </span>
-                            {st==="in_progress" && (
-                              <span style={{fontSize:9,color:C.yellow,fontWeight:800,
-                                background:"#27200818",padding:"1px 6px",borderRadius:3,flexShrink:0,letterSpacing:0.3}}>
-                                ACTIVE
-                              </span>
-                            )}
-                          </div>
-                        );
-                      })}
-                      {phase.items.length>5 && (
-                        <div style={{fontSize:11,color:complete?C.lena:phase.color,paddingTop:7,fontWeight:600}}>
-                          +{phase.items.length-5} more ⇨
-                        </div>
-                      )}
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-        )}
-
         {view==="roadmap" && ROADMAP.filter(p=>p.phase!=="Interview Mastery").map(phase=>{
           const phDone = phase.items.filter(i=>progress[i.id]==="done").length;
           const phOpen = expandedPhases[phase.phase];
           return (
-            <div key={phase.phase} style={{marginBottom:12,border:`1px solid ${C.border}`,borderRadius:14,overflow:"hidden"}}>
+            <div key={phase.phase} style={{marginBottom:10,border:`1px solid ${C.border}`,borderRadius:10,overflow:"hidden"}}>
               <div onClick={()=>togglePhase(phase.phase)} style={{cursor:"pointer",borderBottom:phOpen?`1px solid ${C.border}`:"none",background:C.surface}}>
-                {/* Lena-style thick accent bar */}
-                <div style={{height:4,background:`linear-gradient(90deg, ${phase.color}, ${phase.color}55)`,opacity:phOpen?1:0.6,transition:"opacity 0.2s"}}/>
-                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"13px 18px 11px"}}>
+                {/* Colour accent bar */}
+                <div style={{height:3,background:`linear-gradient(90deg, ${phase.color}, ${phase.color}44)`,opacity:phOpen?1:0.5,transition:"opacity 0.2s"}}/>
+                <div style={{display:"flex",alignItems:"center",justifyContent:"space-between",padding:"12px 16px 10px"}}>
                   <div style={{flex:1,minWidth:0}}>
-                    <div style={{display:"flex",alignItems:"center",gap:9,marginBottom:phase.summary&&phOpen?5:0}}>
-                      <span style={{fontWeight:800,fontSize:16,color:C.text,letterSpacing:-0.4}}>{phase.phase}</span>
-                      <span style={{fontSize:11,
-                        color:phDone===phase.items.length?C.lena:C.dim,
-                        background:phDone===phase.items.length?`${C.lena}18`:C.elevated,
-                        padding:"2px 9px",borderRadius:99,
-                        border:`1px solid ${phDone===phase.items.length?`${C.lena}50`:C.border2}`,
-                        fontWeight:700,flexShrink:0}}>
-                        {phDone}/{phase.items.length}
-                      </span>
+                    <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:phase.summary&&phOpen?4:0}}>
+                      <span style={{fontWeight:800,fontSize:16,color:C.text,letterSpacing:-0.3}}>{phase.phase}</span>
+                      <span style={{fontSize:11,color:phDone===phase.items.length?C.green:C.dim,background:phDone===phase.items.length?"#0d1f0f":C.elevated,padding:"1px 8px",borderRadius:99,border:`1px solid ${phDone===phase.items.length?"#238636":C.border2}`,fontWeight:600,flexShrink:0}}>{phDone}/{phase.items.length}</span>
                     </div>
                     {phase.summary && phOpen && (
-                      <div style={{fontSize:12,color:C.muted,lineHeight:1.65,maxWidth:600,marginTop:3}}>{phase.summary}</div>
+                      <div style={{fontSize:12,color:C.muted,lineHeight:1.5,maxWidth:600,marginTop:2}}>{phase.summary}</div>
                     )}
                   </div>
-                  <span style={{color:C.dim,fontSize:12,marginLeft:12,flexShrink:0}}>{phOpen?"▲":"▼"}</span>
+                  <span style={{color:C.dim,fontSize:11,marginLeft:12,flexShrink:0}}>{phOpen?"▲":"▼"}</span>
                 </div>
               </div>
 
@@ -3233,172 +3144,116 @@ export default function App() {
                 ];
 
                 return (
-                  <div key={item.id} style={{borderBottom:idx<phase.items.length-1?`1px solid ${C.border2}`:"none",borderRadius:isOpen?12:0,background:isOpen?C.elevated:"transparent",transition:"background 0.15s",marginBottom:isOpen?5:0}}>
+                  <div key={item.id} style={{borderBottom:idx<phase.items.length-1?`1px solid ${C.border2}`:"none",borderRadius:isOpen?8:0,background:isOpen?C.elevated:"transparent",transition:"background 0.15s",marginBottom:isOpen?4:0}}>
                     {/* Clickable item row */}
-                    <div onClick={()=>toggleItem(item.id)} style={{padding:"13px 18px",display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer"}}>
-                      <button onClick={e=>cycleStatus(item.id,e)} className="status-btn" title="Cycle status" style={{flexShrink:0,width:30,height:30,borderRadius:9,border:`1.5px solid ${st.border}`,background:st.bg,color:st.color,fontSize:14,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
+                    <div onClick={()=>toggleItem(item.id)} style={{padding:"12px 16px",display:"flex",alignItems:"flex-start",gap:12,cursor:"pointer"}}>
+                      <button onClick={e=>cycleStatus(item.id,e)} title="Cycle status" style={{flexShrink:0,width:28,height:28,borderRadius:7,border:`1.5px solid ${st.border}`,background:st.bg,color:st.color,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",marginTop:1}}>
                         {st.icon}
                       </button>
                       <div style={{flex:1,minWidth:0}}>
                         <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8}}>
                           <div style={{flex:1}}>
-                            <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
-                              <span style={{fontSize:10,fontWeight:800,color:phase.color,letterSpacing:0.8,textTransform:"uppercase",padding:"2px 8px",background:phase.color+"18",borderRadius:5,border:`1px solid ${phase.color}35`}}>{item.week}</span>
+                            <div style={{display:"flex",alignItems:"center",gap:5,marginBottom:3}}>
+                              <span style={{fontSize:10,fontWeight:800,color:phase.color,letterSpacing:1,textTransform:"uppercase",padding:"1px 7px",background:phase.color+"14",borderRadius:4,border:`1px solid ${phase.color}30`}}>{item.week}</span>
                               <span style={{fontSize:10,color:C.dim,fontWeight:500}}>{item.duration}</span>
                             </div>
-                            <div style={{fontSize:15,fontWeight:700,color:status==="done"?C.dim:C.text,textDecoration:status==="done"?"line-through":"none",lineHeight:1.4,letterSpacing:-0.2}}>{item.title}</div>
-                            {/* ── B: Mini-stats pills when collapsed ── */}
-                            {!isOpen && (tC.checked>0||rC.checked>0||iC.checked>0||tC.total>0) && (
-                              <div style={{display:"flex",gap:5,marginTop:6,flexWrap:"wrap"}}>
-                                {[
-                                  {emoji:"📖",s:tC,color:"#6366f1"},
-                                  {emoji:"🔗",s:rC,color:C.accent},
-                                  {emoji:"⚙️",s:iC,color:C.yellow},
-                                ].filter(p=>p.s.total>0).map(({emoji,s,color})=>(
-                                  <span key={emoji} style={{
-                                    fontSize:10,display:"inline-flex",alignItems:"center",gap:3,
-                                    padding:"2px 7px",borderRadius:99,
-                                    background:s.checked===s.total&&s.total>0?`${color}20`:`${color}0a`,
-                                    border:`1px solid ${s.checked===s.total&&s.total>0?`${color}50`:`${color}20`}`,
-                                    color:s.checked===s.total&&s.total>0?color:C.dim,
-                                    fontWeight:s.checked>0?700:400,
-                                  }}>
-                                    {emoji} {s.checked}/{s.total}
-                                    {s.checked===s.total&&s.total>0 && <span style={{fontSize:9}}>✓</span>}
-                                  </span>
-                                ))}
-                              </div>
-                            )}
+                            <div style={{fontSize:16,fontWeight:700,color:status==="done"?C.muted:C.text,textDecoration:status==="done"?"line-through":"none",lineHeight:1.35,letterSpacing:-0.2}}>{item.title}</div>
                             {(item.tags||[]).length > 0 && (
-                              <div style={{display:"flex",gap:4,marginTop:6,flexWrap:"wrap"}}>
-                                {(item.tags||[]).map(t=>(
-                                  <span key={t} className="tag-chip" style={{fontSize:10,color:C.dim,background:C.bg,padding:"2px 8px",borderRadius:5,border:`1px solid ${C.border2}`,letterSpacing:0.1,cursor:"default"}}>{t}</span>
-                                ))}
+                              <div style={{display:"flex",gap:4,marginTop:5,flexWrap:"wrap"}}>
+                                {(item.tags||[]).map(t=><span key={t} style={{fontSize:10,color:C.dim,background:C.bg,padding:"1px 7px",borderRadius:3,border:`1px solid ${C.border2}`,letterSpacing:0.1}}>{t}</span>)}
                               </div>
                             )}
                           </div>
                           <div style={{display:"flex",gap:4,flexShrink:0,marginTop:2}} onClick={e=>e.stopPropagation()}>
-                            <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} title="Add note" style={{width:28,height:28,borderRadius:7,border:`1px solid ${hasNote?`${C.accent}60`:C.border}`,background:hasNote?`${C.accent}15`:"transparent",color:hasNote?C.accent:C.dim,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
+                            <button onClick={()=>{setActiveNote(item.id);setNoteText(notes[item.id]||"");}} title="Add note" style={{width:28,height:28,borderRadius:6,border:`1px solid ${hasNote?"#1f6feb":C.border}`,background:hasNote?"#0d1f42":"transparent",color:hasNote?C.accent:C.dim,fontSize:13,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>📝</button>
                           </div>
                         </div>
                       </div>
                     </div>
 
-                    {/* ── E: Two-column layout when open — vertical nav + content ── */}
+                    {/* Section tabs — full-width, outside the flex row so border spans edge-to-edge */}
                     {isOpen && (
-                      <div style={{display:"flex",borderTop:`1px solid ${C.border}`,minHeight:200}}
-                        onClick={e=>e.stopPropagation()}>
+                      <div style={{borderTop:`1px solid ${C.border}`,borderBottom:`1px solid ${C.border}`,background:C.bg,padding:"10px 16px",display:"flex",gap:8,flexWrap:"wrap",justifyContent:"center"}} onClick={e=>e.stopPropagation()}>
+                        {SECS.map(sec=>{
+                          const active = curSec===sec.key;
+                          return (
+                            <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{padding:"6px 16px",borderRadius:6,border:`1.5px solid ${active?sec.color:C.border2}`,background:active?sec.color+"18":"transparent",color:active?sec.color:C.dim,fontSize:12,fontWeight:700,cursor:"pointer",display:"flex",alignItems:"center",gap:6,transition:"all 0.15s",letterSpacing:0.3}}>
+                              <span>{sec.emoji}</span>
+                              <span style={{textTransform:"uppercase",fontSize:11,letterSpacing:0.5}}>{sec.label}</span>
+                              {sec.stats && sec.stats.total>0 && (
+                                <span style={{background:active?sec.color+"30":C.elevated,color:active?sec.color:C.dim,borderRadius:4,padding:"0 6px",fontSize:10,fontWeight:800,minWidth:24,textAlign:"center"}}>{sec.stats.checked}/{sec.stats.total}</span>
+                              )}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
 
-                        {/* Left: vertical section nav (Lena in-page sidebar) */}
-                        <div style={{width:148,flexShrink:0,borderRight:`1px solid ${C.border}`,
-                          background:C.bg,padding:"14px 0",display:"flex",flexDirection:"column",gap:1}}>
-                          {SECS.map(sec=>{
-                            const active = curSec===sec.key;
-                            const allDone = sec.stats.total>0&&sec.stats.checked===sec.stats.total;
-                            return (
-                              <button key={sec.key} onClick={()=>setSection(item.id,sec.key)} style={{
-                                display:"flex",alignItems:"center",gap:8,
-                                padding:"9px 14px",border:"none",cursor:"pointer",
-                                background:active?C.elevated:"transparent",
-                                borderLeft:`3px solid ${active?sec.color:"transparent"}`,
-                                textAlign:"left",width:"100%",transition:"all 0.13s",
-                              }}>
-                                <span style={{fontSize:14,flexShrink:0}}>{sec.emoji}</span>
-                                <div style={{flex:1,minWidth:0}}>
-                                  <div style={{fontSize:11,fontWeight:active?800:600,
-                                    color:active?sec.color:allDone?C.lena:C.dim,
-                                    letterSpacing:0.3,textTransform:"uppercase",lineHeight:1}}>
-                                    {sec.label}
-                                  </div>
-                                  {sec.stats.total>0 && (
-                                    <div style={{fontSize:10,marginTop:2,
-                                      color:allDone?C.lena:active?sec.color:C.dim,
-                                      fontWeight:allDone?700:400}}>
-                                      {sec.stats.checked}/{sec.stats.total}
-                                      {allDone && " ✓"}
-                                    </div>
-                                  )}
-                                </div>
-                              </button>
-                            );
-                          })}
-                        </div>
-
-                        {/* Right: section content */}
-                        <div style={{flex:1,minWidth:0,background:C.surface,padding:"20px 22px 18px",
-                          borderRadius:"0 0 12px 0"}}>
-                          {!curSec && (
-                            <div style={{display:"flex",flexDirection:"column",alignItems:"center",
-                              justifyContent:"center",height:"100%",minHeight:160,gap:8,color:C.dim}}>
-                              <span style={{fontSize:28}}>👈</span>
-                              <span style={{fontSize:12}}>Choose a section to study</span>
-                            </div>
-                          )}
-                          {curSec==="theory" && (
-                            <div>
-                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
-                                <div style={{width:4,height:28,borderRadius:2,background:"linear-gradient(180deg,#6366f1,#a371f7)",flexShrink:0}}/>
-                                <div style={{flex:1}}>
-                                  <div style={{fontSize:11,color:"#818cf8",fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>Concepts</div>
-                                  <div style={{fontSize:11,color:C.dim}}>Try to recall from memory before revealing</div>
-                                </div>
+                    {/* Section content */}
+                    {isOpen && curSec && (
+                      <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,borderTop:"none",padding:"18px 20px 16px"}}>
+                        {curSec==="theory" && (
+                          <div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#6366f1,#a371f7)",flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:"#6366f1",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Concepts</div>
+                                <div style={{fontSize:11,color:C.dim}}>Click ▼ expand to reveal — try to answer before reading</div>
                               </div>
-                              <div className="lena-hr" style={{background:"linear-gradient(90deg,#6366f140,transparent)",marginBottom:14}}/>
-                              {(item.theory||[]).map(c=>(
-                                <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource} isTheory={true}/>
-                              ))}
                             </div>
-                          )}
-                          {curSec==="resources" && (
-                            <div>
-                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
-                                <div style={{width:4,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.accent},#1f6feb)`,flexShrink:0}}/>
-                                <div style={{flex:1}}>
-                                  <div style={{fontSize:11,color:C.accent,fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>Resources</div>
-                                  <div style={{fontSize:11,color:C.dim}}>Primary learning materials for this topic</div>
-                                </div>
+                            {(item.theory||[]).map(c=>(
+                              <CheckRow key={c.id} checked={!!checks[`${item.id}__theory__${c.id}`]} onChange={()=>toggleCheck(item.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
+                            ))}
+                          </div>
+                        )}
+                        {curSec==="resources" && (
+                          <div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.accent},#1f6feb)`,flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:C.accent,fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Resources</div>
+                                <div style={{fontSize:11,color:C.dim}}>Primary learning materials for this topic</div>
                               </div>
-                              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.accent}40,transparent)`,marginBottom:14}}/>
-                              {(item.resources||[]).map(r=>(
-                                <CheckRow key={r.id} checked={!!checks[`${item.id}__resources__${r.id}`]} onChange={()=>toggleCheck(item.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
-                              ))}
                             </div>
-                          )}
-                          {curSec==="implementation" && (
-                            <div>
-                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
-                                <div style={{width:4,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.yellow},#8a5c00)`,flexShrink:0}}/>
-                                <div style={{flex:1}}>
-                                  <div style={{fontSize:11,color:C.yellow,fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>Build Tasks</div>
-                                  <div style={{fontSize:11,color:C.dim}}>Hands-on projects — understanding solidifies through building</div>
-                                </div>
+                            {(item.resources||[]).map(r=>(
+                              <CheckRow key={r.id} checked={!!checks[`${item.id}__resources__${r.id}`]} onChange={()=>toggleCheck(item.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
+                            ))}
+                          </div>
+                        )}
+                        {curSec==="implementation" && (
+                          <div>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:`1px solid ${C.border2}`}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:`linear-gradient(180deg,${C.yellow},#b45309)`,flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:C.yellow,fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>Build Tasks</div>
+                                <div style={{fontSize:11,color:C.dim}}>Hands-on projects — understanding only solidifies through building</div>
                               </div>
-                              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.yellow}40,transparent)`,marginBottom:14}}/>
-                              {(item.implementation||[]).map(i=>(
-                                <CheckRow key={i.id} checked={!!checks[`${item.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(item.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
-                              ))}
                             </div>
-                          )}
-                          {curSec==="extraReading" && (
-                            <div>
-                              <div style={{display:"flex",alignItems:"center",gap:10,marginBottom:14}}>
-                                <div style={{width:4,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
-                                <div style={{flex:1}}>
-                                  <div style={{fontSize:11,color:"#a371f7",fontWeight:800,letterSpacing:0.8,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
-                                  <div style={{fontSize:11,color:C.dim}}>Tiered by depth — Quick Read ⇨ Going Deeper ⇨ Deep Dive</div>
-                                </div>
+                            {(item.implementation||[]).map(i=>(
+                              <CheckRow key={i.id} checked={!!checks[`${item.id}__implementation__${i.id}`]} onChange={()=>toggleCheck(item.id,"implementation",i.id)} label={i.text} desc={i.desc}/>
+                            ))}
+                          </div>
+                        )}
+                        {curSec==="extraReading" && (
+                          <>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
+                              <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
+                              <div>
+                                <div style={{fontSize:11,color:"#a371f7",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
+                                <div style={{fontSize:11,color:"#6e7681"}}>Optional — for going deeper beyond the curriculum</div>
                               </div>
-                              <div className="lena-hr" style={{background:"linear-gradient(90deg,#a371f740,transparent)",marginBottom:16}}/>
-                              <TieredExtraReading items={item.extraReading||[]} itemId={item.id} checks={checks} toggleCheck={toggleCheck}/>
                             </div>
-                          )}
-                        </div>
+                            {(item.extraReading||[]).map(e=>(
+                              <ExtraItem key={e.id} item={e} checked={!!checks[`${item.id}__extra__${e.id}`]} onChange={()=>toggleCheck(item.id,"extra",e.id)}/>
+                            ))}
+                          </>
+                        )}
                       </div>
                     )}
 
                     {hasNote && !isOpen && (
-                      <div style={{margin:"0 18px 12px 60px",fontSize:12,color:C.muted,background:C.bg,padding:"7px 12px",borderRadius:8,borderLeft:`3px solid ${phase.color}`,lineHeight:1.6}}>
-                        {notes[item.id].length>120?notes[item.id].slice(0,120)+"…":notes[item.id]}
+                      <div style={{margin:"0 16px 10px 56px",fontSize:12,color:C.muted,background:C.bg,padding:"6px 10px",borderRadius:5,borderLeft:`2px solid ${phase.color}`}}>
+                        {notes[item.id].length>110?notes[item.id].slice(0,110)+"...":notes[item.id]}
                       </div>
                     )}
                   </div>
@@ -3498,52 +3353,35 @@ export default function App() {
                       {group.items.filter(r=>resTab==="extra"?checks[`${r.itemId}__extra__${r.id}`]:checks[`${r.itemId}__resources__${r.id}`]).length}/{group.items.length}
                     </span>
                   </div>
-                  {/* Items — C: type-colored left border */}
+                  {/* Items */}
                   {group.items.map((r,i)=>{
                     const checkKey = resTab==="extra" ? `${r.itemId}__extra__${r.id}` : `${r.itemId}__resources__${r.id}`;
                     const checked = !!checks[checkKey];
                     const badge = resTab==="extra" ? EXTRA_BADGE : (TYPE_BADGE[r.type]||{label:r.type,bg:C.elevated,color:C.dim});
                     const handleCheck = ()=> resTab==="extra" ? toggleCheck(r.itemId,"extra",r.id) : toggleCheck(r.itemId,"resources",r.id);
-                    const borderColor = resTab==="extra" ? "#9333ea" : (badge.color||C.dim);
                     return (
-                      <div key={`${r.itemId}-${r.id}`} style={{
-                        display:"flex",alignItems:"flex-start",gap:10,
-                        padding:"10px 14px 10px 0",
-                        borderBottom:i<group.items.length-1?`1px solid ${C.border2}`:"none",
-                        background:checked?`${borderColor}08`:"transparent",
-                        transition:"background 0.15s",
-                        borderLeft:`3px solid ${checked?borderColor:`${borderColor}40`}`,
-                        paddingLeft:14,
-                      }}>
+                      <div key={`${r.itemId}-${r.id}`} style={{display:"flex",alignItems:"flex-start",gap:10,padding:"9px 14px",borderBottom:i<group.items.length-1?`1px solid ${C.border2}`:"none",background:checked?"#0d150d":"transparent",transition:"background 0.15s"}}>
                         <div onClick={handleCheck} style={{flexShrink:0,width:15,height:15,borderRadius:3,marginTop:3,
-                          border:`1.5px solid ${checked?borderColor:C.border}`,
-                          background:checked?borderColor:"transparent",
-                          cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",
-                          transition:"all 0.15s"}}>
-                          {checked && <span style={{color:"#fff",fontSize:9,fontWeight:900,lineHeight:1}}>✓</span>}
+                          border:`1.5px solid ${checked?(resTab==="extra"?"#9333ea":"#238636"):C.border}`,
+                          background:checked?(resTab==="extra"?"#9333ea":"#238636"):"transparent",
+                          cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center"}}>
+                          {checked && <span style={{color:"#fff",fontSize:15,fontWeight:800,lineHeight:1}}>✓</span>}
                         </div>
                         <div style={{flex:1,minWidth:0}}>
-                          <div style={{display:"flex",alignItems:"flex-start",justifyContent:"space-between",gap:8,marginBottom:2}}>
-                            <div style={{flex:1,minWidth:0}}>
-                              {r.url ? (
-                                <a href={r.url} target="_blank" rel="noreferrer"
-                                  style={{fontSize:14,color:checked?C.dim:C.text,textDecoration:checked?"line-through":"none",lineHeight:1.5,wordBreak:"break-word",fontWeight:500}}>
-                                  {r.text}
-                                </a>
-                              ) : (
-                                <span style={{fontSize:14,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
-                              )}
-                            </div>
-                            {/* Badge on the right */}
-                            <span style={{fontSize:10,padding:"2px 8px",borderRadius:6,
-                              background:badge.bg,color:badge.color,flexShrink:0,
-                              fontWeight:700,whiteSpace:"nowrap",marginTop:2}}>
-                              {badge.label}
-                            </span>
+                          <div style={{display:"flex",alignItems:"flex-start",gap:6,flexWrap:"wrap",marginBottom:2}}>
+                            {r.url ? (
+                              <a href={r.url} target="_blank" rel="noreferrer"
+                                style={{fontSize:15,color:checked?C.dim:C.accent,textDecoration:checked?"line-through":"underline",lineHeight:1.5,wordBreak:"break-word"}}>
+                                {r.text}
+                              </a>
+                            ) : (
+                              <span style={{fontSize:15,color:checked?C.dim:"#c9a5ff",lineHeight:1.5}}>{r.text}</span>
+                            )}
+                            <span style={{fontSize:14,padding:"1px 6px",borderRadius:99,background:badge.bg,color:badge.color,flexShrink:0,marginTop:2}}>{badge.label}</span>
                           </div>
-                          <div style={{fontSize:12,color:C.dim}}>{r.itemTitle}</div>
+                          <div style={{fontSize:14,color:C.dim}}>{r.itemTitle}</div>
                           {resTab==="extra" && r.desc && (
-                            <div style={{fontSize:12,color:C.muted,marginTop:4,lineHeight:1.65}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
+                            <div style={{fontSize:15,color:C.muted,marginTop:3,lineHeight:1.5}}>{r.desc.length>160?r.desc.slice(0,160)+"…":r.desc}</div>
                           )}
                         </div>
                       </div>
@@ -3576,106 +3414,50 @@ export default function App() {
                 </div>
               </div>
 
-              {/* ── D: Horizontal stepper timeline ── */}
-              <div style={{marginBottom:28}}>
-                <div style={{fontSize:11,fontWeight:800,color:C.dim,textTransform:"uppercase",letterSpacing:1,marginBottom:16}}>Mega Projects</div>
-
-                {/* Timeline connector row */}
-                <div style={{display:"flex",alignItems:"flex-start",gap:0,position:"relative",marginBottom:4}}>
-                  {Object.values(MEGA_PROJECTS).map((mp,mi)=>{
+              {/* ── Mega Project Cards ── */}
+              <div style={{marginBottom:20}}>
+                <div style={{fontSize:15,fontWeight:700,color:C.dim,textTransform:"uppercase",letterSpacing:0.7,marginBottom:8}}>Mega Projects</div>
+                <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:8}}>
+                  {Object.values(MEGA_PROJECTS).map(mp=>{
                     const steps = megaByProj[mp.id]||[];
                     const doneSteps = steps.filter(b=>checks[`${b.itemId}__implementation__${b.id}`]).length;
-                    const pct_mp = mp.totalSteps>0?Math.round((doneSteps/mp.totalSteps)*100):0;
-                    const isExp = expandedMega[mp.id];
                     return (
-                      <div key={mp.id} style={{flex:1,display:"flex",flexDirection:"column",alignItems:"center",position:"relative"}}>
-                        {/* Connector line — left half */}
-                        {mi>0 && <div style={{position:"absolute",top:20,right:"50%",left:0,height:2,
-                          background:doneSteps>0?mp.color:`${mp.color}25`,zIndex:0}}/>}
-                        {/* Connector line — right half */}
-                        {mi<2 && <div style={{position:"absolute",top:20,left:"50%",right:0,height:2,
-                          background:doneSteps>0?mp.color:`${mp.color}25`,zIndex:0}}/>}
-
-                        {/* Node */}
-                        <div onClick={()=>setExpandedMega(p=>({...p,[mp.id]:!p[mp.id]}))}
-                          style={{width:42,height:42,borderRadius:"50%",
-                            background:isExp?mp.color:mp.bg,
-                            border:`2px solid ${mp.color}`,
-                            display:"flex",alignItems:"center",justifyContent:"center",
-                            fontSize:18,cursor:"pointer",position:"relative",zIndex:1,
-                            boxShadow:isExp?`0 0 16px ${mp.color}60`:"none",
-                            transition:"all 0.2s"}}>
-                          {mp.emoji}
+                      <div key={mp.id} style={{background:mp.bg,border:`1px solid ${mp.border}`,borderRadius:10,padding:"12px 14px"}}>
+                        <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:8}}>
+                          <span style={{fontSize:15}}>{mp.emoji}</span>
+                          <span style={{fontSize:14,fontWeight:700,color:mp.color,lineHeight:1.3}}>{mp.name}</span>
                         </div>
-
-                        {/* Label */}
-                        <div style={{marginTop:8,textAlign:"center",padding:"0 4px"}}>
-                          <div style={{fontSize:11,fontWeight:800,color:isExp?mp.color:C.muted,lineHeight:1.3,marginBottom:3}}>
-                            {mp.name}
-                          </div>
-                          {/* Step dots */}
-                          <div style={{display:"flex",gap:2,justifyContent:"center"}}>
-                            {Array.from({length:mp.totalSteps},(_,i)=>{
-                              const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
-                              const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
-                              return <div key={i} style={{width:6,height:6,borderRadius:"50%",
-                                background:isDone?mp.color:`${mp.color}28`,transition:"background 0.3s"}}/>;
-                            })}
-                          </div>
-                          <div style={{fontSize:10,color:mp.color,marginTop:3,opacity:0.8}}>{doneSteps}/{mp.totalSteps}</div>
+                        {/* Step progress bar */}
+                        <div style={{display:"flex",gap:3,marginBottom:7}}>
+                          {Array.from({length:mp.totalSteps},(_,i)=>{
+                            const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
+                            const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
+                            return <div key={i} title={mp.steps[i]} style={{flex:1,height:5,borderRadius:3,background:isDone?mp.color:`${mp.color}22`,transition:"background 0.3s"}}/>;
+                          })}
                         </div>
+                        <div style={{fontSize:14,color:mp.color,opacity:0.75,marginBottom:7}}>{doneSteps}/{mp.totalSteps} steps complete</div>
+                        {/* Step checklist */}
+                        {mp.steps.map((stepLabel,i)=>{
+                          const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
+                          const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
+                          return (
+                            <div key={i} style={{display:"flex",alignItems:"flex-start",gap:6,marginBottom:4}}>
+                              <div style={{width:14,height:14,borderRadius:"50%",flexShrink:0,marginTop:1,
+                                border:`1.5px solid ${isDone?mp.color:`${mp.color}35`}`,
+                                background:isDone?mp.color:"transparent",
+                                display:"flex",alignItems:"center",justifyContent:"center"}}>
+                                {isDone
+                                  ? <span style={{color:"#fff",fontSize:14,fontWeight:800,lineHeight:1}}>✓</span>
+                                  : <span style={{fontSize:14,color:mp.color,opacity:0.5,fontWeight:700}}>{i+1}</span>}
+                              </div>
+                              <span style={{fontSize:14,color:isDone?mp.color:C.dim,textDecoration:isDone?"line-through":"none",lineHeight:1.35}}>{stepLabel}</span>
+                            </div>
+                          );
+                        })}
                       </div>
                     );
                   })}
                 </div>
-
-                {/* Expanded step details */}
-                {Object.values(MEGA_PROJECTS).map(mp=>{
-                  if (!expandedMega[mp.id]) return null;
-                  const steps = megaByProj[mp.id]||[];
-                  return (
-                    <div key={mp.id} style={{marginTop:12,padding:"16px 18px",
-                      background:mp.bg,borderRadius:12,border:`1px solid ${mp.color}40`,
-                      animation:"fadeSlideIn 0.18s ease"}}>
-                      <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12}}>
-                        <span style={{fontSize:16}}>{mp.emoji}</span>
-                        <span style={{fontSize:14,fontWeight:800,color:mp.color}}>{mp.name}</span>
-                        <span style={{fontSize:11,color:mp.color,opacity:0.7,marginLeft:"auto"}}>{mp.subtitle}</span>
-                      </div>
-                      <div className="lena-hr" style={{background:`linear-gradient(90deg,${mp.color}50,transparent)`,marginBottom:14}}/>
-                      {mp.steps.map((stepLabel,i)=>{
-                        const stepBuild = steps.find(b=>b.megaProject?.step===i+1);
-                        const isDone = stepBuild ? !!checks[`${stepBuild.itemId}__implementation__${stepBuild.id}`] : false;
-                        return (
-                          <div key={i} style={{display:"flex",alignItems:"flex-start",gap:10,marginBottom:8}}>
-                            {/* Step node */}
-                            <div style={{width:22,height:22,borderRadius:"50%",flexShrink:0,marginTop:1,
-                              border:`2px solid ${isDone?mp.color:`${mp.color}35`}`,
-                              background:isDone?mp.color:"transparent",
-                              display:"flex",alignItems:"center",justifyContent:"center",
-                              transition:"all 0.2s"}}>
-                              {isDone
-                                ? <span style={{color:"#fff",fontSize:10,fontWeight:900}}>✓</span>
-                                : <span style={{fontSize:10,color:mp.color,opacity:0.6,fontWeight:700}}>{i+1}</span>}
-                            </div>
-                            {/* Vertical connector */}
-                            <div style={{display:"flex",flexDirection:"column",flex:1}}>
-                              <span style={{fontSize:13,color:isDone?mp.color:C.muted,
-                                textDecoration:isDone?"line-through":"none",lineHeight:1.45,fontWeight:isDone?400:500}}>
-                                {stepLabel}
-                              </span>
-                              {stepBuild && (
-                                <span style={{fontSize:11,color:C.dim,marginTop:2}}>
-                                  in: {stepBuild.itemTitle}
-                                </span>
-                              )}
-                            </div>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  );
-                })}
               </div>
 
               {/* ── All tasks by phase ── */}
@@ -3808,9 +3590,9 @@ export default function App() {
 
                     {/* Section content */}
                     {isOpen && curSec && (
-                      <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,padding:"18px 20px 16px"}}>
+                      <div style={{margin:"0 0 0",background:C.surface,borderRadius:"0 0 8px 8px",border:`1px solid ${C.border}`,borderTop:"none",padding:"18px 20px 16px"}}>
                         {curSec==="theory" && (unit.theory||[]).map(c=>(
-                          <CheckRow key={c.id} checked={!!checks[`${unit.id}__theory__${c.id}`]} onChange={()=>toggleCheck(unit.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource} isTheory={true}/>
+                          <CheckRow key={c.id} checked={!!checks[`${unit.id}__theory__${c.id}`]} onChange={()=>toggleCheck(unit.id,"theory",c.id)} label={c.text} desc={c.desc} resource={c.resource}/>
                         ))}
                         {curSec==="resources" && (unit.resources||[]).map(r=>(
                           <CheckRow key={r.id} checked={!!checks[`${unit.id}__resources__${r.id}`]} onChange={()=>toggleCheck(unit.id,"resources",r.id)} label={r.text} isLink url={r.url} type={r.type}/>
@@ -3827,6 +3609,7 @@ export default function App() {
                               const ans = drillAnswers[aKey]||"";
                               const conf = drillConf[cKey]||0;
                               const isDone = !!checks[`${unit.id}__implementation__${i.id}`];
+                              const [showAns, setShowAns] = React.useState ? undefined : undefined;
                               return <DrillRow key={i.id} unitId={unit.id} drillId={i.id} text={i.text} desc={i.desc}
                                 checked={isDone} onCheck={()=>toggleCheck(unit.id,"implementation",i.id)}
                                 answer={ans} onAnswerChange={v=>saveDrill(aKey,v)}
@@ -3836,14 +3619,16 @@ export default function App() {
                         )}
                         {curSec==="extraReading" && (
                           <>
-                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:16,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
+                            <div style={{display:"flex",alignItems:"center",gap:8,marginBottom:12,paddingBottom:10,borderBottom:"1px solid #30363d"}}>
                               <div style={{width:3,height:28,borderRadius:2,background:"linear-gradient(180deg,#a371f7,#6366f1)",flexShrink:0}}/>
                               <div>
                                 <div style={{fontSize:11,color:"#a371f7",fontWeight:700,letterSpacing:0.6,textTransform:"uppercase",marginBottom:1}}>✨ Extra Reading</div>
-                                <div style={{fontSize:11,color:"#6e7681"}}>Tiered by depth — Quick Read → Going Deeper → Deep Dive</div>
+                                <div style={{fontSize:11,color:"#6e7681"}}>Optional — for going deeper beyond the curriculum</div>
                               </div>
                             </div>
-                            <TieredExtraReading items={unit.extraReading||[]} itemId={unit.id} checks={checks} toggleCheck={toggleCheck}/>
+                            {(unit.extraReading||[]).map(e=>(
+                              <ExtraItem key={e.id} item={e} checked={!!checks[`${unit.id}__extra__${e.id}`]} onChange={()=>toggleCheck(unit.id,"extra",e.id)}/>
+                            ))}
                           </>
                         )}
                       </div>
@@ -3857,73 +3642,65 @@ export default function App() {
 
         {/* ── STATS VIEW ── */}
         {view==="stats" && (
-          <div style={{display:"grid",gap:14}}>
-            {/* Big count cards */}
-            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:12}}>
+          <div style={{display:"grid",gap:12}}>
+            <div style={{display:"grid",gridTemplateColumns:"repeat(3,1fr)",gap:10}}>
               {[
-                {label:"Completed", value:done,              color:C.lena,   bg:`${C.lena}12`,  border:`${C.lena}30`},
-                {label:"In Progress",value:inProg,           color:C.yellow, bg:"#271f0812",    border:"#8a5c0030"},
-                {label:"Remaining", value:total-done-inProg, color:C.dim,    bg:C.elevated,    border:C.border},
+                {label:"Completed",value:done,color:C.green,bg:"#0d1f0f"},
+                {label:"In Progress",value:inProg,color:C.yellow,bg:"#2d2208"},
+                {label:"Remaining",value:total-done-inProg,color:C.muted,bg:C.elevated},
               ].map(c=>(
-                <div key={c.label} style={{background:c.bg,borderRadius:14,border:`1px solid ${c.border}`,padding:"20px 16px",textAlign:"center"}}>
-                  <div style={{fontSize:34,fontWeight:800,color:c.color,lineHeight:1,letterSpacing:-1}}>{c.value}</div>
-                  <div style={{fontSize:11,fontWeight:700,color:c.color,marginTop:6,textTransform:"uppercase",letterSpacing:1,opacity:0.8}}>{c.label}</div>
+                <div key={c.label} style={{background:c.bg,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px",textAlign:"center"}}>
+                  <div style={{fontSize:28,fontWeight:800,color:c.color}}>{c.value}</div>
+                  <div style={{fontSize:14,fontWeight:700,color:c.color,marginTop:3,textTransform:"uppercase",letterSpacing:0.5}}>{c.label}</div>
                 </div>
               ))}
             </div>
 
-            {/* Phase progress */}
-            <div style={{background:C.surface,borderRadius:14,border:`1px solid ${C.border}`,padding:"18px 20px"}}>
-              <div style={{fontWeight:800,fontSize:15,marginBottom:6,color:C.text,letterSpacing:-0.2}}>Progress by Phase</div>
-              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena}60,transparent)`,marginBottom:18}}/>
+            <div style={{background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px"}}>
+              <div style={{fontWeight:700,fontSize:15,marginBottom:14,color:C.text}}>Progress by Phase</div>
               {ROADMAP.map(phase=>{
                 const phDone=phase.items.filter(i=>progress[i.id]==="done").length;
                 const phPct=Math.round((phDone/phase.items.length)*100);
-                const complete=phDone===phase.items.length;
                 const totalChecks=phase.items.reduce((sum,item)=>sum+["theory","resources","implementation"].reduce((s,sec)=>s+(item[sec]||[]).filter(c=>checks[`${item.id}__${sec}__${c.id}`]).length,0),0);
                 const totalPossible=phase.items.reduce((sum,item)=>sum+["theory","resources","implementation"].reduce((s,sec)=>s+(item[sec]||[]).length,0),0);
-                const barColor = complete ? C.lena : phase.color;
                 return (
-                  <div key={phase.phase} style={{marginBottom:16}}>
-                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:5}}>
-                      <div style={{display:"flex",alignItems:"center",gap:8}}>
-                        <span style={{fontSize:14,color:barColor,lineHeight:1}}>•</span>
-                        <span style={{fontSize:13,fontWeight:600,color:complete?C.lena:C.muted}}>{phase.phase}</span>
-                        {complete && <span style={{fontSize:10,color:C.lena,fontWeight:800,background:`${C.lena}18`,padding:"1px 7px",borderRadius:99,letterSpacing:0.5}}>DONE</span>}
+                  <div key={phase.phase} style={{marginBottom:14}}>
+                    <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:4}}>
+                      <div style={{display:"flex",alignItems:"center",gap:7}}>
+                        <div style={{width:7,height:7,borderRadius:"50%",background:phase.color}}/>
+                        <span style={{fontSize:14,fontWeight:600,color:C.muted}}>{phase.phase}</span>
                       </div>
-                      <div style={{display:"flex",gap:12,alignItems:"center"}}>
-                        <span style={{fontSize:12,color:C.dim}}>{totalChecks}/{totalPossible} tasks</span>
-                        <span style={{fontSize:12,color:complete?C.lena:C.dim,fontWeight:complete?700:400}}>{phDone}/{phase.items.length}</span>
+                      <div style={{display:"flex",gap:12}}>
+                        <span style={{fontSize:14,color:C.dim}}>{totalChecks}/{totalPossible} tasks</span>
+                        <span style={{fontSize:14,color:C.dim}}>{phDone}/{phase.items.length} concepts</span>
                       </div>
                     </div>
-                    <div style={{background:C.elevated,borderRadius:99,height:5,overflow:"hidden"}}>
-                      <div style={{background:complete?`linear-gradient(90deg,${C.lena},#b8e05a)`:barColor,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.5s cubic-bezier(0.4,0,0.2,1)"}}/>
+                    <div style={{background:C.elevated,borderRadius:99,height:4}}>
+                      <div style={{background:phase.color,width:`${phPct}%`,height:"100%",borderRadius:99,transition:"width 0.4s"}}/>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Notes */}
-            <div style={{background:C.surface,borderRadius:14,border:`1px solid ${C.border}`,padding:"18px 20px"}}>
-              <div style={{fontWeight:800,fontSize:15,marginBottom:6,color:C.text}}>Your Notes</div>
-              <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.accent}50,transparent)`,marginBottom:16}}/>
+            <div style={{background:C.surface,borderRadius:10,border:`1px solid ${C.border}`,padding:"16px"}}>
+              <div style={{fontWeight:700,fontSize:15,marginBottom:12,color:C.text}}>Your Notes</div>
               {ALL_ITEMS.filter(i=>notes[i.id]).length===0 ? (
-                <div style={{color:C.dim,fontSize:13,textAlign:"center",padding:"16px 0"}}>No notes yet — use 📝 on any concept to add one.</div>
+                <div style={{color:C.dim,fontSize:14,textAlign:"center",padding:"14px 0"}}>No notes yet. Use 📝 on any concept.</div>
               ) : ALL_ITEMS.filter(i=>notes[i.id]).map(item=>(
-                <div key={item.id} style={{marginBottom:10,padding:"10px 14px",background:C.bg,borderRadius:10,borderLeft:`3px solid ${C.accent}`}}>
-                  <div style={{fontSize:13,fontWeight:700,color:C.text,marginBottom:3}}>{item.title}</div>
-                  <div style={{fontSize:13,color:C.muted,lineHeight:1.7}}>{notes[item.id]}</div>
+                <div key={item.id} style={{marginBottom:9,padding:"9px 11px",background:C.bg,borderRadius:7,borderLeft:`2px solid ${C.accent}`}}>
+                  <div style={{fontSize:14,fontWeight:700,color:C.text,marginBottom:2}}>{item.title}</div>
+                  <div style={{fontSize:14,color:C.muted,lineHeight:1.6}}>{notes[item.id]}</div>
                 </div>
               ))}
             </div>
 
-            <div style={{textAlign:"center",paddingBottom:8}}>
+            <div style={{textAlign:"center"}}>
               <button onClick={async()=>{
                 if(!confirm("Reset all progress, checks, and notes?")) return;
                 setProgress({}); setChecks({}); setNotes({});
                 try{await store.set("p","{}"); await store.set("c","{}"); await store.set("n","{}");} catch{}
-              }} style={{fontSize:13,color:C.pink,background:"transparent",border:`1px solid ${C.red}50`,borderRadius:9,padding:"8px 18px",cursor:"pointer",letterSpacing:0.2}}>Reset Everything</button>
+              }} style={{fontSize:15,color:C.red,background:"transparent",border:`1px solid #5a1e1e`,borderRadius:6,padding:"6px 13px",cursor:"pointer"}}>Reset Everything</button>
             </div>
           </div>
         )}
@@ -3933,18 +3710,14 @@ export default function App() {
 
       {/* Note modal */}
       {activeNote && (
-        <div style={{position:"fixed",inset:0,background:"rgba(8,12,18,0.82)",backdropFilter:"blur(4px)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:16}}>
-          <div style={{background:C.surface,borderRadius:16,padding:"22px 24px",width:"100%",maxWidth:460,border:`1px solid ${C.border}`,boxShadow:"0 24px 64px rgba(0,0,0,0.6)"}}>
-            <div style={{fontWeight:800,fontSize:15,marginBottom:3,color:C.text,letterSpacing:-0.2}}>{ALL_ITEMS.find(i=>i.id===activeNote)?.title}</div>
-            <div style={{fontSize:11,color:C.dim,marginBottom:4,lineHeight:1.5}}>Key insights, links, confusion points, things to revisit</div>
-            <div className="lena-hr" style={{background:`linear-gradient(90deg,${C.lena}50,transparent)`,marginBottom:14}}/>
-            <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} autoFocus placeholder="Write anything..." style={{width:"100%",height:130,padding:"12px 14px",borderRadius:10,border:`1px solid ${C.border}`,fontSize:13,fontFamily:"'Inter',-apple-system,sans-serif",resize:"vertical",outline:"none",color:C.text,lineHeight:1.7,boxSizing:"border-box",background:C.elevated,transition:"border-color 0.15s"}}
-              onFocus={e=>e.target.style.borderColor=`${C.lena}60`}
-              onBlur={e=>e.target.style.borderColor=C.border}
-            />
-            <div style={{display:"flex",gap:8,marginTop:12,justifyContent:"flex-end"}}>
-              <button onClick={()=>{setActiveNote(null);setNoteText("");}} style={{padding:"7px 16px",borderRadius:9,border:`1px solid ${C.border}`,background:"transparent",fontSize:12,cursor:"pointer",color:C.muted,fontWeight:600}}>Cancel</button>
-              <button onClick={saveNote} style={{padding:"7px 16px",borderRadius:9,border:"none",background:C.lena,color:"#0c1116",fontSize:12,fontWeight:800,cursor:"pointer",letterSpacing:0.2}}>Save ⇨</button>
+        <div style={{position:"fixed",inset:0,background:"rgba(0,0,0,0.7)",display:"flex",alignItems:"center",justifyContent:"center",zIndex:999,padding:16}}>
+          <div style={{background:C.surface,borderRadius:12,padding:20,width:"100%",maxWidth:440,border:`1px solid ${C.border}`,boxShadow:"0 20px 60px rgba(0,0,0,0.5)"}}>
+            <div style={{fontWeight:700,fontSize:14,marginBottom:2,color:C.text}}>{ALL_ITEMS.find(i=>i.id===activeNote)?.title}</div>
+            <div style={{fontSize:11,color:C.dim,marginBottom:12}}>Key insights, links, confusion points, things to revisit</div>
+            <textarea value={noteText} onChange={e=>setNoteText(e.target.value)} autoFocus placeholder="Write anything..." style={{width:"100%",height:120,padding:10,borderRadius:7,border:`1px solid ${C.border}`,fontSize:13,fontFamily:"inherit",resize:"vertical",outline:"none",color:C.text,lineHeight:1.6,boxSizing:"border-box",background:C.elevated}}/>
+            <div style={{display:"flex",gap:8,marginTop:11,justifyContent:"flex-end"}}>
+              <button onClick={()=>{setActiveNote(null);setNoteText("");}} style={{padding:"6px 14px",borderRadius:6,border:`1px solid ${C.border}`,background:"transparent",fontSize:12,cursor:"pointer",color:C.muted}}>Cancel</button>
+              <button onClick={saveNote} style={{padding:"6px 14px",borderRadius:6,border:"none",background:C.accent,color:"#0d1117",fontSize:12,fontWeight:700,cursor:"pointer"}}>Save</button>
             </div>
           </div>
         </div>
